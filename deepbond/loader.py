@@ -15,15 +15,15 @@ def get_path_from_dataset(dataset):
 
 		# CINDERELA DATA:
 		'controle': {
-			'lexical': 'data/corpus/Controle/',
+			'lexical': 'data/corpus/SS/Controle/',
 			'prosodic': 'data/prosodic/controle.csv'
 		},
 		'ccl': {
-			'lexical': 'data/corpus/CCL-A/',
+			'lexical': 'data/corpus/SS/CCL-A/',
 			'prosodic': 'data/prosodic/ccl.csv'
 		},
 		'da': {
-			'lexical': 'data/corpus/DA-Leve/',
+			'lexical': 'data/corpus/SS/DA-Leve/',
 			'prosodic': None
 		},
 
@@ -542,6 +542,11 @@ def load_dataset(dataset, extra=False, vocabulary=None, task='ss'):
 	return dsm
 
 
+def build_dataset_from_data(texts, audios, vocabulary, task='ss', reset_vocabulary=False):
+	ds_raw = RawDataSet(texts, audios, vocabulary=vocabulary, reset_vocabulary=reset_vocabulary)
+	dsm = DataSetManager(originals=[ds_raw], extensions=[], task=task)
+	return dsm
+
 def load_features(POS_type, POS_file, embedding_type, embedding_file, prosodic_type, prosodic_classify, use_pos, use_embeddings, use_handcrafted):
 	ft = Features(POS_type=POS_type, POS_file=POS_file, 
 				prosodic_type=prosodic_type, prosodic_classify=prosodic_classify, 
@@ -551,14 +556,14 @@ def load_features(POS_type, POS_file, embedding_type, embedding_file, prosodic_t
 	return ft
 
 
-def load_strategy(options, ds_manager):
-	strategy = options.train_strategy
+def load_strategy(train_strategy, window_size=7, max_sentence_size=None):
+	strategy = train_strategy
 	if strategy == 'bucket':
 		return Strategies.BucketStrategy(name=strategy, input_length=None)
 	elif strategy == 'padding':
-		return Strategies.PaddingStrategy(name=strategy, input_length=ds_manager.max_sentence_size)
+		return Strategies.PaddingStrategy(name=strategy, input_length=max_sentence_size)
 	elif strategy == 'window':
-		return Strategies.WindowStrategy(name=strategy, input_length=options.window_size)
+		return Strategies.WindowStrategy(name=strategy, input_length=window_size)
 	elif strategy == 'dicted':
 		return Strategies.DictedStrategy(name=strategy, input_length=None)
 	raise Exception('The strategy chosen was not implemented!')
@@ -591,29 +596,27 @@ def _select_model(Models, model_params, x):
 	return model, params
 
 
-def load_models(options, features, ds_manager, strategy):
+def load_models(lexical, prosodic, features, vocabulary, nb_classes, strategy):
 	
-	assert(len(options.models) == 2)
-
 	l_model_params = {
 		'features': 		features,
-		'vocabulary': 		ds_manager.vocabulary,
-		'nb_classes': 		ds_manager.nb_classes,
+		'vocabulary': 		vocabulary,
+		'nb_classes': 		nb_classes,
 		'input_length': 	strategy.input_length,
-		'use_embeddings': 	not options.without_emb,
-		'use_pos': 			not options.without_pos,
-		'use_handcrafted':	options.use_handcrafted
+		'use_embeddings': 	features.use_embeddings,
+		'use_pos': 			features.use_pos,
+		'use_handcrafted':	features.use_handcrafted
 	}
-	l_model, l_params = _select_model(LexicalModels, l_model_params, options.models[0])
+	l_model, l_params = _select_model(LexicalModels, l_model_params, lexical)
 
 
 	p_model_params = {
 		'features': 	features,
-		'vocabulary': 	ds_manager.vocabulary,
-		'nb_classes': 	ds_manager.nb_classes,
+		'vocabulary': 	vocabulary,
+		'nb_classes': 	nb_classes,
 		'input_length': strategy.input_length
 	}
-	p_model, p_params = _select_model(ProsodicModels, p_model_params, options.models[1])
+	p_model, p_params = _select_model(ProsodicModels, p_model_params, prosodic)
 
 
 	return l_model, l_params, p_model, p_params

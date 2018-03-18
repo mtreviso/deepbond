@@ -36,7 +36,7 @@ class TrainManager:
 		combiner_stats = [0, 0, 0]
 		best_partition = 1
 
-		Model = sef._get_model()
+		Model = self._get_model()
 		if self.lexical_model is not None:
 			self.l_instance = Model(self.lexical_model, self.strategy, batch_size=self.batch_size)
 			self.l_instance.build(**self.lexical_params)
@@ -144,16 +144,16 @@ class TrainManager:
 		if self.c_instance is not None: 
 			self.c_instance.save(dirname + 'combiner.json')
 
-	def load(self, dirname):
-		Model = sef._get_model()
+	def load(self, dirname, verbose=True):
+		Model = self._get_model()
 		if self.lexical_model is not None:
 			self.l_instance = Model(self.lexical_model, self.strategy, batch_size=self.batch_size)
-			self.l_instance.build(verbose=True, **self.lexical_params)
-			self.l_instance.load_weights(dirname + 'lexical_weights.h5')
+			self.l_instance.build(verbose=verbose, **self.lexical_params)
+			self.l_instance.load_weights(dirname + 'train_lexical_weights.h5')
 		if self.prosodic_model is not None:
 			self.p_instance = Model(self.prosodic_model, self.strategy, batch_size=self.batch_size)
-			self.p_instance.build(verbose=True, **self.prosodic_params)
-			self.p_instance.load_weights(dirname + 'prosodic_weights.h5')
+			self.p_instance.build(verbose=verbose, **self.prosodic_params)
+			self.p_instance.load_weights(dirname + 'train_prosodic_weights.h5')
 		if self.lexical_model is not None and self.prosodic_model is not None:
 			self.c_instance = LinearCombiner()
 			self.c_instance.load(dirname + 'combiner.json')

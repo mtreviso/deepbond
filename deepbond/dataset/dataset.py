@@ -1,6 +1,4 @@
 import logging
-import pandas as pd
-import pickle
 from abc import ABCMeta, abstractmethod
 from os import listdir
 from numpy.random import shuffle as shuffle_list
@@ -66,10 +64,10 @@ class DataSet(metaclass=ABCMeta):
 		"""
 		pass
 
-	def _fit_tokenizer(self):
+	def _fit_tokenizer(self, build_vocab=True):
 		if not self.texts:
 			raise Exception('You should read the data before fit the tokenizer!')
-		self.word_texts = tokenizer.fit_on_texts(self.texts)
+		self.word_texts = tokenizer.fit_on_texts(self.texts, build_vocab=build_vocab)
 		self.word_id_texts = tokenizer.word_texts_to_indexes(self.word_texts)
 		self.pros_texts = [[] for _ in self.word_id_texts]
 		self.vocabulary = tokenizer.word_index
@@ -87,6 +85,7 @@ class DataSet(metaclass=ABCMeta):
 		return tokenizer.index_texts_to_text(indexes_texts)
 
 	def _read_pros_file(self, filename):
+		import pandas as pd
 		pros = pd.read_csv(filename, encoding='utf8')
 		pros = pros.drop(['n interval', 'Start', 'Finish', 'fo1', 'fo3'], axis=1)
 		pros = pros.replace('--undefined--', 0)
@@ -320,7 +319,7 @@ class DataSetSS:
 		logger.info('Nb texts: {}'.format(nb_texts))
 		logger.info('Nb sentences: {}'.format(nb_sentences))
 		logger.info('Nb words: {}'.format(nb_words))
-		logger.info('Chance Baseline: {0:.4%}'.format(nb_sentences/(nb_sentences + nb_words)))
+		logger.info('Chance Baseline: {0:.4%}'.format(nb_sentences/(nb_sentences + nb_words + int(nb_words==0))))
 
 
 class DataSetFillers(DataSetSS):
@@ -369,7 +368,7 @@ class DataSetFillers(DataSetSS):
 		logger.info('Nb mds: {}'.format(nb_mds))
 		logger.info('Nb tees: {}'.format(nb_tees))
 		logger.info('Nb words: {}'.format(nb_words))
-		logger.info('Chance Baseline: {0:.4%}'.format(nb_sentences/(nb_sentences + nb_words)))
+		logger.info('Chance Baseline: {0:.4%}'.format(nb_sentences/(nb_sentences + nb_words + int(nb_words==0))))
 
 
 class DataSetEditDisfs(DataSetSS):
@@ -443,7 +442,7 @@ class DataSetEditDisfs(DataSetSS):
 		logger.info('Nb revs: {}'.format(nb_revs))
 		logger.info('Nb recs: {}'.format(nb_recs))
 		logger.info('Nb words: {}'.format(nb_words))
-		logger.info('Chance Baseline: {0:.4%}'.format(nb_sentences/(nb_sentences + nb_words)))
+		logger.info('Chance Baseline: {0:.4%}'.format(nb_sentences/(nb_sentences + nb_words + int(nb_words==0))))
 
 
 class DataSetSSandDD(DataSetSS):

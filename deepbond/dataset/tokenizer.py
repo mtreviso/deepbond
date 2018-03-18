@@ -17,7 +17,7 @@ class Singleton(_Singleton('SingletonMeta', (object,), {})):
 class SentTokenizer(Singleton):
 
 	def __init__(self):
-		self.unknown_word = '<unknown>'
+		self.unknown_word = '*rare*'
 		self.unknown_word_id = 0
 		self.word_count = OrderedDict({'.': 0}) # add '.' to the vocabulary
 		self.word_index = OrderedDict()
@@ -41,14 +41,15 @@ class SentTokenizer(Singleton):
 			f.write('{}\n'.format(word))
 		f.close()
 
-	def fit_on_texts(self, texts):
+	def fit_on_texts(self, texts, build_vocab=True):
 		word_texts = []
 		for text in texts:
 			if text.strip():
 				word_sequence = self.text_to_word_sequence(text)
 				word_texts.append(word_sequence)
 				self._count_words(word_sequence)
-		self.build_vocab()
+		if build_vocab:
+			self.build_vocab()
 		return word_texts
 
 	def text_to_word_sequence(self, text, normalize=False):

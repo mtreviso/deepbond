@@ -21,7 +21,7 @@ __banner__ = r"""
 """
 
 __prog__ = "deepbond"
-__title__ = 'DeepBondd'
+__title__ = 'DeepBond'
 __summary__ = 'Deep neural approach to Boundary and Disfluency Detection.'
 __uri__ = 'https://www.github.com/mtreviso/deepbond'
 

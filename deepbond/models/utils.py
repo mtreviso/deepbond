@@ -56,3 +56,23 @@ def save_to_file(word_texts, word_indexes, predictions, fname='', dname='', task
 
 def get_new_texts(word_texts, word_indexes, predictions, fname='', dname='', task='ss', write_to_file=True):
 	return save_to_file(word_texts, word_indexes, predictions, fname=fname, dname=dname, task=task, write_to_file=False)
+
+
+def convert_prediction_to_tuple(pred_text):
+	symbols = ['.', '*', '+', '$']
+	inner_text = []
+	for token in pred_text.split():
+		if token not in symbols:
+			inner_text.append((token, ''))
+		else:
+			inner_text[-1] = (inner_text[-1][0], token)
+	return inner_text
+
+def convert_predictions_to_tuples(pred_texts):
+	return [convert_prediction_to_tuple(text) for text in pred_texts]
+
+def convert_tuple_to_text(tuple_text):
+	return ' '.join(list(map(lambda x: x[0]+' '+x[1], tuple_text))).strip()
+
+def convert_tuples_to_texts(tupled_texts):
+	return [convert_tuple_to_text(text) for text in tupled_texts]

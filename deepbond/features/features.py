@@ -17,8 +17,10 @@ class Features:
 
 		# POS
 		self.pos = POS(POS_file, POS_type)
+		self.use_pos = use_pos
 
 		# EMBEDDINGS
+		self.use_embeddings = use_embeddings
 		self.embeddings = AvailableEmbeddings.get(embedding_type)()
 		self.embeddings.load(
 			tokenizer.word_index if embedding_type == 'id' else embedding_file)
@@ -30,6 +32,7 @@ class Features:
 								 nb_features=3, first=1, last=3, max_size=10, pad_value=-1)
 
 		# HANDCRAFTED
+		self.use_handcrafted = use_handcrafted
 		self.handcrafted = HandCrafted(wang_single_limit=4, wang_pair_limit=4, 
 										prefix_size=(2,4), prefix_limit=2, eos_limit=2, use_pos=use_pos)
 
@@ -37,6 +40,9 @@ class Features:
 	def save(self, filename):
 		import json
 		data = {
+			'use_pos': self.use_pos,
+			'use_embeddings': self.use_embeddings,
+			'use_handcrafted': self.use_handcrafted,
 			'POS_type': self.pos.type,
 			'POS_file': self.pos.filename,
 			'embedding_type': self.embedding_type,
