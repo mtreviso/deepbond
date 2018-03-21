@@ -3,7 +3,7 @@ import numpy as np
 
 class ProsodicModel(metaclass=ABCMeta):
 
-	def __init__(self, vocabulary=None, features=None, input_length=None, nb_classes=2, use_embeddings=True, use_pos=True):
+	def __init__(self, vocabulary=None, features=None, input_length=None, nb_classes=2):
 		'''
 		:param vocabulary: a dict where keys are words
 		:param features: a feature class instance
@@ -14,8 +14,6 @@ class ProsodicModel(metaclass=ABCMeta):
 		self.features = features
 		self.nb_classes = nb_classes
 		self.input_length = input_length
-		self.use_embeddings = use_embeddings
-		self.use_pos = use_pos
 		self.classifier = None
 		self._prepare_params()
 		self.name = 'prosodic'

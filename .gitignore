@@ -4,3 +4,6 @@
 *.pyc
 __pycache__/
 data/*
+build/
+dist/
+*.egg-info/

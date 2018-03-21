@@ -12,15 +12,15 @@ class CrossValidation:
 	def __init__(self, data_set_manager, train_manager, options):
 		self.dsm = data_set_manager
 		self.train_manager = train_manager
-		self.epochs = options.epochs
-		self.folds = options.kfold
-		self.val_split = options.val_split
-		l_name = options.models[0]
-		p_name = options.models[1]
-		self.predictions_filename = '%s-%s-%s-%s-%s' % (l_name, p_name, options.dataset, options.pos_type, options.emb_type)
-		self.predictions_dirname = options.save_predictions
-		self.save_predictions = options.save_predictions
-		self.task = options.task
+		self.epochs = options['epochs']
+		self.folds = options['kfold']
+		self.val_split = options['val_split']
+		l_name = options['models'][0]
+		p_name = options['models'][1]
+		self.predictions_filename = '%s-%s-%s-%s-%s' % (l_name, p_name, options['dataset'], options['pos_type'], options['emb_type'])
+		self.predictions_dirname = options['save_predictions']
+		self.save_predictions = options['save_predictions']
+		self.task = options['task']
 
 
 	def run(self, verbose=True):

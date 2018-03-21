@@ -35,3 +35,19 @@ __copyright__ = 'Copyright 2017 Marcos Treviso'
 
 # the user should dictate what happens when a logging event occurs
 logging.getLogger(__name__).addHandler(logging.NullHandler())
+
+
+
+# imports
+from . import dataset
+from . import error_analysis
+from . import features
+from . import helpers
+from . import models
+
+from . import loader
+from . import log
+from . import statistics
+from . import utils
+from . import train
+from . import pipeline
