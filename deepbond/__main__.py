@@ -17,7 +17,6 @@ import os, re
 from deepbond import __prog__, __title__, __summary__, __uri__, __version__
 from deepbond.log import configure_stream
 from deepbond.loader import get_path_from_dataset, build_dataset_from_data, load_dataset, load_features, load_strategy, load_models
-from deepbond.error_analysis import ErrorAnalysisSS, ErrorAnalysisFillers, ErrorAnalysisEditDisfs
 from deepbond.models.manager import TrainManager
 from deepbond.models.cv import CrossValidation
 from deepbond.models.utils import save_to_file, get_new_texts, convert_predictions_to_tuples, convert_tuples_to_texts
@@ -107,6 +106,7 @@ def save(features, dsm, strategy, tm, model_dir):
 
 
 def analyze(options):
+	from deepbond.error_analysis import ErrorAnalysisSS, ErrorAnalysisFillers, ErrorAnalysisEditDisfs
 	logger.debug('Analyzing errors for test data: {}'.format(options.dataset))
 	gold_dir = get_path_from_dataset(options.dataset)['text_dir']
 	pred_dir = 'data/saves/'+options.save_predictions
@@ -290,9 +290,7 @@ def remove_fillers_listbased(preds, list_fname):
 	for pred in preds:
 		inner_preds = []
 		for word, label in pred:
-			if word in filler_list:
-				continue
-			else:
+			if word not in filler_list:
 				inner_preds.append((word, label))
 		new_preds.append(inner_preds)
 	return new_preds
@@ -326,16 +324,16 @@ def merge_ss_and_fillers(pred_ss, pred_fillers):
 	return new_preds
 
 
-def remove_editdisfs(pred_editdisfs):
+def remove_disfs(pred_disfs):
 	new_preds = []
-	for preds in pred_editdisfs:
+	for preds in pred_disfs:
 		inner_preds = []
 		for word, label in preds:
 			if label == '' or label == '.':
 				inner_preds.append((word, label))
 		new_preds.append(inner_preds)
 	return new_preds
-			
+
 
 def pipeline(texts, audios, options):
 	options_ss, options_fillers, options_editdisfs = set_options_manual(options)
@@ -360,7 +358,7 @@ def pipeline(texts, audios, options):
 	pred_editdisfs = detect(new_texts, [], options_editdisfs, reset_vocabulary=True)
 
 	# remove edit disfluences
-	pred_editdisfs = remove_editdisfs(pred_editdisfs)
+	pred_editdisfs = remove_disfs(pred_editdisfs)
 
 	# convert predictions to texts
 	final_text = [' '.join(list(map(lambda x:x[0]+x[1], text))) for text in pred_editdisfs]

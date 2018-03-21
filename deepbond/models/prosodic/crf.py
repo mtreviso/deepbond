@@ -1,9 +1,6 @@
 import numpy as np
-
 import logging
 from pprint import pformat
-
-from sklearn_crfsuite import CRF as CRFSuite
 from deepbond.models.prosodic import ProsodicModel
 
 logger = logging.getLogger(__name__)
@@ -15,6 +12,7 @@ class CRF(ProsodicModel):
 		pass
 
 	def build(self, algorithm='lbfgs', min_freq=20, verbose=True):
+		from sklearn_crfsuite import CRF as CRFSuite
 		# all_possible_transitions=False
 		self.classifier = CRFSuite(algorithm=algorithm, min_freq=min_freq)
 

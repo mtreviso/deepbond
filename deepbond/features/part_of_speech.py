@@ -1,11 +1,11 @@
 import pickle 
-import nlpnet
 from deepbond.helpers import ProbabilisticTagger
 from deepbond.utils import unroll
 
 class POS:
 
 	def __init__(self, filename, type='nlpnet'):
+		import nlpnet
 		self.type = type
 		self.filename = filename
 		if self.type == 'nlpnet':

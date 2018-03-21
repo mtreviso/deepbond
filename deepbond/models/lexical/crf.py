@@ -1,10 +1,6 @@
 import numpy as np
-
 import logging
 from pprint import pformat
-
-from sklearn_crfsuite import CRF as CRFSuite
-
 from deepbond.models.lexical import LexicalModel
 
 logger = logging.getLogger(__name__)
@@ -16,6 +12,7 @@ class CRF(LexicalModel):
 		pass
 
 	def build(self, algorithm='lbfgs', min_freq=20, verbose=True):
+		from sklearn_crfsuite import CRF as CRFSuite
 		# all_possible_transitions=False
 		self.classifier = CRFSuite(algorithm=algorithm, min_freq=min_freq)
 

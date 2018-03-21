@@ -1,0 +1,28 @@
+# for matrix routines
+numpy==1.11.0
+
+# for neural network models
+keras==2.1.5
+
+# for models, statistics and cross validation
+scikit_learn==0.19.1
+
+# for the tokenizer and error analysis
+nltk==3.2.5  
+
+# for prosodic info and error analysis
+pandas==0.17.1
+
+# for word embeddings
+gensim==2.0.0 
+
+# for part of speech tagging
+nlpnet==1.2.2
+
+# for error analysis
+pandas_ml==0.4.0 
+DocumentFeatureSelection==1.4.1
+
+# for crf models
+sklearn_crfsuite==0.3.3 
+

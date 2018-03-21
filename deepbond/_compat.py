@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-deepbondd._compat
+deepbond._compat
 ~~~~~~~~~~~~~~~~~~~~
 
 Python 2.7.x, 3.2+ compatibility module.
