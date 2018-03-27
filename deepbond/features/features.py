@@ -16,16 +16,17 @@ class Features:
 				 use_pos=True, use_embeddings=True, use_handcrafted=False):
 
 		# POS
-		self.pos = POS(POS_file, POS_type)
 		self.use_pos = use_pos
+		if self.use_pos:
+			self.pos = POS(POS_type)
+			self.pos.load(POS_file)
 
 		# EMBEDDINGS
 		self.use_embeddings = use_embeddings
-		self.embeddings = AvailableEmbeddings.get(embedding_type)()
-		self.embeddings.load(
-			tokenizer.word_index if embedding_type == 'id' else embedding_file)
 		self.embedding_type = embedding_type
 		self.embedding_file = embedding_file
+		self.embeddings = AvailableEmbeddings.get(embedding_type)()
+		self.embeddings.load(tokenizer.word_index if embedding_type == 'id' else embedding_file)
 
 		# PROSODIC
 		self.prosodic = Prosodic(prosodic_type, prosodic_classify,
@@ -33,7 +34,8 @@ class Features:
 
 		# HANDCRAFTED
 		self.use_handcrafted = use_handcrafted
-		self.handcrafted = HandCrafted(wang_single_limit=4, wang_pair_limit=4, 
+		if self.use_handcrafted:
+			self.handcrafted = HandCrafted(wang_single_limit=4, wang_pair_limit=4, 
 										prefix_size=(2,4), prefix_limit=2, eos_limit=2, use_pos=use_pos)
 
 
@@ -60,11 +62,13 @@ class Features:
 		self.__init__(**data)
 
 	def info(self):
-		logger.info('Embeddings type: {}'.format(type(self.embeddings).__name__))
-		logger.info('Embeddings dim: {}'.format(self.embeddings.dimensions))
-		logger.info('Embeddings vocab size: {}'.format(len(self.embeddings.vocabulary)))
-		logger.info('POS type: {}'.format(self.pos.type))
-		logger.info('POS vocab size: {}'.format(len(self.pos.vocabulary)))
+		if self.use_embeddings:
+			logger.info('Embeddings type: {}'.format(type(self.embeddings).__name__))
+			logger.info('Embeddings dim: {}'.format(self.embeddings.dimensions))
+			logger.info('Embeddings vocab size: {}'.format(len(self.embeddings.vocabulary)))
+		if self.use_pos:
+			logger.info('POS type: {}'.format(self.pos.type))
+			logger.info('POS vocab size: {}'.format(len(self.pos.vocabulary)))
 		logger.info('Prosodic type: {}'.format(self.prosodic.type))
 		logger.info('Prosodic classify: {}'.format(self.prosodic.classify))
 		logger.info('Prosodic nb features: {}'.format(self.prosodic.nb_features))
@@ -82,15 +86,16 @@ class Features:
 		return self.handcrafted.get(word_texts, pos_texts)
 
 	def embeddings_statistics(self, word_texts):
-		logger.info('Top 10 embeddings misses in dataset:')
-		words = [w_ for w in word_texts for w_ in w]
-		nb_oovs, nb_occur_oovs, top_k_oovs = self.embeddings.oov_statistics(
-			words)
-		logger.info('Total de palavras fora do vocabulario: %d' % nb_oovs)
-		logger.info(
-			'Total de ocorrencia de palavras fora do vocabulario: %d' % nb_occur_oovs)
-		for w, c in top_k_oovs:
-			logger.info('%s: %d' % (w, c))
+		if self.use_embeddings:
+			logger.info('Top 10 embeddings misses in dataset:')
+			words = [w_ for w in word_texts for w_ in w]
+			nb_oovs, nb_occur_oovs, top_k_oovs = self.embeddings.oov_statistics(
+				words)
+			logger.info('Total de palavras fora do vocabulario: %d' % nb_oovs)
+			logger.info(
+				'Total de ocorrencia de palavras fora do vocabulario: %d' % nb_occur_oovs)
+			for w, c in top_k_oovs:
+				logger.info('%s: %d' % (w, c))
 
 	def get_POS(self, texts):
 		return self.pos.get(texts)

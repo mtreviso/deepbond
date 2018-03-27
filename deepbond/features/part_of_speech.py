@@ -4,11 +4,12 @@ from deepbond.utils import unroll
 
 class POS:
 
-	def __init__(self, filename, type='nlpnet'):
-		import nlpnet
+	def __init__(self, type='nlpnet'):
 		self.type = type
-		self.filename = filename
+
+	def load(self, filename):
 		if self.type == 'nlpnet':
+			import nlpnet
 			self.pos_tagger = nlpnet.POSTagger(filename)
 			self.vocabulary = dict(zip(self.pos_tagger.itd.values(), range(1, len(self.pos_tagger.itd)+1)))
 		else:

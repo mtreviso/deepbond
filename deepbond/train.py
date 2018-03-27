@@ -126,16 +126,16 @@ def get_default_options():
 		'task': 'ss', 							# one of ss/dd_fillers/dd_editdisfs/ssdd
 		'dataset': 'controle', 					# see loader.py (used only for training and error analysis)
 
-		'load': True, 			# load the trained model for :id:
-		'save': False, 			# save the trained model for :id:
+		'load': False, 			# load the trained model for :id:
+		'save': True, 			# save the trained model for :id:
 
 		'window_size': 7, 		# size of the sliding window
-		'split_ratio': 0.6,		# ratio [0,1] to split the dataset into train/test
+		'split_ratio': 1.0,		# ratio [0,1] to split the dataset into train/test
 
 		'train_strategy': 'bucket', # strategy for training: bucket/window/dicted/padding
 		'epochs': 15,				# number of epochs for neural nets
 		'batch_size': 32,			# size of data batches to use for training and predicting
-		'kfold': 5,					# number of folds to evaluate the model
+		'kfold': 1,					# number of folds to evaluate the model
 		'val_split': 0.0,			# ratio [0,1] to split the train dataset into train/validation
 
 		'extra_data': False,		# see loader.py
@@ -153,7 +153,7 @@ def get_default_options():
 		'prosodic_type': 'principal', 	# method used for select phones of a word
 		'prosodic_classify': False,		# classify prosodic info according to consonants
 
-		'models': 'rcnn none',		# lexical and prosodic (rcnn for lexical and none for prosodic)
+		'models': ['rcnn', 'none'],		# lexical and prosodic (rcnn for lexical and none for prosodic)
 
 		'save_predictions': None, 	# dirname to save cv predictions in data/saves/ (None means do not save)
 
@@ -162,11 +162,12 @@ def get_default_options():
 	}
 
 
-def configure():
+def configure(options={}):
 	'''Add some useful functionality here or import from a submodule'''
 
-	# load the argument options
-	options = get_default_options()
+	if options == {}:
+		# load the argument options
+		options = get_default_options()
 
 	# configure root logger to print to STDERR
 	logger = logging.getLogger(__name__)

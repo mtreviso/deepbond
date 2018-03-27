@@ -126,7 +126,7 @@ class DataSetManager:
 
 	@property
 	def nb_classes(self):
-		return DataSetManager.get_nb_classes()
+		return DataSetManager.get_nb_classes(self.task)
 
 	@staticmethod
 	def get_nb_classes(task):

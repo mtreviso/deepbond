@@ -588,7 +588,7 @@ def _select_model(Models, model_params, x):
 	elif x == 'crf':
 		model = Models.CRF(**model_params)
 		params = {}
-	elif x == 'none':
+	elif x == 'none' or x is None:
 		model = None
 		params = {}
 	else:
