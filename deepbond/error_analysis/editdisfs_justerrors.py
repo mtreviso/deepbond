@@ -5,13 +5,8 @@ import logging
 import numpy as np
 import pandas as pd
 from sklearn.metrics import recall_score, precision_score, f1_score
-# , average_precision_score, precision_recall_curve
 from nltk import ngrams
 from nltk.probability import FreqDist
-
-# from matplotlib import pyplot as plt
-# import matplotlib
-# matplotlib.style.use('ggplot')
 
 logger = logging.getLogger(__name__)
 

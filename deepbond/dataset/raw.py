@@ -7,7 +7,7 @@ tokenizer = SentTokenizer() # vocabulary
 
 class RawDataSet(DataSet):
 
-	def __init__(self, texts=[], audios=[], vocabulary=None, reset_vocabulary=False):
+	def __init__(self, texts=[], audios=[], vocabulary=None):
 		"""
 		Class to deal with an annotated corpus
 		:param texts: list of raw texts as strings
@@ -26,9 +26,6 @@ class RawDataSet(DataSet):
 
 		if len(audios) > 0 and not isinstance(audios[0], str):
 			raise Exception('`audios` should be a list of paths to a prosodic file (.csv)')
-
-		if reset_vocabulary:
-			tokenizer.__init__()
 
 		# if we have a saved vocab, then the tokenizer will load it
 		if vocabulary is not None and not tokenizer.loaded:

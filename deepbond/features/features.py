@@ -52,7 +52,7 @@ class Features:
 		}
 		with open(filename, 'w') as f:
 			json.dump(data, f)
-
+	
 	def load(self, filename):
 		import json
 		with open(filename, 'r') as f:

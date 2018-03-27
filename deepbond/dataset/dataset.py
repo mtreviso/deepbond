@@ -126,17 +126,30 @@ class DataSetManager:
 
 	@property
 	def nb_classes(self):
-		if self.task == 'ss':
+		return DataSetManager.get_nb_classes()
+
+	@staticmethod
+	def get_nb_classes(task):
+		if task == 'ss':
 			return 2
-		elif self.task == 'dd_fillers':
-			return 3 # tirando tee pq tem poucos
-		elif self.task == 'dd_editdisfs':
-			return 4 # todas as classes pq tem bastantinho recomecos
-		elif self.task == 'dd_editdisfs_binary':
-			return 2 # todas as classes pq tem bastantinho recomecos
-		elif self.task == 'ssdd':
+		elif task == 'dd_fillers':
+			return 3 
+		elif task == 'dd_editdisfs':
+			return 4 
+		elif task == 'dd_editdisfs_binary':
+			return 2 
+		elif task == 'ssdd':
 			return 2
 		return 2
+
+	@staticmethod 
+	def load_and_get_vocabulary(filename):
+		tokenizer.load_vocabulary(filename)
+		return tokenizer.word_index
+
+	@staticmethod 
+	def reset_vocabulary():
+		tokenizer.__init__()
 
 	def get_texts(self):
 		if self.word_texts is not None:
@@ -469,3 +482,4 @@ class DataSetSSandDD(DataSetSS):
 			x.append(x_)
 			y.append(y_)
 		return x, y
+

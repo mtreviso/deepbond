@@ -184,4 +184,3 @@ def configure():
 	if not os.path.exists(options['model_dir']):
 		os.makedirs(options['model_dir'])
 
-

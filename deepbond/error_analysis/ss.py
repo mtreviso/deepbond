@@ -5,25 +5,11 @@ import logging
 import numpy as np
 import pandas as pd
 from sklearn.metrics import recall_score, precision_score, f1_score
-# , average_precision_score, precision_recall_curve
 from nltk import ngrams
 from nltk.probability import FreqDist
 
-# from matplotlib import pyplot as plt
-# import matplotlib
-# matplotlib.style.use('ggplot')
-
 logger = logging.getLogger(__name__)
-
-# TODO: erros before e after que são também disfluencias
-# VER: erros por causa do: 'e etc' ao inves do 'e tal'
-# DICA: plotar embeddings TSNE 2d para k top TP pre treino e pos treino
-# DICA: fazer avaliação qualitativa. (tem como? talvez com POS -> nao pd terminar com preposicao)
-# IDEIA: dar peso por samples: qdo testa DA, da mais peso pros DA no treinamento
-# DICA: mostrar que o tamanho das sentencas pra DA são muuuito pequenas. As vezes uma palavra só!
 # IDEIA: usar modelo de lingua para verificar a perplexidade das sentencas: Entropia Cruzada. import coh-metrix:
-# passar sentença por sentença: 
-# testar alguns exemplos com avaliacao extrinseca: no parser -> ver erros
 
 class ErrorAnalysisSS:
 

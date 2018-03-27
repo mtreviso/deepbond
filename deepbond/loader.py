@@ -542,8 +542,8 @@ def load_dataset(dataset, extra=False, vocabulary=None, task='ss'):
 	return dsm
 
 
-def build_dataset_from_data(texts, audios, vocabulary, task='ss', reset_vocabulary=False):
-	ds_raw = RawDataSet(texts, audios, vocabulary=vocabulary, reset_vocabulary=reset_vocabulary)
+def build_dataset_from_data(texts, audios, task='ss'):
+	ds_raw = RawDataSet(texts, audios)
 	dsm = DataSetManager(originals=[ds_raw], extensions=[], task=task)
 	return dsm
 
@@ -617,7 +617,6 @@ def load_models(lexical, prosodic, features, vocabulary, nb_classes, strategy):
 		'input_length': strategy.input_length
 	}
 	p_model, p_params = _select_model(ProsodicModels, p_model_params, prosodic)
-
 
 	return l_model, l_params, p_model, p_params
 

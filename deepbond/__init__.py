@@ -5,7 +5,7 @@ deepbond
 
 Deep neural approach to Boundary and Disfluency Detection.
 
-:copyright: (c) 2016 by Marcos Treviso
+:copyright: (c) 2017 by Marcos Treviso
 :licence: MIT, see LICENSE for more details
 """
 from __future__ import absolute_import, unicode_literals
@@ -16,7 +16,7 @@ import logging
 # patorjk.com/software/taag/#f=Calvin%20S&t=DeepBond
 __banner__ = r"""
 ╔╦╗┌─┐┌─┐┌─┐╔╗ ┌─┐┌┐┌┌┬┐
- ║║├┤ ├┤ ├─┘╠╩╗│ ││││ ││ by Marcos Treviso & Christopher Shulby & Sandra Aluísio
+ ║║├┤ ├┤ ├─┘╠╩╗│ ││││ ││ by Marcos Treviso
 ═╩╝└─┘└─┘┴  ╚═╝└─┘┘└┘─┴┘
 """
 
@@ -39,15 +39,7 @@ logging.getLogger(__name__).addHandler(logging.NullHandler())
 
 
 # imports
-from . import dataset
 from . import error_analysis
-from . import features
-from . import helpers
-from . import models
-
-from . import loader
-from . import log
-from . import statistics
-from . import utils
 from . import train
-from . import pipeline
+from . import task
+from .pipeline import Pipeline

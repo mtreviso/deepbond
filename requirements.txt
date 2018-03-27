@@ -16,7 +16,7 @@ pandas==0.17.1
 # for word embeddings
 gensim==2.0.0 
 
-# for part of speech tagging
+# for part of speech tagging 
 nlpnet==1.2.2
 
 # for error analysis

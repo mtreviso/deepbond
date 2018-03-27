@@ -220,11 +220,3 @@ def cli():
 if __name__ == '__main__':
 	cli()
 
-	# texts = ['ela morava com a madrasta as irmã né e ela era diferenciada das três era maltratada ela tinha que fazer limpeza na casa toda no castelo alias e as irmãs não faziam nada',
-	# 		'aqui é uma menininha simples uhn humilde eu creio creio que era humilde tava com os pais vivia com os pais depois é ela tinha é esse cavalo esse animalzinho de estimação depois ela foi morar no palácio',
-	# 		'era uma vez uma uma menina uma garota né que vivia numa castelo com o pai e ela gostava muito de animais e ela estava ahn fazendo um passeio a cavalo e ela morava num castelo']
-	# audios = []
-	# # audios = ['data/prosodic/CCL-A/2.csv', 'data/prosodic/CCL-A/3.csv', 'data/prosodic/Controle/23.csv']
-
-	# options = vars(load_options())
-	# preds = pipeline(texts, audios, options)
