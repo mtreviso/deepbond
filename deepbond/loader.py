@@ -238,6 +238,24 @@ def get_path_from_dataset(dataset):
 		'cachorro_all': {
 			'lexical': 'data/corpus/Cachorro/All/',
 			'prosodic': None
+		},
+
+
+		'genp':{
+			'lexical': 'data/corpus/GENP/all/',
+			'prosodic': None
+		},
+		'genp_cachorro':{
+			'lexical': 'data/corpus/GENP/cachorro/',
+			'prosodic': None
+		},
+		'genp_gato':{
+			'lexical': 'data/corpus/GENP/gato/',
+			'prosodic': None
+		},
+		'genp_acidente':{
+			'lexical': 'data/corpus/GENP/acidente/',
+			'prosodic': None
 		}
 	}
 	if 'pucrs_usp' in dataset:
@@ -252,7 +270,23 @@ def load_dataset(dataset, extra=False, vocabulary=None, task='ss'):
 	originals = []	# datasets with prosody >> used both for train and test
 	extensions = []	# datasets that may not have prosody >> used only for train
 
-	if dataset == 'constituicao':
+
+	if dataset == 'cinderela_genp':
+		logger.info('Reading DementiaDataSet...')
+		ds_dementia_controle = DementiaDataSet(**get_path_from_dataset('controle'), vocabulary=vocabulary)
+		ds_dementia_ccl = DementiaDataSet(**get_path_from_dataset('ccl'), vocabulary=vocabulary)
+		ds_dementia_da = DementiaDataSet(**get_path_from_dataset('da'), vocabulary=vocabulary)
+		ds_dementia_controle.info()
+		ds_dementia_ccl.info()
+		ds_dementia_da.info()
+		originals.append(ds_dementia_controle)
+		originals.append(ds_dementia_ccl)
+		originals.append(ds_dementia_da)
+		ds_pucrs_genp = DementiaPUCDataSet(**get_path_from_dataset('genp'), vocabulary=vocabulary)
+		ds_pucrs_genp.info()
+		originals.append(ds_pucrs_genp)
+		
+	elif dataset == 'constituicao':
 		logger.info('Reading ConstituicaoDataSet...')
 		ds_constituicao = ConstituicaoDataSet(**get_path_from_dataset('constituicao'), vocabulary=vocabulary)
 		ds_constituicao.info()

@@ -6,8 +6,10 @@ class POS:
 
 	def __init__(self, type='nlpnet'):
 		self.type = type
+		self.filename = ''
 
 	def load(self, filename):
+		self.filename = filename
 		if self.type == 'nlpnet':
 			import nlpnet
 			self.pos_tagger = nlpnet.POSTagger(filename)

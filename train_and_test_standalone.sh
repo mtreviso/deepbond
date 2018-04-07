@@ -13,13 +13,13 @@ ef="${embpath}/${et}/pt_${et}_${ea}_${ed}.emb"
 # -----------
 
 # ss/dd_fillers/dd_editdisfs/ssdd
-# task="ss"
+task="ss"
 
 # myid="SS_TEXT_CINDERELA"
 # time sudo python3 -m deepbond --id $myid --task $task --load --emb-type $et --emb-file $ef --models rcnn none $fixedparams
 
-# myid="SS_TEXT_CINDERELA"
-# time sudo python3 -m deepbond --id $myid -d controle --split-ratio 1 --task $task --save --emb-type $et --emb-file $ef --models rcnn none $fixedparams
+myid="SS_TEXT_CINDERELA_GENP"
+time sudo python3 -m deepbond --id $myid -d cinderela_genp --split-ratio 1 --task $task --save --emb-type $et --emb-file $ef --models rcnn none $fixedparams
 
 
 
