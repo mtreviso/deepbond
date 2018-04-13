@@ -403,12 +403,14 @@ class DataSetEditDisfs(DataSetSS):
 		x, y = [], []
 		if self.binary:
 			end_period 	= tokenizer.word_index['.'] if ids else '.'
-			end_dd 	= tokenizer.word_index['*'] if ids else '*'
+			end_rep 	= tokenizer.word_index['*'] if ids else '*'
+			end_rev 	= tokenizer.word_index['+'] if ids else '+'
+			end_rec 	= tokenizer.word_index['$'] if ids else '$'
 			texts = self.word_id_texts if ids else self.word_texts
 			for i, text in enumerate(texts):
 				x_, y_ = [], []
 				for word in text:
-					if word == end_dd:
+					if word == end_rep or word == end_rev or word == end_rec:
 						y_[-1] = 1
 					elif word == end_period:
 						pass

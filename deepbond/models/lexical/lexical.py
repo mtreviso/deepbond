@@ -31,16 +31,10 @@ class LexicalModel(metaclass=ABCMeta):
 			X_ind_POS = self.features.get_POS(dataset.indexes_to_words(X_indexes))
 			X_POS = strategy.prepare_input(X_ind_POS)
 			X.append(X_POS)
-			for a,b in zip(X_POS, X_ind):
-				if len(a) != len(b):
-					print(len(a), len(b))
-					print(a)
-					print(dataset.indexes_to_words([b]))
 		if self.use_handcrafted:
-			X_hc = self.features.get_handcrafted(dataset.word_texts, X_ind_POS)
+			X_hc = self.features.get_handcrafted(dataset.indexes_to_words(X_indexes), X_ind_POS)
 			X.append(strategy.prepare_input(X_hc))
-
-
+		
 		Y = strategy.prepare_output(gold, one_hot_dim=self.nb_classes)
 		return X, Y, gold
 

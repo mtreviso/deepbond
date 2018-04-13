@@ -17,8 +17,8 @@ class Features:
 
 		# POS
 		self.use_pos = use_pos
+		self.pos = POS(POS_type)
 		if self.use_pos:
-			self.pos = POS(POS_type)
 			self.pos.load(POS_file)
 
 		# EMBEDDINGS
