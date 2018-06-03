@@ -6,9 +6,12 @@ class Pipeline:
 		self.sbd = sbd
 		self.fd = fd
 		self.edd = edd
-		self.sbd.verbose = verbose
-		self.fd.verbose = verbose
-		self.edd.verbose = verbose
+		if self.sbd is not None:
+			self.sbd.verbose = verbose
+		if self.fd is not None:
+			self.fd.verbose = verbose
+		if self.edd is not None:
+			self.edd.verbose = verbose
 		
 	@staticmethod
 	def remove_fillers_listbased(preds, list_fname):
@@ -46,7 +49,9 @@ class Pipeline:
 				elif label_ss == '' and label_f != '':
 					continue
 				elif label_ss != '' and label_f != '':
-					if inner_preds[-1][1] == '':
+					if len(inner_preds) == 0:
+						continue
+					elif inner_preds[-1][1] == '':
 						inner_preds[-1] = (inner_preds[-1][0], label_ss)
 			new_preds.append(inner_preds)
 		return new_preds
@@ -64,22 +69,31 @@ class Pipeline:
 		return new_preds
 
 
-	def fit(self, texts=[], audios=[]):
-		# sentence segmentation
-		pred_ss = self.sbd.detect(texts, audios)
-
-		# filler detection (md + é)
-		pred_fillers = self.fd.detect(texts, [])
+	def fit(self, texts=[], audios=[], without_editdisfs=False):
 		
-		# merge sentence boundaries and fillers predictions
-		new_preds = Pipeline.merge_ss_and_fillers(pred_ss, pred_fillers)
+		if self.sbd is not None:
+			# sentence segmentation
+			pred_ss = self.sbd.detect(texts, audios)
+			for x in pred_ss:
+				print(x)
 
-		# detect filled pauses using a list of selected words
-		new_preds = Pipeline.remove_fillers_listbased(new_preds, 'data/lists/pp.txt')
+		if self.fd is not None:
+			# filler detection (md + é)
+			pred_fillers = self.fd.detect(texts, [])
 		
-		# convert predictions to texts
-		new_texts = [' '.join(list(map(lambda x:x[0]+' '+x[1], text))) for text in new_preds]
-		new_texts = [re.sub(r'\ +', ' ', text).strip() for text in new_texts]
+		if self.sbd is not None and self.fd is not None:
+			# merge sentence boundaries and fillers predictions
+			new_preds = Pipeline.merge_ss_and_fillers(pred_ss, pred_fillers)
+
+			# detect filled pauses using a list of selected words
+			new_preds = Pipeline.remove_fillers_listbased(new_preds, 'data/lists/pp.txt')
+			
+			# convert predictions to texts
+			new_texts = [' '.join(list(map(lambda x:x[0]+' '+x[1], text))) for text in new_preds]
+			new_texts = [re.sub(r'\ +', ' ', text).strip() for text in new_texts]
+
+		if self.edd is None:
+			return new_texts
 
 		# detect edit disfluences
 		pred_editdisfs = self.edd.detect(new_texts, [])
@@ -88,7 +102,7 @@ class Pipeline:
 		pred_editdisfs = Pipeline.remove_disfs(pred_editdisfs)
 
 		# convert predictions to texts
-		final_text = [' '.join(list(map(lambda x:x[0]+x[1], text))) for text in pred_editdisfs]
+		final_texts = [' '.join(list(map(lambda x:x[0]+x[1], text))) for text in pred_editdisfs]
 
-		return final_text
+		return final_texts
 

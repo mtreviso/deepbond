@@ -10,3 +10,11 @@ class FillerDetector(Task):
 		super(FillerDetector, self).__init__(**kwargs)
 		self.options['task'] = 'dd_fillers'
 
+
+	def restrict_wordset(self, wordset={}):
+		if wordset != {}:
+			self.wordset = wordset
+		else:
+			self.wordset = {'tá', 'ta', 'é', 'e', 'viu', 'enfim', 'sabe', 'não', 
+							'olha', 'ne', 'bom', 'na', 'né', 'muito', 'então', 
+							'agora', 'assim', 'tal', 'bem', 'verdade', 'tudo'}

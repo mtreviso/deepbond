@@ -22,6 +22,7 @@ class Task:
 		self.tm = None
 		self.vocabulary = None
 		self.nb_classes = None
+		self.wordset = None
 
 	def _get_default_options(self):
 		return {
@@ -134,6 +135,23 @@ class Task:
 		if self.tm is None:
 			self.load_trained_model()
 
+	def restrict_wordset(self):
+		self.wordset = wordset 
+
+	def apply_restriction_wordset(self, texts):
+		if self.wordset is None:
+			return texts
+		new_texts = []
+		for tups in texts:
+			new_tuples = []
+			for word, tag in tups:
+				if tag != '' and word not in self.wordset:
+					new_tuples.append((word, ''))
+				else:
+					new_tuples.append((word, tag))
+			new_texts.append(new_tuples)
+		return new_texts
+
 	def detect(self, texts=[], audios=[]):
 		self._print('Running with options: {}'.format(self.options))
 
@@ -150,4 +168,4 @@ class Task:
 		self._print('Getting predictions...')
 		pred_texts = get_new_texts(ds_pred.word_texts, ds_pred.shuffle_indexes, predictions, task=self.options['task'])
 
-		return convert_predictions_to_tuples(pred_texts)
+		return self.apply_restriction_wordset(convert_predictions_to_tuples(pred_texts))

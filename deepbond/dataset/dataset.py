@@ -1,4 +1,4 @@
-import logging
+import logging, re
 from abc import ABCMeta, abstractmethod
 from os import listdir
 from numpy.random import shuffle as shuffle_list
@@ -104,6 +104,13 @@ class DataSet(metaclass=ABCMeta):
 		logger.info('Nb words: {}'.format(self.nb_words))
 		logger.info('Nb disfs: {}'.format(self.nb_disfs))
 		logger.info('Nb classes: {}'.format(self.nb_words))
+
+
+class DirDataSet(DataSet):
+	def _clean_text_file(self, text):
+		text = re.sub(r'(\S+)([\*\.])', r'\1 \2', text.strip())
+		text = re.sub(r'([\*\.])(\S+)', r'\1 \2', text.strip())
+		return re.sub(r'\ +', ' ', text.strip())
 
 	
 class DataSetManager:

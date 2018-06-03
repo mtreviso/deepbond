@@ -53,6 +53,7 @@ def load_options():
 	parser.add_argument('-v', '--val-split', default=0.0, type=float, help='ratio [0,1] to split the train dataset into train/validation (if 0 then alpha will be calculated using training data)')
 
 	parser.add_argument('-d', '--dataset', type=str, help='one of: constituicao/constituicao_mini/pucrs_usp/pucrs_constituicao/controle/ccl/da')
+	parser.add_argument('--dataset-dir', default=None, type=str, help='dir to a corpus (each file is a sample)')
 	parser.add_argument('--task', type=str, default='ss', help='one of: ss/dd_fillers/dd_editdisfs/ssdd')
 	parser.add_argument('--extra-data', action='store_true', help='add extra dataset as extension for training')
 
@@ -61,7 +62,7 @@ def load_options():
 	parser.add_argument('--without-pos', action='store_true', help='do not use POS features')
 
 	parser.add_argument('--emb-type', type=str, default='fonseca', help='method used for generate embeddings: complete list on embeddings.py')
-	parser.add_argument('--emb-file', type=str, default='data/embeddings/fonseca/', help='dir or file for embeddings ,pdeçs')
+	parser.add_argument('--emb-file', type=str, default='data/embeddings/fonseca/', help='file to a binary embedding model')
 	parser.add_argument('--without-emb', action='store_true', help='do not use embeddings')
 
 	parser.add_argument('--use-handcrafted', action='store_true', help='use handcrafted features')
@@ -183,13 +184,15 @@ def run(options):
 			dname = options['save_predictions']
 			save_to_file(ds_test.word_texts, ds_test.shuffle_indexes, predictions, fname=fname, dname=dname, task=options['task'])
 
-	# report
-	if options['save_predictions']:
-		analyze(options)
 
 	# save model
 	if options['save']:
 		save(features, dsm, strategy, tm, options['model_dir'])	
+
+
+	# report
+	if options['save_predictions']:
+		analyze(options)
 
 
 def cli():

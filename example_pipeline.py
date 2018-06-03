@@ -14,6 +14,7 @@ sbd.set_model_id('SS_TEXT_CINDERELA')
 
 fd = FillerDetector(l_model='rcnn', p_model='none', verbose=True)
 fd.set_model_id('FILLERS_TEXT_CINDERELA')
+fd.restrict_wordset()
 
 edd = EditDisfDetector(l_model='rcnn', p_model='none', verbose=True)
 edd.set_model_id('EDITDISFS_TEXT_CINDERELA')

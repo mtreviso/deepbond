@@ -576,6 +576,17 @@ def load_dataset(dataset, extra=False, vocabulary=None, task='ss'):
 	return dsm
 
 
+def load_dataset_dir(dataset_path, extra=False, vocabulary=None, task='ss'):
+	originals = []	# datasets with prosody >> used both for train and test
+	extensions = []	# datasets that may not have prosody >> used only for train
+	ds = DirDataSet(dataset_path, vocabulary=vocabulary)
+	ds.info()
+	originals.append(ds)
+	dsm = DataSetManager(originals=originals, extensions=extensions, task=task)
+	dsm.info()
+	return dsm
+		
+
 def build_dataset_from_data(texts, audios, task='ss'):
 	ds_raw = RawDataSet(texts, audios)
 	dsm = DataSetManager(originals=[ds_raw], extensions=[], task=task)

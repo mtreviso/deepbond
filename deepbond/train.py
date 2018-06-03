@@ -5,7 +5,7 @@ import os, re
 
 from deepbond import __prog__, __title__, __summary__, __uri__, __version__
 from deepbond.log import configure_stream
-from deepbond.loader import get_path_from_dataset, load_dataset, load_features, load_strategy, load_models
+from deepbond.loader import get_path_from_dataset, load_dataset, load_dataset_dir, load_features, load_strategy, load_models
 from deepbond.models.manager import TrainManager
 from deepbond.models.cv import CrossValidation
 from deepbond.models.utils import save_to_file
@@ -69,7 +69,10 @@ def train(options):
 	vocabulary = options['model_dir']+'vocabulary.txt' if options['load'] else None
 
 	# load data
-	dsm 	 = load_dataset(options['dataset'], extra=options['extra_data'], vocabulary=vocabulary, task=options['task'])
+	if options['dataset_dir'] is not None:
+		dsm 	 = load_dataset_dir(options['dataset_dir'], vocabulary=vocabulary, task=options['task'])
+	else:
+		dsm 	 = load_dataset(options['dataset'], extra=options['extra_data'], vocabulary=vocabulary, task=options['task'])
 	features = load_features(options['pos_type'], options['pos_file'], options['emb_type'], options['emb_file'], 
 							options['prosodic_type'], options['prosodic_classify'], 
 							not options['without_pos'], not options['without_emb'], options['use_handcrafted'])
@@ -110,13 +113,14 @@ def train(options):
 		dname = options['save_predictions']
 		save_to_file(ds_test.word_texts, ds_test.shuffle_indexes, predictions, fname=fname, dname=dname, task=options['task'])
 
+	# save model
+	if options['save']:
+		save(features, dsm, strategy, tm, options['model_dir'])	
+
 	# report error analysis
 	if options['save_predictions']:
 		analyze(options)
 
-	# save model
-	if options['save']:
-		save(features, dsm, strategy, tm, options['model_dir'])	
 
 
 def get_default_options():
@@ -125,6 +129,7 @@ def get_default_options():
 		'id': 'default_example_ss_controle',	# all models will be stored in data/models/:id:
 		'task': 'ss', 							# one of ss/dd_fillers/dd_editdisfs/ssdd
 		'dataset': 'controle', 					# see loader.py (used only for training and error analysis)
+		'dataset-dir': None,
 
 		'load': False, 			# load the trained model for :id:
 		'save': True, 			# save the trained model for :id:
