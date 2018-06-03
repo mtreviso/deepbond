@@ -7,6 +7,8 @@ My dissertation (ptbr): http://www.teses.usp.br/teses/disponiveis/55/55134/tde-0
 EACL paper: http://www.aclweb.org/anthology/E17-1030
 STIL paper: http://aclweb.org/anthology/W17-6618
 
+If you want to use my data, please send me a e-mail.
+
 
 
 # How to use a trained model?
@@ -89,9 +91,9 @@ options['model_dir'] = 'data/models/'+options['id']+'/' 	# dir where the model w
 ```
 
 Set the task:
-```
+```python
 options['task'] = 'ss' 							# options are ss/dd_fillers/dd_editdisfs
-``
+```
 
 Set the dataset or dataset-dir:
 ```python
@@ -108,7 +110,6 @@ options['emb_file'] = 'path/to/emb_model.bin'
 options['without_pos'] = True
 options['pos_type'] = 'nlpnet'					
 options['pos_file'] = 'path/to/postagger/'		
-
 ```
 
 Finally, call configure() and deepbond will create the directiries for your id and you can fit and save your model by calling train()
