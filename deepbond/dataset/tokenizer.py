@@ -26,6 +26,16 @@ class SentTokenizer(Singleton):
 		self.tokenizer = RegexpTokenizer(r'\S+') #\w+|\$[\d\.]+|\S+
 		self.loaded = False
 
+	def reset(self):
+		self.unknown_word = '*rare*'
+		self.unknown_word_id = 0
+		self.word_count = OrderedDict({'.': 0}) # add '.' to the vocabulary
+		self.word_index = OrderedDict()
+		self.index_word = OrderedDict()
+		self.labels = [' ', '.']
+		self.tokenizer = RegexpTokenizer(r'\S+') #\w+|\$[\d\.]+|\S+
+		self.loaded = False		
+
 	def load_vocabulary(self, filename):
 		with open(filename, 'r') as f:
 			for line in f:

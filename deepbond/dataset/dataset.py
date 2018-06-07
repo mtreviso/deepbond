@@ -156,7 +156,7 @@ class DataSetManager:
 
 	@staticmethod 
 	def reset_vocabulary():
-		tokenizer.__init__()
+		tokenizer.reset()
 
 	def get_texts(self):
 		if self.word_texts is not None:
