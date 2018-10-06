@@ -126,12 +126,12 @@ class Task:
 		self.tm.load(dirname, verbose=False)
 
 	def load(self):
+		if self.vocabulary is None:
+			self.load_vocabulary()
 		if self.features is None:
 			self.load_features()
 		if self.strategy is None:
 			self.load_strategy()
-		if self.vocabulary is None:
-			self.load_vocabulary()
 		if self.tm is None:
 			self.load_trained_model()
 

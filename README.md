@@ -2,10 +2,14 @@
 Deep neural approach to Boundary and Disfluency Detection
 
 This is part of my MSc project. More info:
-
-My dissertation (ptbr): http://www.teses.usp.br/teses/disponiveis/55/55134/tde-05022018-090740/pt-br.php
-EACL paper: http://www.aclweb.org/anthology/E17-1030
-STIL paper: http://aclweb.org/anthology/W17-6618
+\
+[My dissertation (ptbr)](http://www.teses.usp.br/teses/disponiveis/55/55134/tde-05022018-090740/pt-br.php)
+ • 
+[EACL paper](http://www.aclweb.org/anthology/E17-1030)
+ • 
+[STIL paper](http://aclweb.org/anthology/W17-6618)
+ • 
+[PROPOR paper](https://www.researchgate.net/publication/327223308_Sentence_Segmentation_and_Disfluency_Detection_in_Narrative_Transcripts_from_Neuropsychological_Tests_13th_International_Conference_PROPOR_2018_Canela_Brazil_September_24-26_2018_Proceedings)
 
 If you want to use my data, please send me a e-mail.
 
@@ -87,27 +91,27 @@ from deepbond.train import configure, train, get_default_options
 Then setting the name and the save directory for your model:
 ```python
 options['id'] = 'SS-EXAMPLE-CINDERELA'
-options['model_dir'] = 'data/models/'+options['id']+'/' 	# dir where the model will be saved (data/models/:id:/)
+options['model_dir'] = 'data/models/'+options['id']+'/'  # dir where the model will be saved (data/models/:id:/)
 ```
 
 Set the task:
 ```python
-options['task'] = 'ss' 							# options are ss/dd_fillers/dd_editdisfs
+options['task'] = 'ss'  # options are ss/dd_fillers/dd_editdisfs
 ```
 
 Set the dataset or dataset-dir:
 ```python
-# options['dataset'] = 'controle' 				# see loader.py (used only for training and error analysis)
-options['dataset_dir'] = 'data/corpus/SS/Cinderela/' 	# only DA data will be used
+# options['dataset'] = 'controle'  # see loader.py (used only for training and error analysis)
+options['dataset_dir'] = 'data/corpus/SS/Cinderela/'  # only DA data will be used
 ```
 
 Set the embeddings and PoS options:
 ```python
 options['without_embeddings'] = False
-options['emb_type'] = 'word2vec'				# method used for generate embeddings: see features/embeddings
+options['emb_type'] = 'word2vec'  # method used for generate embeddings: see features/embeddings
 options['emb_file'] = 'path/to/emb_model.bin'
 
-options['without_pos'] = True
+options['without_pos'] = False
 options['pos_type'] = 'nlpnet'					
 options['pos_file'] = 'path/to/postagger/'		
 ```
@@ -118,9 +122,9 @@ configure(options)
 train(options)
 ```
 
-See `example_train.py` or `example_train_without_setup` for more details.
+See `example_train.py` or `example_train_without_setup.sh` for more details.
 
 
 # Dependencies
 
-See `requirements.txt` (you can easily install them with `pip3 install requirements.txt`)
+See `requirements.txt` (you can easily install them with `pip3 install -r requirements.txt`)
