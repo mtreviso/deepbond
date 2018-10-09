@@ -128,8 +128,50 @@ preds = p.fit(texts=['isso é um texto de exemplo', 'esse é outro texto de exem
       O dataset precisa estar disposto através de arquivos em um diretório, onde cada arquivo é um exemplo de treinamento do dataset. Com isso, o DeepBonDD irá treinar um modelo e salvá-lo com o nome <code>YOUR_MODEL_ID</code> no diretório <code>data/models/</code>, sobreescrevendo modelos já salvos. 
 
       Os seguintes argumentos podem ser passados para alterar configurações do treinamento:
-
-
+<br><br>
+<pre>  -l, --load            load the trained model for :id:
+  -s, --save            save the trained model for :id:
+  -w WINDOW_SIZE, --window-size WINDOW_SIZE
+                        size of the sliding window
+  -r SPLIT_RATIO, --split-ratio SPLIT_RATIO
+                        ratio [0,1] to split the dataset into train/test
+  -t TRAIN_STRATEGY, --train-strategy TRAIN_STRATEGY
+                        strategy for training: bucket/one_per_batch/padding
+  -e EPOCHS, --epochs EPOCHS
+                        number of epochs to train the model
+  -b BATCH_SIZE, --batch-size BATCH_SIZE
+                        size of data batches to use for training and
+                        predicting
+  -k KFOLD, --kfold KFOLD
+                        number of folds to evaluate the model
+  -v VAL_SPLIT, --val-split VAL_SPLIT
+                        ratio [0,1] to split the train dataset into
+                        train/validation (if 0 then alpha will be calculated
+                        using training data)
+  -d DATASET, --dataset DATASET
+                        one of: constituicao/constituicao_mini/pucrs_usp/pucrs
+                        _constituicao/controle/ccl/da
+  --dataset-dir DATASET_DIR
+                        dir to a corpus (each file is a sample)
+  --task TASK           one of: ss/dd_fillers/dd_editdisfs/ssdd
+  --extra-data          add extra dataset as extension for training
+  --pos-type POS_TYPE   pos tagger used POS features: nlpnet or pickled pos
+                        tagger
+  --pos-file POS_FILE   dir or file for pos tagger pickled resources
+  --without-pos         do not use POS features
+  --emb-type EMB_TYPE   method used for generate embeddings: complete list on
+                        embeddings.py
+  --emb-file EMB_FILE   file to a binary embedding model
+  --without-emb         do not use embeddings
+  --use-handcrafted     use handcrafted features
+  --prosodic-type PROSODIC_TYPE
+                        method used for select phones of a word
+  --prosodic-classify   classify prosodic info according to consonants
+  --models MODELS [MODELS ...]
+  --save-predictions SAVE_PREDICTIONS
+                        dirname to save predictions in data/saves/
+  --model-dir DIR       directory where to save/load data, model, log, etc.
+  --gpu                 run on GPU instead of on CPU</pre>
 
 
       <footer class="site-footer">
