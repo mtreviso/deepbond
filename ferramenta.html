@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8">
+    <title>DeepBond by mtreviso</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="shortcut icon" type="image/x-icon" href="favicons/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section id="page-header" class="page-header">
+        <div id="bg-header"></div>
+        <canvas id="demo-canvas"></canvas>
+        <div class="main-title">
+          <h1 class="project-name"><span><a href="index.html">DeepBonDD</a></span></h1>
+          <!-- <h2 class="project-tagline">Sentence Boundary Detection using Deep Learning</h2> -->
+          <h2 class="project-tagline">Deep neural approach to Boundary and Disfluency Detection</h2>
+          <!-- <a href="https://github.com/mtreviso/deepbond" class="btn">Ver no GitHub</a> -->
+          <div class="dropdown">
+            <a href="projeto.html" class="btn">O Projeto</a>
+            <div class="dropdown-content">
+              <a href="projeto.html#introducao">Introdução</a>
+              <a href="projeto.html#hipoteses">Hipóteses</a>
+              <a href="projeto.html#objetivos">Objetivos</a>
+              <a href="projeto.html#metodologia">Metodologia</a>
+            </div>
+          </div>
+          <div class="dropdown">
+            <a href="ferramenta.html" class="btn">A Ferramenta</a>
+            <div class="dropdown-content">
+              <a href="ferramenta.html#introducao">Como instalar</a>
+              <a href="ferramenta.html#hipoteses">Como usar</a>
+              <a href="ferramenta.html#objetivos">Como treinar um modelo</a>
+            </div>
+          </div>
+
+          <a href="recursos.html" class="btn">Recursos</a>
+          <a href="pesquisadores.html" class="btn">Pesquisadores</a>
+          <a href="publicacoes.html" class="btn">Publicações</a>
+          <a href="contato.html" class="btn">Contato</a>
+
+        </div>
+    </section>
+
+    <section class="main-content">
+      
+      <h1>A Ferramenta</h1>
+
+      <p>
+        O DeepBonDD é uma ferramenta para recuperar limites de sentenças e detectar disfluências em transcrições de fala. O DeepBonDD foi originalmente criado para lidar com transcrições de fala comprometida de idosos com potenciais comprometimentos cognitivos. Em nosso córpus os limites de sentenças foram anotados de forma binária, ou seja, não há distinção entre tipos de sinais de pontuação. Já as disfluências foram dividades em preenchimentos e disfluências de edição, categorizando cada uma em seus subtipos. Os modelos finais disponíveis na <a href="http://fw.nilc.icmc.usp.br:23680/" target="_blank">interface online</a> foram treinados de forma binária, ou seja, é possível detectar as disfluências mas não o seu tipo. 
+      </p>
+      <p>
+        Entretanto, é possível expandir a ferramenta para lidar com qualquer tipo de textos e detectar qualquer tipo limite de sentença e disfluência desde que essas informações estejam anotadas no córpus de treinamento.
+      </p>
+      <p>
+        A ferramenta foi implementada puramente em Python (v3) com o objetivo de ser flexível para o treinamento de novos modelos. Veja abaixo as intruções de instalação e configuração.
+      </p>
+
+
+      <h2 id="instalacao">Como instalar</h2>
+
+      Antes de tudo, sugerimos a criação um ambiente virtual com <code>virtualenv</code>. Após criar e ativar o seu ambiente virtual, clone o repositório e entre no diretório:
+
+      <pre class="highlight">git clone https://github.com/mtreviso/deepbond.git
+cd deepbond/</pre>
+      
+      Instale as dependências usando <code>pip</code>:
+      <pre>pip install -r requirements.txt</pre>
+
+      Após instalar com sucesso as dependências basta rodar o comando de instalação do pacote:
+      <pre>python3 setup.py install</pre>
+
+      Observação: assegure-se que todos os comandos acima (<code>pip</code> e <code>python</code>) se referenciem a versão 3 do Python.
+
+
+      <h2 id="uso">Como usar</h2>
+
+      O DeepBonDD pode ser usado de duas maneiras diferentes. Como módulo e de maneira stand-alone (não é preciso rodar o comando de instalação anterior). Vejamos primeiramente como usá-lo como módulo.
+
+      <p>Os recursos necessários devem extraídos e colocados no diretório <code>data/</code>: 
+      <a href="http://fw.nilc.icmc.usp.br:23680/resources.zip">resources.zip</a></p>
+      
+
+
+      <p>Faça o <i>import</i> dos detectores de cada tarefa:</p>
+      <pre>from deepbond.task import SentenceBoundaryDetector, FillerDetector, EditDisfDetector</pre>
+
+      <p>Instancie e faça o load do modelo treinado (e.g. para detectar limites de sentenças): </p>
+      <pre>sbd = SentenceBoundaryDetector(l_model='rcnn')
+sbd.set_model_id('SENTENCE_BOUNDARY_MODEL_FOR_CINDERELA')</pre>
+
+      <p>Rode o detector para obter as predições binárias:</p>
+      <pre>preds = sbd.detect(texts=['isso é um texto de exemplo', 'esse é outro texto de exemplo'])</pre>
+
+      <p><code>preds</code> irá conter uma lista de predições para cada texto de exemplo.</p>
+
+      
+      <h3>Aplicando todas as tarefas em conjunto: </h3>
+      
+      Importe o submódulo <code>Pipeline:</code>
+      <pre>from deepbond import Pipeline</pre>
+
+      E instancie/carregue os detectores de cada tarefa:
+      <pre>sbd = SentenceBoundaryDetector(l_model='rcnn')
+sbd.set_model_id('SENTENCE_BOUNDARY_MODEL_FOR_CINDERELA')
+
+fd = FillerDetector(l_model='rcnn')
+fd.set_model_id('FILLERS_MODEL_FOR_CINDERELA')
+fd.restrict_wordset()
+
+edd = EditDisfDetector(l_model='rcnn')
+edd.set_model_id('EDITDISFS_MODEL_FOR_CINDERELA')</pre>
+
+      E então passe eles como parâmetros e rode o Pipeline:
+      <pre>p = Pipeline(sbd, fd, edd)
+preds = p.fit(texts=['isso é um texto de exemplo', 'esse é outro texto de exemplo'])</pre>
+
+      
+      <h2 id="treinamento">Como treinar um modelo</h2>
+
+      Você pode importar a ferramenta como <a href="https://github.com/mtreviso/deepbond/blob/master/example_train.py" target="_blank">nesse exemplo</a>, ou rodá-la de modo stand-alone passando argumentos para a configuração do treinamento:
+
+      <pre>python3 -m deepbond --id YOUR_MODEL_ID --dataset-dir path/to/dataset</pre>
+
+      O dataset precisa estar disposto através de arquivos em um diretório, onde cada arquivo é um exemplo de treinamento do dataset. Com isso, o DeepBonDD irá treinar um modelo e salvá-lo com o nome <code>YOUR_MODEL_ID</code> no diretório <code>data/models/</code>, sobreescrevendo modelos já salvos. 
+
+      Os seguintes argumentos podem ser passados para alterar configurações do treinamento:
+
+
+
+
+      <footer class="site-footer">
+
+          <span class="site-footer-owner"><a href="https://github.com/mtreviso/deepbond">DeepBond</a> is maintained by <a href="https://github.com/mtreviso">mtreviso</a>.</span>
+
+          <a href="http://icmc.usp.br/" title="Instituto de Ciências Matemáticas e de Computação (ICMC)" target="_blank"> <img src="img/icmc.png" border="0" height="42"> </a>
+          
+          <a href="http://nilc.icmc.usp.br/" title="Núcleo Interinstitucional de Linguística Computacional (NILC)" target="_blank"> <img src="img/nilc.png" border="0" height="42"> </a>
+
+          <div class="cleaner"></div>
+
+      </footer>
+
+    </section>
+
+    <script src="js/animheader.js"></script>
+  
+  </body>
+</html>
