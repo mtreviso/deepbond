@@ -71,13 +71,13 @@ mv resources/* data/</pre>
         <li>Agora é possível importar o pacote <code>deepbond</code> e usá-lo para carregar modelos salvos e treinar novos.</li>
         <ul>
           <li>Rodar apenas o detector de limites de sentenças: </li>
-          <pre>python3 deepbond_sbd.py -i input.txt -o output.txt</pre>
+          <pre>python3 deepbond_detect.py -i input.txt -o output.txt -t boundaries</pre>
 
           <li>Rodar apenas o detector de preenchimentos: </li>
-          <pre>python3 deepbond_fillers.py -i input.txt -o output.txt</pre>
+          <pre>python3 deepbond_detect.py -i input.txt -o output.txt -t fillers</pre>
 
           <li>Rodar apenas o detector de disfluências de edição: </li>
-          <pre>python3 deepbond_editdisfs.py -i input.txt -o output.txt</pre>
+          <pre>python3 deepbond_detect.py -i input.txt -o output.txt -t editdisfs</pre>
 
           <li>Rodar todo o pipeline: </li>
           <pre>python3 deepbond_pipeline.py -i input.txt -o output.txt</pre>

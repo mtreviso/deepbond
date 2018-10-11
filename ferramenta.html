@@ -232,6 +232,30 @@ preds = p.fit(texts=['isso é um texto de exemplo', 'esse é outro texto de exem
 <td>Size of data batches</td>
 </tr>
 <tr>
+<td><code>--kfold</code></td>
+<td><code>5</code></td>
+<td>Number of folds to evaluate the model</td>
+</tr>
+<tr>
+<td><code>--val-split</code></td>
+<td><code>0.0</code></td>
+<td>Ratio [0,1] to split the train dataset into train/validation (if 0 then alpha will be calculated using training data)</td>
+</tr>
+
+<tr>
+<td><code>--dataset</code></td>
+<td></td>
+<td>One of: <code>constituicao, constituicao_mini, pucrs_usp, pucrs_constituicao, controle, ccl, da</code><br></td>
+</tr>
+
+<tr>
+<td><code>--dataset-dir</code></td>
+<td></td>
+<td>Path to to a corpus directory where each file is a sample. </td>
+</tr>
+
+
+<tr>
 <td><code>--extra-data</code></td>
 <td></td>
 <td>Add extra dataset as extension for training</td>
