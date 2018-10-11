@@ -336,7 +336,7 @@ See `example_train.py` or `example_train_without_setup.sh` for more details.
 
 # Cite
 
-If you use DeepTagger, please cite this paper:
+If you use DeepBonDD, please cite this paper:
 
 ```
 @inproceedings{treviso2018sentence,
