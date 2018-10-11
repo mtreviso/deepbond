@@ -61,7 +61,7 @@ See `example_test.py` for more details.
 # How can I apply the entire pipeline?
 
 ```python
-from deepbond import Pipeline # import pipeline
+from deepbond import Pipeline
 ```
 
 You need to instatiate each independent model for Sentence Segmentation and Disfluency Detection. Something like this:
@@ -172,14 +172,14 @@ See `example_train.py` or `example_train_without_setup.sh` for more details.
 <td>Select the desired task:
 <br><code>ss</code> for sentence boundaries 
 <br><code>dd_fillers</code> for fillers
-<br><code>dd_editdisfs</code> for edit disfluencies.</td>
+<br><code>dd_editdisfs</code> for edit disfluencies</td>
 </tr>
 
 <tr>
 <td><code>--models</code></td>
 <td><code>rcnn rcnn</code></td>
 <td>A model for lexical info and another model for prosodic info. Options are:
-<code>rcnn, rcnn_crf, cnn, rnn, mlp, crf, none</code>. Set <code>none</code> for not use a model.
+<code>rcnn, rcnn_crf, cnn, rnn, mlp, crf, none</code>. Set <code>none</code> for not use a model
 </tr>
 
 
@@ -263,7 +263,7 @@ See `example_train.py` or `example_train_without_setup.sh` for more details.
 <tr>
 <td><code>--dataset-dir</code></td>
 <td></td>
-<td>Path to to a corpus directory where each file is a sample. </td>
+<td>Path to a corpus directory where each file is a sample</td>
 </tr>
 
 
