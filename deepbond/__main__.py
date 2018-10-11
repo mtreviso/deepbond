@@ -47,32 +47,32 @@ def load_options():
 	parser.add_argument('-r', '--split-ratio', default=0.6, type=float, help='ratio [0,1] to split the dataset into train/test')
 
 	parser.add_argument('-t', '--train-strategy', default='bucket', type=str, help='strategy for training: bucket/one_per_batch/padding')
-	parser.add_argument('-e', '--epochs', default=20, type=int, help='number of epochs to train the model')
-	parser.add_argument('-b', '--batch-size', default=32, type=int, help='size of data batches to use for training and predicting')
+	parser.add_argument('-e', '--epochs', default=20, type=int, help='number of epochs')
+	parser.add_argument('-b', '--batch-size', default=32, type=int, help='size of data batches')
 	parser.add_argument('-k', '--kfold', default=5, type=int, help='number of folds to evaluate the model')
 	parser.add_argument('-v', '--val-split', default=0.0, type=float, help='ratio [0,1] to split the train dataset into train/validation (if 0 then alpha will be calculated using training data)')
 
 	parser.add_argument('-d', '--dataset', type=str, help='one of: constituicao/constituicao_mini/pucrs_usp/pucrs_constituicao/controle/ccl/da')
 	parser.add_argument('--dataset-dir', default=None, type=str, help='dir to a corpus (each file is a sample)')
-	parser.add_argument('--task', type=str, default='ss', help='one of: ss/dd_fillers/dd_editdisfs/ssdd')
+	parser.add_argument('--task', type=str, default='ss', help='one of: ss/dd_fillers/dd_editdisfs')
 	parser.add_argument('--extra-data', action='store_true', help='add extra dataset as extension for training')
 
-	parser.add_argument('--pos-type', type=str, default='nlpnet', help='pos tagger used POS features: nlpnet or pickled pos tagger')
-	parser.add_argument('--pos-file', type=str, default='data/resource/pos-pt/', help='dir or file for pos tagger pickled resources')
+	parser.add_argument('--pos-type', type=str, default='nlpnet', help='tagger used POS features: nlpnet or pickled pos tagger')
+	parser.add_argument('--pos-file', type=str, default='data/resource/pos-pt/', help='dir or file for tagger pickled resources')
 	parser.add_argument('--without-pos', action='store_true', help='do not use POS features')
 
-	parser.add_argument('--emb-type', type=str, default='fonseca', help='method used for generate embeddings: complete list on embeddings.py')
-	parser.add_argument('--emb-file', type=str, default='data/embeddings/fonseca/', help='file to a binary embedding model')
+	parser.add_argument('--emb-type', type=str, default='word2vec', help='method used to induce embeddings: complete list on embeddings.py')
+	parser.add_argument('--emb-file', type=str, default=None, help='file to a binary embedding model')
 	parser.add_argument('--without-emb', action='store_true', help='do not use embeddings')
 
-	parser.add_argument('--use-handcrafted', action='store_true', help='use handcrafted features')
+	parser.add_argument('--use-handcrafted', action='store_true', help='use handcrafted features (useful for detecting edit disfluencies)')
 
-	parser.add_argument('--prosodic-type', type=str, default='principal', help='method used for select phones of a word')
+	parser.add_argument('--prosodic-type', type=str, default='principal', help='method used for select phones of a word: principal/padding')
 	parser.add_argument('--prosodic-classify', action='store_true', help='classify prosodic info according to consonants')
 
-	parser.add_argument('--models', nargs='+', type=str, default='rcnn rcnn')
+	parser.add_argument('--models', nargs='+', type=str, default='rcnn rcnn', help='A model for lexical info and another model for prosodic info. Options are: rcnn, rcnn_crf, cnn, rnn, mlp, crf, none. Set `none` for not use a model.')
 
-	parser.add_argument('--save-predictions', type=str, default=None, help='dirname to save predictions in data/saves/')
+	parser.add_argument('--save-predictions', type=str, default=None, help='path to save predictions in data/saves/')
 
 	parser.add_argument('--model-dir', type=str, default=model_dir, metavar='DIR', help='directory where to save/load data, model, log, etc.')
 	parser.add_argument('--gpu', action='store_true', help='run on GPU instead of on CPU')
