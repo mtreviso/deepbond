@@ -65,6 +65,11 @@ a:hover {
   } 
 }
 
+.btn2 {
+  display: inline-block;
+  margin-right: 50px;
+}
+
 .page-header {
   position: relative;
   width: 100%;
