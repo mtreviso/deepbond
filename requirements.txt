@@ -27,7 +27,7 @@ DocumentFeatureSelection==1.4.1
 sklearn_crfsuite==0.3.3
 
 # for rcnn-crf model
--e git://github.com/keras-team/keras-contrib.git@bdda714524da3382440ae2e98219b44df9fb3c61
+-e https://github.com/keras-team/keras-contrib.git@bdda714524da3382440ae2e98219b44df9fb3c61
 
 # for embeddings
 gensim==2.0.0

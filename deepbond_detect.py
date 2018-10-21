@@ -23,7 +23,7 @@ def read_input(input_file):
 
 
 def save_output(output_file, preds):
-	f = open(output, 'w')
+	f = open(output_file, 'w')
 	for p in preds:
 		tagged_text = ' '.join(list(map(lambda x: x[0]+x[1], p)))
 		f.write(tagged_text + '\n')
