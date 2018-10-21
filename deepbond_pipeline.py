@@ -47,7 +47,7 @@ fd = FillerDetector(l_model='rcnn', p_model='none', verbose=True)
 fd.set_model_id('FILLERS_MODEL_FOR_CINDERELA')
 fd.restrict_wordset()
 
-edd = EditDisfDetector(l_model='rcnn', p_model='none', verbose=True)
+edd = EditDisfDetector(l_model='rcnn_crf', p_model='none', verbose=True)
 edd.set_model_id('EDITDISFS_MODEL_FOR_CINDERELA')
 
 p = Pipeline(sbd, fd, edd, verbose=False)

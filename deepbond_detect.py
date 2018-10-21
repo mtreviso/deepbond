@@ -53,7 +53,7 @@ elif options.task == 'fillers':
 	preds = det.detect(texts=texts)
 else:
 	from deepbond.task import EditDisfDetector
-	det = EditDisfDetector(l_model='rcnn', p_model='none', verbose=True)
+	det = EditDisfDetector(l_model='rcnn_crf', p_model='none', verbose=True)
 	det.set_model_id('EDITDISFS_MODEL_FOR_CINDERELA')
 	preds = det.detect(texts=texts)
 
