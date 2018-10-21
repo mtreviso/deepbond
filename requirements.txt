@@ -27,10 +27,10 @@ DocumentFeatureSelection==1.4.1
 sklearn_crfsuite==0.3.3
 
 # for rcnn-crf model
--e https://github.com/keras-team/keras-contrib.git@bdda714524da3382440ae2e98219b44df9fb3c61
+git+https://github.com/keras-team/keras-contrib.git@bdda714524da3382440ae2e98219b44df9fb3c61#egg=keras_contrib
 
 # for embeddings
 gensim==2.0.0
--e https://github.com/salestock/fastText.py.git
--e https://github.com/maciejkula/glove-python.git
--e https://github.com/wlin12/wang2vec.git
+git+https://github.com/salestock/fastText.py.git
+git+https://github.com/maciejkula/glove-python.git
+git+https://github.com/wlin12/wang2vec.git
