@@ -1,4 +1,4 @@
-from deeptagger import Tagger
+from deepbond import Tagger
 
 text = 'Há livros escritos para evitar espaços vazios na estante .'
 

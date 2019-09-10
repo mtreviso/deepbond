@@ -1,5 +1,5 @@
-from deeptagger import opts
-from deeptagger.dataset import fields
+from deepbond import opts
+from deepbond.dataset import fields
 
 
 def build(options):

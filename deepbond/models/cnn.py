@@ -2,8 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from deeptagger import constants
-from deeptagger.models.model import Model
+from deepbond import constants
+from deepbond.models.model import Model
 
 
 class CNN(Model):

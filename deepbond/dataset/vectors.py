@@ -4,7 +4,7 @@ from functools import partial
 import torch
 from torchtext.vocab import Vectors
 
-from deeptagger.constants import UNK, PAD, START, STOP
+from deepbond.constants import UNK, PAD, START, STOP
 
 
 class WordEmbeddings(Vectors):

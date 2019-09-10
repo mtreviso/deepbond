@@ -1,7 +1,7 @@
 import logging
 from pathlib import Path
 
-from deeptagger.stats import BestValueEpoch
+from deepbond.stats import BestValueEpoch
 
 
 def get_line_bar(template_head):

@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 
-from deeptagger import constants
+from deepbond import constants
 
 
 class HandCrafted(nn.Module):

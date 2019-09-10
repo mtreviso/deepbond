@@ -1,12 +1,12 @@
 import logging
 from pathlib import Path
 
-from deeptagger import constants
-from deeptagger.dataset import dataset, fields
-from deeptagger import features
-from deeptagger import iterator
-from deeptagger import models
-from deeptagger.predicter import Predicter
+from deepbond import constants
+from deepbond.dataset import dataset, fields
+from deepbond import features
+from deepbond import iterator
+from deepbond import models
+from deepbond.predicter import Predicter
 
 
 def run(options):

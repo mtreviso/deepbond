@@ -2,11 +2,11 @@ import json
 from argparse import Namespace
 from pathlib import Path
 
-from deeptagger import constants
-from deeptagger import models
-from deeptagger import optimizer
-from deeptagger import scheduler
-from deeptagger.dataset.fields import available_embeddings
+from deepbond import constants
+from deepbond import models
+from deepbond import optimizer
+from deepbond import scheduler
+from deepbond.dataset.fields import available_embeddings
 
 
 def load(path):

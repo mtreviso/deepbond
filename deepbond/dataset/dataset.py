@@ -1,6 +1,6 @@
 from torchtext.data import Dataset
 
-from deeptagger.dataset.corpus import Corpus
+from deepbond.dataset.corpus import Corpus
 
 
 def build(path, fields_tuples, options):

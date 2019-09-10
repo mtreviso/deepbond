@@ -3,7 +3,7 @@ from collections import defaultdict
 
 from torchtext.vocab import Vocab
 
-from deeptagger.constants import UNK_ID, UNK, PAD, START, STOP
+from deepbond.constants import UNK_ID, UNK, PAD, START, STOP
 
 
 def _default_unk_index():

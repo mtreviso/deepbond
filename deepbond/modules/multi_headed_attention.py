@@ -3,7 +3,7 @@
 import torch
 from torch import nn
 
-from deeptagger.modules.attention import Attention
+from deepbond.modules.attention import Attention
 
 
 class MultiHeadedAttention(nn.Module):
@@ -102,8 +102,8 @@ class MultiHeadedAttention(nn.Module):
 
 
 if __name__ == "__main__":
-    from deeptagger.models.utils import sequence_mask
-    from deeptagger.modules.scorer import (
+    from deepbond.models.utils import sequence_mask
+    from deepbond.modules.scorer import (
         DotProductScorer,
         GeneralScorer,
         OperationScorer,

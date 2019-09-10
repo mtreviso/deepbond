@@ -18,6 +18,8 @@ log/
 # Local run directory
 runs/
 
+env/
+
 # Pycharm directory
 .idea/
 

@@ -2,9 +2,9 @@ from pathlib import Path
 
 import torch
 
-from deeptagger import constants
-from deeptagger import opts
-from deeptagger.modules.optim.lr_scheduler import FakeLR
+from deepbond import constants
+from deepbond import opts
+from deepbond.modules.optim.lr_scheduler import FakeLR
 
 
 available_schedulers = {

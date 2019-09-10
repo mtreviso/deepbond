@@ -1,6 +1,6 @@
 from torch import nn
 
-from deeptagger.modules.positional_encoding import PositionalEncoding
+from deepbond.modules.positional_encoding import PositionalEncoding
 
 
 class PositionalEmbedding(nn.Module):

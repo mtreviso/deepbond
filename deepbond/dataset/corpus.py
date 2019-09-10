@@ -1,9 +1,9 @@
 import logging
 
 from torchtext import data
-from deeptagger.dataset.cleaner import Cleaner
-from deeptagger.features import (extract_prefixes, extract_suffixes,
-                                 extract_caps)
+from deepbond.dataset.cleaner import Cleaner
+from deepbond.features import (extract_prefixes, extract_suffixes,
+                               extract_caps)
 
 
 class Corpus:

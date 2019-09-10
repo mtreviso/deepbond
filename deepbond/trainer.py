@@ -4,12 +4,12 @@ from pathlib import Path
 
 import torch
 
-from deeptagger import models
-from deeptagger import optimizer
-from deeptagger import scheduler
-from deeptagger.models.utils import indexes_to_words
-from deeptagger.reporter import Reporter
-from deeptagger.stats import Stats
+from deepbond import models
+from deepbond import optimizer
+from deepbond import scheduler
+from deepbond.models.utils import indexes_to_words
+from deepbond.reporter import Reporter
+from deepbond.stats import Stats
 
 
 class Trainer:

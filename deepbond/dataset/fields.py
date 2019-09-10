@@ -5,13 +5,13 @@ from pathlib import Path
 import torch
 from torchtext.data import Field
 
-from deeptagger import constants
-from deeptagger.dataset.vocabulary import Vocabulary
-from deeptagger.dataset.vectors import (Polyglot,
-                                        Word2Vec,
-                                        FastText,
-                                        Glove,
-                                        Fonseca)
+from deepbond import constants
+from deepbond.dataset.vocabulary import Vocabulary
+from deepbond.dataset.vectors import (Polyglot,
+                                      Word2Vec,
+                                      FastText,
+                                      Glove,
+                                      Fonseca)
 
 
 available_embeddings = {

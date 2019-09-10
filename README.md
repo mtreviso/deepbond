@@ -27,17 +27,17 @@ git clone https://github.com/mtreviso/deepbond.git
 cd deepbond
 ```
 
-Automatically create a Python virtualenv and install all dependencies 
-using `pipenv install`. And then activate the virtualenv with `pipenv shell`:
+Create a Python virtualenv and install all dependencies 
+using:
 ```sh
-pip install --user pipenv
-pipenv install
-pipenv shell
+python3 -m venv env
+source env/bin/activate
+pip install -r requirements.txt
 ```
 
 Run the install command:
 ```sh
-python setup.py install
+python3 setup.py install
 ```
 
 Please note that since Python 3 is required, all the above commands (pip/python) 

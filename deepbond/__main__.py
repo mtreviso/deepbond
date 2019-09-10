@@ -2,10 +2,10 @@ import argparse
 import logging
 from pprint import pformat
 
-from deeptagger import config_utils
-from deeptagger import opts
-from deeptagger import predict
-from deeptagger import train
+from deepbond import config_utils
+from deepbond import opts
+from deepbond import predict
+from deepbond import train
 
 parser = argparse.ArgumentParser(description='DeepTagger')
 parser.add_argument('task', type=str, choices=['train', 'predict'])

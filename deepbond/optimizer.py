@@ -3,13 +3,13 @@ from pathlib import Path
 import torch
 import adabound
 
-from deeptagger import constants
-from deeptagger import opts
-from deeptagger.modules.optim.adamw import AdamW
-from deeptagger.modules.optim.step_decay_optimizer import StepDecayOptimizer
-from deeptagger.modules.optim.lr_scheduler import (NoamDecayScheduler,
-                                                   ExpDecayScheduler,
-                                                   RsqrtDecayScheduler)
+from deepbond import constants
+from deepbond import opts
+from deepbond.modules.optim.adamw import AdamW
+from deepbond.modules.optim.step_decay_optimizer import StepDecayOptimizer
+from deepbond.modules.optim.lr_scheduler import (NoamDecayScheduler,
+                                                 ExpDecayScheduler,
+                                                 RsqrtDecayScheduler)
 
 available_optimizers = {
     'adam': torch.optim.Adam,

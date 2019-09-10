@@ -2,7 +2,7 @@
 You must run `example_training.py` first.
 """
 
-from deeptagger import Tagger
+from deepbond import Tagger
 
 tagger = Tagger()
 tagger.load('saved-models/testing-toy-library-mode/')

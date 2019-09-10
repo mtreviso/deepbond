@@ -1,8 +1,8 @@
 import numpy as np
 import torch
 
-from deeptagger import constants
-from deeptagger.models.utils import unroll, unmask
+from deepbond import constants
+from deepbond.models.utils import unroll, unmask
 
 
 class BestValueEpoch:

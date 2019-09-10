@@ -2,7 +2,7 @@ import torch
 from math import sqrt
 from torch import nn
 
-from deeptagger.models.utils import make_mergeable_tensors
+from deepbond.models.utils import make_mergeable_tensors
 
 
 class Scorer(nn.Module):

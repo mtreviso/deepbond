@@ -1,8 +1,8 @@
 from collections import defaultdict
 from pathlib import Path
 
-from deeptagger import constants
-from deeptagger import opts
+from deepbond import constants
+from deepbond import opts
 from .cnn import CNN
 from .rnn import RNN
 from .rcnn import RCNN

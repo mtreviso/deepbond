@@ -2,7 +2,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from deeptagger.models.utils import unsqueeze_as
+from deepbond.models.utils import unsqueeze_as
 
 
 class Attention(nn.Module):
@@ -69,8 +69,8 @@ class Attention(nn.Module):
 
 
 if __name__ == "__main__":
-    from deeptagger.models.utils import sequence_mask
-    from deeptagger.modules.scorer import (
+    from deepbond.models.utils import sequence_mask
+    from deepbond.modules.scorer import (
         DotProductScorer,
         GeneralScorer,
         OperationScorer,

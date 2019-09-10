@@ -3,12 +3,12 @@
 from torch import nn
 from torch.nn import functional as F
 
-from deeptagger.modules.layer_norm import LayerNorm
-from deeptagger.modules.multi_headed_attention import MultiHeadedAttention
-from deeptagger.modules.pointwise_ffn import PositionwiseFeedForward
-from deeptagger.modules.positional_embedding import PositionalEmbedding
-from deeptagger.modules.scorer import DotProductScorer
-from deeptagger.models.utils import clones
+from deepbond.modules.layer_norm import LayerNorm
+from deepbond.modules.multi_headed_attention import MultiHeadedAttention
+from deepbond.modules.pointwise_ffn import PositionwiseFeedForward
+from deepbond.modules.positional_embedding import PositionalEmbedding
+from deepbond.modules.scorer import DotProductScorer
+from deepbond.models.utils import clones
 
 
 class TransformerAttention(nn.Module):
@@ -265,7 +265,7 @@ class SequentialTransformerEncoder(Transformer):
 if __name__ == '__main__':
 
     import torch
-    from deeptagger.models.utils import sequence_mask, subsequent_mask
+    from deepbond.models.utils import sequence_mask, subsequent_mask
 
     torch.manual_seed(1)
     # torch.cuda.manual_seed(1)

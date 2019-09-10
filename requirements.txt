@@ -1,0 +1,5 @@
+torch
+numpy
+torchtext
+adabound
+pytest

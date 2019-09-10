@@ -1,14 +1,14 @@
 import logging
 from pathlib import Path
 
-from deeptagger.dataset import dataset, fields
-from deeptagger import features
-from deeptagger import iterator
-from deeptagger import models
-from deeptagger import optimizer
-from deeptagger import scheduler
-from deeptagger import opts
-from deeptagger.trainer import Trainer
+from deepbond.dataset import dataset, fields
+from deepbond import features
+from deepbond import iterator
+from deepbond import models
+from deepbond import optimizer
+from deepbond import scheduler
+from deepbond import opts
+from deepbond.trainer import Trainer
 
 
 def run(options):

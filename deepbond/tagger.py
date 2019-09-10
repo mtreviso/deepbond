@@ -3,17 +3,17 @@ import numpy as np
 from argparse import Namespace
 from pathlib import Path
 
-from deeptagger import config_utils
-from deeptagger.dataset import dataset, fields
-from deeptagger import features
-from deeptagger import iterator
-from deeptagger import models
-from deeptagger import optimizer
-from deeptagger import scheduler
-from deeptagger import opts
-from deeptagger import train
-from deeptagger.predict import transform_classes_to_tags
-from deeptagger.predicter import Predicter
+from deepbond import config_utils
+from deepbond.dataset import dataset, fields
+from deepbond import features
+from deepbond import iterator
+from deepbond import models
+from deepbond import optimizer
+from deepbond import scheduler
+from deepbond import opts
+from deepbond import train
+from deepbond.predict import transform_classes_to_tags
+from deepbond.predicter import Predicter
 
 
 class Tagger:
