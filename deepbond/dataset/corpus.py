@@ -130,7 +130,7 @@ class Corpus:
     def _normalize(text):
         t = text.strip()
         t = Cleaner.trim(t)
-        t = Cleaner.transform_numbers(t)
+        # t = Cleaner.transform_numbers(t)
         # t = Cleaner.transform_decimals(t)
         # t = Cleaner.transform_urls(t)
         # t = Cleaner.transform_dollar(t)

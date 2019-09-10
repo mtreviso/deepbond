@@ -1,6 +1,5 @@
-from torchtext.data import Dataset
-
 from deepbond.dataset.corpus import Corpus
+from deepbond.dataset.modules.dataset import LazyDataset
 
 
 def build(path, fields_tuples, options):
@@ -8,33 +7,19 @@ def build(path, fields_tuples, options):
         return options.min_length <= len(x.words) <= options.max_length
     corpus = Corpus(fields_tuples, options.del_word, options.del_tag)
     corpus.read(path)
-    feature_fields = list(filter(lambda x: x[0] not in ['words', 'tags'],
-                                 fields_tuples))
-    if feature_fields:
-        corpus.add_features(feature_fields,
-                            options.prefix_min_length,
-                            options.prefix_max_length,
-                            options.suffix_min_length,
-                            options.suffix_max_length)
-    return PoSDataset(corpus, filter_pred=filter_len)
+    return SSDataset(corpus, filter_pred=filter_len)
 
 
 def build_texts(texts, fields_tuples, options):
+    def filter_len(x):
+        return options.min_length <= len(x.words) <= options.max_length
     corpus = Corpus(fields_tuples)
     corpus.add_texts(texts)
-    feature_fields = list(filter(lambda x: x[0] not in ['words', 'tags'],
-                                 fields_tuples))
-    if feature_fields:
-        corpus.add_features(feature_fields,
-                            options.prefix_min_length,
-                            options.prefix_max_length,
-                            options.suffix_min_length,
-                            options.suffix_max_length)
-    return PoSDataset(corpus)
+    return SSDataset(corpus, filter_pred=filter_len)
 
 
-class PoSDataset(Dataset):
-    """Defines a dataset for PoS Tagging."""
+class SSDataset(LazyDataset):
+    """Defines a dataset for Sentence Segmentation"""
 
     @staticmethod
     def sort_key(ex):
@@ -49,7 +34,7 @@ class PoSDataset(Dataset):
                 filter_pred(example) is True, or use all examples if None.
                 Default is None.
         """
-        # ensure that examples is not a generator
-        examples = list(corpus)
+        # ensure that examples is a generator
+        examples = iter(corpus)
         fields = corpus.attr_fields
         super().__init__(examples, fields, filter_pred)

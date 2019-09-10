@@ -15,10 +15,17 @@ def run(options):
     words_field = fields.WordsField()
     tags_field = fields.TagsField()
     fields_tuples = [('words', words_field), ('tags', tags_field)]
-    fields_tuples += features.build(options)
 
+    # no caps, suffixes or prefixes for sentence segmentation
+    # fields_tuples += features.build(options)
+
+
+    ########
+    # BUILD CORPUS AND ITERATORS
+    ########
     logging.info('Building train corpus: {}'.format(options.train_path))
     train_dataset = dataset.build(options.train_path, fields_tuples, options)
+
     logging.info('Building train iterator...')
     train_iter = iterator.build(train_dataset,
                                 options.gpu_id,
@@ -49,6 +56,12 @@ def run(options):
 
     datasets = [train_dataset, dev_dataset, test_dataset]
     datasets = list(filter(lambda x: x is not None, datasets))
+
+
+    ########
+    # load
+    #######
+
     if options.load:
         logging.info('Loading vocabularies...')
         fields.load_vocabs(options.load, fields_tuples)
