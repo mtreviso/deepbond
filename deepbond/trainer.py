@@ -135,7 +135,6 @@ class Trainer:
         self.reporter.report_stats(self.test_stats.to_dict())
 
     def _train(self):
-        self.scheduler.step()
         self.model.train()
         indexes = []
         for i, batch in enumerate(self.train_iter, start=1):
@@ -158,6 +157,7 @@ class Trainer:
         inv_vocab = self.train_iter.dataset.fields['words'].vocab.itos
         words = indexes_to_words(indexes, inv_vocab)
         self.train_stats.calc(self.current_epoch, words)
+        self.scheduler.step()
 
     def _eval(self, ds_iterator, stats):
         self.model.eval()
