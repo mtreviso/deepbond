@@ -8,3 +8,23 @@ build/
 dist/
 *.egg-info/
 .idea/
+
+# Logs Folder
+log/
+
+# torchtext vectors cache
+.vector_cache
+
+# Local run directory
+runs/
+
+# Pycharm directory
+.idea/
+
+# Mac tmp
+.DS_Store
+
+.pytest_cache/
+
+saved-models/
+predictions/

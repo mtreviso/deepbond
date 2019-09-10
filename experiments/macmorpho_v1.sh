@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+cd ..
+python3 -m deeptagger train \
+                      --model rcnn \
+                      --rnn-type lstm \
+                      --dropout 0.2 \
+                      --hidden-size 200 \
+                      --bidirectional \
+                      --train-path "data/corpus/pt/macmorpho_v1/train.txt" \
+					  --dev-path "data/corpus/pt/macmorpho_v1/dev.txt" \
+					  --test-path "data/corpus/pt/macmorpho_v1/test.txt" \
+					  --del-word " " \
+					  --del-tag "_" \
+					  --embeddings-format "fonseca" \
+					  --embeddings-path "data/pretrained-embeddings/fonseca/" \
+					  --output-dir "runs/macmorpho-completo/" \
+					  --train-batch-size 128 \
+					  --dev-batch-size 128 \
+					  --epochs 20 \
+					  --optimizer "adam" \
+					  --save-best-only \
+					  --early-stopping-patience 5 \
+					  --restore-best-model \
+					  --final-report \
+					  --use-prefixes \
+                      --use-suffixes \
+                      --use-caps \
+					  --add-embeddings-vocab \
+					  --keep-rare-with-embedding \
+					  --add-embeddings-vocab \
+                      --save "saved-models/macmorpho-completo/" \
+                      --tensorboard \
