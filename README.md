@@ -1,4 +1,4 @@
-# deepbondd
+# deepbondd (old implementation)
 Deep neural approach to Boundary and Disfluency Detection
 
 This is part of my MSc project. More info:
