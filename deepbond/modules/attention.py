@@ -13,7 +13,7 @@ class Attention(nn.Module):
        3. Perform a dot product between `values` and probabilites (outputs)
 
     Args:
-        scorer (deeptagger.modules.Scorer): a scorer object
+        scorer (deepbond.modules.Scorer): a scorer object
         dropout (float): dropout rate after softmax (default: 0.)
     """
 
@@ -64,7 +64,7 @@ class Attention(nn.Module):
 
         # dot product between p_attn and values
         # o_attn = torch.matmul(p_attn, values)
-        o_attn = torch.einsum("b...ts,b...sm->b...tm", [p_attn, values])
+        o_attn = torch.einsum('b...ts,b...sm->b...tm', [p_attn, values])
         return o_attn, p_attn
 
 
@@ -154,17 +154,16 @@ if __name__ == "__main__":
 
     # decoder attend to encoder - concat attention
     attn = Attention(
-        OperationScorer(query_size, keys_size, attn_size, op="concat"),
-        dropout=0.1
+        OperationScorer(query_size, keys_size, attn_size, op='concat'),
+        dropout=0.1,
     )
     out, probs = attn(qs, ks, ks)
     assert list(out.shape) == [batch_size, qs.shape[1], ks.shape[-1]]
     assert list(probs.shape) == [batch_size, qs.shape[1], ks.shape[1]]
 
-    # decoder attend to encoder using a mlp with two hidden layers of size 5
+    # decoder attend to encoder using a mlp with two hidden layers of 5 neurons
     attn = Attention(
-        MLPScorer(query_size, keys_size, layer_sizes=[5, 5]),
-        dropout=0.1
+        MLPScorer(query_size, keys_size, layer_sizes=[5, 5]), dropout=0.1
     )
     out, probs = attn(qs, ks, ks)
     assert list(out.shape) == [batch_size, qs.shape[1], ks.shape[-1]]

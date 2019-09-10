@@ -1,3 +1,5 @@
+import math
+
 from torch import nn
 
 from deepbond.modules.positional_encoding import PositionalEncoding
@@ -13,20 +15,20 @@ class PositionalEmbedding(nn.Module):
         dropout (float): dropout rate after applying PE (default: 0.)
         scale (bool): scale embeddings weights by sqrt(size) before PE
     """
+
     def __init__(
-        self,
-        vocab_size,
-        size,
-        max_seq_len=1000,
-        dropout=0.0,
-        scale=True
+        self, vocab_size, size, max_seq_len=1000, dropout=0.0, scale=True
     ):
         super().__init__()
         self.emb = nn.Embedding(vocab_size, size)
-        self.pe = PositionalEncoding(max_seq_len, size, dropout=dropout,
-                                     scale=scale)
+        self.pe = PositionalEncoding(max_seq_len, size)
+        self.scale = scale
+        self.dropout = nn.Dropout(dropout)
 
     def forward(self, x):
         x = self.emb(x)
+        if self.scale:
+            x = math.sqrt(x.shape[-1]) * x
         x = self.pe(x)
+        x = self.dropout(x)
         return x

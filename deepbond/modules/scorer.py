@@ -1,5 +1,6 @@
-import torch
 from math import sqrt
+
+import torch
 from torch import nn
 
 from deepbond.models.utils import make_mergeable_tensors
@@ -64,7 +65,7 @@ class DotProductScorer(Scorer):
         # t = target length
         # s = source length
         # x = hidden size
-        score = torch.einsum("b...tx,b...sx->b...ts", [query, keys])
+        score = torch.einsum('b...tx,b...sx->b...ts', [query, keys])
         return score / scale
 
 
@@ -78,7 +79,7 @@ class GeneralScorer(Scorer):
     def forward(self, query, keys):
         scale = self.scale(max(self.W.shape))
         # score = torch.matmul(torch.matmul(query, self.W), keys.transpose(-1, -2))  # NOQA
-        score = torch.einsum("b...tm,mn,b...sn->b...ts", [query, self.W, keys])
+        score = torch.einsum('b...tm,mn,b...sn->b...ts', [query, self.W, keys])
         return score / scale
 
 
@@ -90,26 +91,26 @@ class OperationScorer(Scorer):
         query_size,
         key_size,
         attn_hidden_size,
-        op="concat",
+        op='concat',
         activation=nn.Tanh,
         **kwargs
     ):
         super().__init__(**kwargs)
-        assert op in ["concat", "add", "mul"]
+        assert op in ['concat', 'add', 'mul']
         self.op = op
         self.activation = activation()
         self.W1 = nn.Parameter(torch.randn(key_size, attn_hidden_size))
         self.W2 = nn.Parameter(torch.randn(query_size, attn_hidden_size))
-        if self.op == "concat":
+        if self.op == 'concat':
             self.v = nn.Parameter(torch.randn(2 * attn_hidden_size))
         else:
             self.v = nn.Parameter(torch.randn(attn_hidden_size))
 
     def f(self, x1, x2):
         """Perform an operation on x1 and x2"""
-        if self.op == "add":
+        if self.op == 'add':
             x = x1 + x2
-        elif self.op == "mul":
+        elif self.op == 'mul':
             x = x1 * x2
         else:
             x = torch.cat((x1, x2), dim=-1)
@@ -119,11 +120,11 @@ class OperationScorer(Scorer):
         scale = self.scale(max(*self.W1.shape, *self.W2.shape))
         # x1 = torch.matmul(keys, self.W1)
         # x2 = torch.matmul(query, self.W2)
-        x1 = torch.einsum("b...tm,mh->b...th", [query, self.W2])
-        x2 = torch.einsum("b...sn,nh->b...sh", [keys, self.W1])
+        x1 = torch.einsum('b...tm,mh->b...th', [query, self.W2])
+        x2 = torch.einsum('b...sn,nh->b...sh', [keys, self.W1])
         x1, x2 = make_mergeable_tensors(x1, x2)
         # score = torch.matmul(self.f(x1, x2), self.v)
-        score = torch.einsum("b...tsh,h->b...ts", [self.f(x1, x2), self.v])
+        score = torch.einsum('b...tsh,h->b...ts', [self.f(x1, x2), self.v])
         return score / scale
 
 
@@ -147,19 +148,25 @@ class MLPScorer(Scorer):
         sizes = zip(layer_sizes[:-1], layer_sizes[1:])
         layers = []
         for n_in, n_out in sizes:
-            layers.append(nn.Linear(n_in, n_out))
-            layers.append(activation())
-        self.mlp = nn.ModuleList(layers)
+            layers.append(
+                nn.Sequential(
+                    nn.Linear(n_in, n_out),
+                    activation()
+                )
+            )
+            # layers.append(nn.Linear(n_in, n_out))
+            # layers.append(activation())
+        self.layers = nn.ModuleList(layers)
 
     def forward(self, query, keys):
         x_query, x_keys = make_mergeable_tensors(query, keys)
         x = torch.cat((x_query, x_keys), dim=-1)
-        for layer in self.mlp:
+        for layer in self.layers:
             x = layer(x)
         return x.squeeze(-1)  # remove last dimension
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     torch.manual_seed(1)
     torch.cuda.manual_seed(1)
 
@@ -185,16 +192,16 @@ if __name__ == "__main__":
     out = GeneralScorer(query_size, keys_size)(q, ks)
     assert list(out.shape) == [batch_size, q.shape[1], ks.shape[1]]
 
-    out = OperationScorer(query_size, keys_size, attn_size, op="add")(q, ks)
+    out = OperationScorer(query_size, keys_size, attn_size, op='add')(q, ks)
     assert list(out.shape) == [batch_size, q.shape[1], ks.shape[1]]
 
-    out = OperationScorer(query_size, keys_size, attn_size, op="mul")(q, ks)
+    out = OperationScorer(query_size, keys_size, attn_size, op='mul')(q, ks)
     assert list(out.shape) == [batch_size, q.shape[1], ks.shape[1]]
 
-    out = OperationScorer(query_size, keys_size, attn_size, op="concat")(q, ks)
+    out = OperationScorer(query_size, keys_size, attn_size, op='concat')(q, ks)
     assert list(out.shape) == [batch_size, q.shape[1], ks.shape[1]]
 
-    out = OperationScorer(query_size, query_size, attn_size, op="add")(q, q)
+    out = OperationScorer(query_size, query_size, attn_size, op='add')(q, q)
     assert list(out.shape) == [batch_size, q.shape[1], q.shape[1]]
 
     out = MLPScorer(

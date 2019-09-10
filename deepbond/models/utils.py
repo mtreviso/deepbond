@@ -67,10 +67,10 @@ def sequence_mask(lengths, max_len=None):
         max_len (int, optional): max sequence length.
             if None it will be setted to lengths.max()
     """
-
     if max_len is None:
         max_len = lengths.max()
     aranges = torch.arange(max_len).repeat(lengths.shape[0], 1)
+    aranges = aranges.to(lengths.device)
     return aranges < lengths.unsqueeze(1)
 
 
@@ -109,7 +109,10 @@ def make_mergeable_tensors(t1, t2):
 
 
 def apply_packed_sequence(rnn, embedding, lengths):
-    """ Runs a forward pass of embeddings through an rnn using packed sequence.
+    """
+    Code from Unbabel OpenKiwi
+
+    Runs a forward pass of embeddings through an rnn using packed sequence.
     Args:
        rnn: The RNN that that we want to compute a forward pass with.
        embedding (FloatTensor b x seq x dim): A batch of sequence embeddings.

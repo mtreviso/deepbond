@@ -1,11 +1,9 @@
 from pathlib import Path
 
 import torch
-import adabound
 
 from deepbond import constants
 from deepbond import opts
-from deepbond.modules.optim.adamw import AdamW
 from deepbond.modules.optim.step_decay_optimizer import StepDecayOptimizer
 from deepbond.modules.optim.lr_scheduler import (NoamDecayScheduler,
                                                  ExpDecayScheduler,
@@ -20,8 +18,7 @@ available_optimizers = {
     'sgd': torch.optim.SGD,
     'asgd': torch.optim.ASGD,
     'rmsprop': torch.optim.RMSprop,
-    'adabound': adabound.AdaBound,
-    'adamw': AdamW,
+    'adamw': torch.optim.AdamW,
 }
 
 available_step_decays = {
@@ -60,7 +57,7 @@ def build(options, model_parameters):
     optim_class = available_optimizers[options.optimizer]
 
     # if you pick an optimizer and provide an optimization option that doesn't
-    # belong to it, then an exception will be trown later -> up to the user.
+    # belong to it, then an exception will be thrown later -> up to the user.
     kwargs = {}
     if options.learning_rate is not None:
         kwargs['lr'] = options.learning_rate

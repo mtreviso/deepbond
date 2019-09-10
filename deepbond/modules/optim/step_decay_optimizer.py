@@ -50,9 +50,9 @@ class StepDecayOptimizer:
 
 if __name__ == '__main__':
 
-    from lr_scheduler import (NoamDecayScheduler,
-                              RsqrtDecayScheduler,
-                              ExpDecayScheduler)
+    from .lr_scheduler import (NoamDecayScheduler,
+                               RsqrtDecayScheduler,
+                               ExpDecayScheduler)
     import numpy as np
     from copy import deepcopy
     from matplotlib import pyplot as plt

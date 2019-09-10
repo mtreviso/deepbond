@@ -18,6 +18,7 @@ log/
 # Local run directory
 runs/
 
+# virtual env
 env/
 
 # Pycharm directory

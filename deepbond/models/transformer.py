@@ -23,15 +23,16 @@ class TransformerAttention(nn.Module):
         self.norm = LayerNorm(attn.value_size)
 
     def forward(self, x, memory=None, mask=None):
+        norm_x = self.norm(x)
         if memory is None:
             # self-attention
-            hidden_x, _ = self.attn(x, x, x, mask=mask)
+            hidden_x, _ = self.attn(norm_x, norm_x, norm_x, mask=mask)
         else:
             # attention over source outputs
-            hidden_x, _ = self.attn(x, memory, memory, mask=mask)
+            hidden_x, _ = self.attn(norm_x, memory, memory, mask=mask)
         hidden_x = self.proj(hidden_x)
         hidden_x = self.dropout(hidden_x)
-        return self.norm(x + hidden_x)
+        return x + hidden_x
 
 
 class TransformerFFN(nn.Module):
@@ -45,9 +46,10 @@ class TransformerFFN(nn.Module):
         self.norm = LayerNorm(position_ffn.hidden_size)
 
     def forward(self, x):
-        hidden_x = self.position_ffn(x)
+        norm_x = self.norm(x)
+        hidden_x = self.position_ffn(norm_x)
         hidden_x = self.dropout(hidden_x)
-        return self.norm(x + hidden_x)
+        return x + hidden_x
 
 
 class EncoderLayer(nn.Module):
@@ -70,6 +72,7 @@ class EncoderLayer(nn.Module):
         super().__init__()
         self.attn = TransformerAttention(attn, dropout=dropout)
         self.position_ffn = TransformerFFN(position_ffn, dropout=dropout)
+        self.hidden_size = position_ffn.hidden_size
 
     def forward(self, x, mask):
         x = self.attn(x, mask=mask)
@@ -115,10 +118,12 @@ class TransformerEncoder(nn.Module):
     def __init__(self, layer, nb_layers=1):
         super().__init__()
         self.layers = clones(layer, nb_layers)
+        self.norm = LayerNorm(layer.hidden_size)
 
     def forward(self, x, mask):
         for layer in self.layers:
             x = layer(x, mask)
+        x = self.norm(x)
         return x
 
 
@@ -128,10 +133,12 @@ class TransformerDecoder(nn.Module):
     def __init__(self, layer, nb_layers=1):
         super().__init__()
         self.layers = clones(layer, nb_layers)
+        self.norm = LayerNorm(layer.hidden_size)
 
     def forward(self, x, tgt_mask, memory, src_mask):
         for layer in self.layers:
             x = layer(x, tgt_mask, memory, src_mask)
+        x = self.norm(x)
         return x
 
 
@@ -157,7 +164,6 @@ class Transformer(nn.Module):
         target_vocab_size,
         nb_layers=6,
         hidden_size=512,
-        attn_hidden_size=256,
         ff_hidden_size=2048,
         nb_heads=8,
         max_seq_len=5000,
@@ -179,7 +185,7 @@ class Transformer(nn.Module):
             query_size,
             key_size,
             value_size,
-            attn_hidden_size,
+            hidden_size,
             dropout=dropout_attention,
         )
         encoder_ff = PositionwiseFeedForward(hidden_size, ff_hidden_size)
@@ -197,7 +203,7 @@ class Transformer(nn.Module):
             query_size,
             key_size,
             value_size,
-            attn_hidden_size,
+            hidden_size,
             dropout=dropout_attention,
         )
         decoder_source_scorer = DotProductScorer()
@@ -258,10 +264,6 @@ class Transformer(nn.Module):
         return self.generator(x)
 
 
-class SequentialTransformerEncoder(Transformer):
-    pass
-
-
 if __name__ == '__main__':
 
     import torch
@@ -276,8 +278,8 @@ if __name__ == '__main__':
     source_vocab_size = 10
     target_vocab_size = 5
 
-    source = torch.randint(0, source_vocab_size, size=(batch_size, source_len)).long()
-    target = torch.randint(0, target_vocab_size, size=(batch_size, target_len)).long()
+    source = torch.randint(0, source_vocab_size, size=(batch_size, source_len))
+    target = torch.randint(0, target_vocab_size, size=(batch_size, target_len))
 
     source_mask = sequence_mask(torch.LongTensor([5, 3, 7, 4, 5, 4, 3, 6]))
 
@@ -285,7 +287,7 @@ if __name__ == '__main__':
     target_mask_valid = subsequent_mask(target_len)
 
     # broadcast at timestep dim is infered automatically by attention module
-    # or you can set manually by: source_mask.unsqueeze(-2)
+    # or you can do it manually: source_mask.unsqueeze(-2)
     source_mask = source_mask
     target_mask = target_mask_pad.unsqueeze(-2) & target_mask_valid.unsqueeze(0)
 
@@ -293,23 +295,29 @@ if __name__ == '__main__':
     print(source_mask[1])
     print(target_mask[2])
 
-    model = Transformer(source_vocab_size,
-                        target_vocab_size,
-                        hidden_size = 20,
-                        nb_layers = 1,
-                        ff_hidden_size = 12,
-                        nb_heads = 2,
-                        attn_hidden_size = 18,
-                        max_seq_len = 100,
-                        dropout_encoder = 0.1,
-                        dropout_decoder = 0.1,
-                        dropout_attention = 0.1,
-                        dropout_emb = 0.1)
+    model = Transformer(
+        source_vocab_size,
+        target_vocab_size,
+        hidden_size=20,
+        nb_layers=1,
+        ff_hidden_size=12,
+        nb_heads=2,
+        max_seq_len=100,
+        dropout_encoder=0.1,
+        dropout_decoder=0.1,
+        dropout_attention=0.1,
+        dropout_emb=0.1,
+    )
 
     with torch.no_grad():
-
         memory = model.encode(source, source_mask)
-        print(memory.shape, memory.sum(), memory.mean(), memory.min(), memory.max())
+        print(
+            memory.shape,
+            memory.sum(),
+            memory.mean(),
+            memory.min(),
+            memory.max(),
+        )
 
         pred = model.decode(target, target_mask, memory, source_mask)
         print(pred.shape, pred.sum(), pred.mean(), pred.min(), pred.max())
