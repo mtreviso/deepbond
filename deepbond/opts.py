@@ -74,22 +74,23 @@ def preprocess_opts(parser):
     group = parser.add_argument_group('data')
     group.add_argument('--train-path',
                        type=str,
-                       help='Path to training file')
+                       help='Path to training directory with multiple example '
+                            'files or path to a single file with multiple '
+                            'examples separated by new lines')
     group.add_argument('--dev-path',
                        type=str,
-                       help='Path to validation file')
+                       help='Path to dev directory with multiple example '
+                            'files or path to a single file with multiple '
+                            'examples separated by new lines')
     group.add_argument('--test-path',
                        type=str,
-                       help='Path to validation file')
-    group.add_argument('--del-word',
+                       help='Path to test directory with multiple example '
+                            'files or path to a single file with multiple '
+                            'examples separated by new lines')
+    group.add_argument('--punctuations',
                        type=str,
                        default=' ',
-                       help='Delimiter token to split sentence tokens')
-    group.add_argument('--del-tag',
-                       type=str,
-                       default='_',
-                       help='Delimiter token to split '
-                            'word tokens from  tag tokens')
+                       help='.,?!:;*+$<=>|')
 
     # Truncation options
     group = parser.add_argument_group('data-pruning')
@@ -119,7 +120,7 @@ def preprocess_opts(parser):
     group.add_argument('--add-embeddings-vocab',
                        action='store_true',
                        help='Add words from embeddings vocabulary to '
-                            'source/target vocabulary.')
+                            'the true vocabulary.')
 
     # Embeddings options
     group = parser.add_argument_group('data-embeddings')
@@ -201,45 +202,6 @@ def model_opts(parser):
                             'hidden layer will be created. Please, take a '
                             'look to your selected model documentation '
                             'before setting this option.')
-
-    group = parser.add_argument_group('extra-features')
-    group.add_argument('--use-prefixes',
-                       action='store_true',
-                       help='Use prefixes as feature.')
-    group.add_argument('--prefix-embeddings-size',
-                       type=int,
-                       default=50,
-                       help='Size of prefix embeddings.')
-    group.add_argument('--prefix-min-length',
-                       type=int,
-                       default=1,
-                       help='Min length of prefixes.')
-    group.add_argument('--prefix-max-length',
-                       type=int,
-                       default=5,
-                       help='Max length of prefixes.')
-    group.add_argument('--use-suffixes',
-                       action='store_true',
-                       help='Use suffixes as feature.')
-    group.add_argument('--suffix-embeddings-size',
-                       type=int,
-                       default=50,
-                       help='Size of suffix embeddings.')
-    group.add_argument('--suffix-min-length',
-                       type=int,
-                       default=1,
-                       help='Min length of suffixes.')
-    group.add_argument('--suffix-max-length',
-                       type=int,
-                       default=5,
-                       help='Max length of suffixes.')
-    group.add_argument('--use-caps',
-                       action='store_true',
-                       help='Use capitalization as feature.')
-    group.add_argument('--caps-embeddings-size',
-                       type=int,
-                       default=50,
-                       help='Size of capitalization embeddings.')
 
 
 def train_opts(parser):

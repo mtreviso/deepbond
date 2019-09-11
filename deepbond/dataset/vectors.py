@@ -7,6 +7,7 @@ from torchtext.vocab import Vectors
 from deepbond.constants import UNK, PAD, START, STOP
 logger = logging.getLogger(__name__)
 
+
 class WordEmbeddings(Vectors):
     def __init__(
         self,
@@ -102,7 +103,7 @@ class WordEmbeddings(Vectors):
             self.stoi = dict(zip(self.itos, range(len(self.itos))))
             self.vectors = torch.tensor(vectors)
             self.dim = self.vectors.shape[1]
-        
+
         elif self.emb_format == 'fonseca':
             import numpy as np
             import os
@@ -113,8 +114,7 @@ class WordEmbeddings(Vectors):
             self.stoi = dict(zip(self.itos, range(len(self.itos))))
             self.dim = embeddings.shape[1]
             self.vectors = torch.tensor(embeddings).view(-1, self.dim)
-        
-        
+
         self.unk_vector = self.vectors.mean(0).unsqueeze(0)
 
 

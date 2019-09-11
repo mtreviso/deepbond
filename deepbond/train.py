@@ -1,13 +1,12 @@
 import logging
 from pathlib import Path
 
-from deepbond.dataset import dataset, fields
-from deepbond import features
 from deepbond import iterator
 from deepbond import models
 from deepbond import optimizer
-from deepbond import scheduler
 from deepbond import opts
+from deepbond import scheduler
+from deepbond.dataset import dataset, fields
 from deepbond.trainer import Trainer
 
 
@@ -15,13 +14,7 @@ def run(options):
     words_field = fields.WordsField()
     tags_field = fields.TagsField()
     fields_tuples = [('words', words_field), ('tags', tags_field)]
-    # no caps, suffixes or prefixes for sentence segmentation
-    # fields_tuples += features.build(options)
 
-
-    ########
-    # BUILD CORPUS AND ITERATORS
-    ########
     logging.info('Building train corpus: {}'.format(options.train_path))
     train_dataset = dataset.build(options.train_path, fields_tuples, options)
 
@@ -56,28 +49,10 @@ def run(options):
     datasets = [train_dataset, dev_dataset, test_dataset]
     datasets = list(filter(lambda x: x is not None, datasets))
 
-    exit()
-
-    ########
-    # load
-    #######
-
-    if options.load:
-        logging.info('Loading vocabularies...')
-        fields.load_vocabs(options.load, fields_tuples)
-        logging.info('Word vocab size: {}'.format(len(words_field.vocab)))
-        logging.info('Tag vocab size: {}'.format(len(tags_field.vocab)))
-        logging.info('Loading model...')
-        model = models.load(options.load, fields_tuples)
-        logging.info('Loading optimizer...')
-        optim = optimizer.load(options.load, model.parameters())
-        logging.info('Loading scheduler...')
-        sched = scheduler.load(options.load, optim)
-    else:
+    # BUILD
+    if not options.load:
         logging.info('Building vocabulary...')
         fields.build_vocabs(fields_tuples, train_dataset, datasets, options)
-        logging.info('Word vocab size: {}'.format(len(words_field.vocab)))
-        logging.info('Tag vocab size: {}'.format(len(tags_field.vocab)))
         logging.info('Building model...')
         model = models.build(options, fields_tuples)
         logging.info('Building optimizer...')
@@ -85,9 +60,32 @@ def run(options):
         logging.info('Building scheduler...')
         sched = scheduler.build(options, optim)
 
+    # OR LOAD
+    else:
+        logging.info('Loading vocabularies...')
+        fields.load_vocabs(options.load, fields_tuples)
+        logging.info('Loading model...')
+        model = models.load(options.load, fields_tuples)
+        logging.info('Loading optimizer...')
+        optim = optimizer.load(options.load, model.parameters())
+        logging.info('Loading scheduler...')
+        sched = scheduler.load(options.load, optim)
+
+    # STATS
+    logging.info('Word vocab size: {}'.format(len(words_field.vocab)))
+    logging.info('Tag vocab size: {}'.format(len(tags_field.vocab)))
+    logging.info('Number of training examples: {}'.format(len(train_dataset)))
+    if dev_dataset:
+        logging.info('Number of dev examples: {}'.format(len(dev_dataset)))
+    if test_dataset:
+        logging.info('Number of test examples: {}'.format(len(test_dataset)))
+
+    # TRAIN
     logging.info('Building trainer...')
     trainer = Trainer(train_iter, model, optim, sched, options,
                       dev_iter=dev_iter, test_iter=test_iter)
+
+    exit()
 
     if options.resume_epoch and options.load is None:
         logging.info('Resuming training...')

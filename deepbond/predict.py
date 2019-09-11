@@ -2,10 +2,9 @@ import logging
 from pathlib import Path
 
 from deepbond import constants
-from deepbond.dataset import dataset, fields
-from deepbond import features
 from deepbond import iterator
 from deepbond import models
+from deepbond.dataset import dataset, fields
 from deepbond.predicter import Predicter
 
 
@@ -13,7 +12,7 @@ def run(options):
     words_field = fields.WordsField()
     tags_field = fields.TagsField()
     fields_tuples = [('words', words_field), ('tags', tags_field)]
-    fields_tuples += features.load(options.load)
+    # fields_tuples += features.load(options.load)
 
     if options.test_path is None and options.text is None:
         raise Exception('You should inform a path to test data or a text.')
