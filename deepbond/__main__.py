@@ -7,7 +7,7 @@ from deepbond import opts
 from deepbond import predict
 from deepbond import train
 
-parser = argparse.ArgumentParser(description='DeepTagger')
+parser = argparse.ArgumentParser(description='DeepBond')
 parser.add_argument('task', type=str, choices=['train', 'predict'])
 opts.general_opts(parser)
 opts.preprocess_opts(parser)

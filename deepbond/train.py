@@ -15,7 +15,6 @@ def run(options):
     words_field = fields.WordsField()
     tags_field = fields.TagsField()
     fields_tuples = [('words', words_field), ('tags', tags_field)]
-
     # no caps, suffixes or prefixes for sentence segmentation
     # fields_tuples += features.build(options)
 
@@ -57,6 +56,7 @@ def run(options):
     datasets = [train_dataset, dev_dataset, test_dataset]
     datasets = list(filter(lambda x: x is not None, datasets))
 
+    exit()
 
     ########
     # load

@@ -141,7 +141,7 @@ def model_opts(parser):
                        type=str,
                        default='simple_lstm',
                        choices=list(models.available_models.keys()),
-                       help='DeepTagger model architecture.')
+                       help='Model architecture.')
 
     group = parser.add_argument_group('hyper-parameters')
     group.add_argument('--word-embeddings-size',

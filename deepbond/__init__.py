@@ -1,27 +1,27 @@
 """
-deeptagger
+deepbond
 ~~~~~~~~~~~~~~~~~~~
 
-Part-of-speech tagger based on Deep Learning.
+Deep neural approach to Boundary and Disfluency Detection.
 
-:copyright: (c) 2018 by Marcos Treviso
+:copyright: (c) 2019 by Marcos Treviso
 :licence: MIT, see LICENSE for more details
 """
 
 # Generate your own AsciiArt at:
-# patorjk.com/software/taag/#f=Calvin%20S&t=DeepTagger
+# patorjk.com/software/taag/#f=Calvin%20S&t=DeepBond
 __banner__ = r"""
-╔╦╗┌─┐┌─┐┌─┐╔╦╗┌─┐┌─┐┌─┐┌─┐┬─┐
- ║║├┤ ├┤ ├─┘ ║ ├─┤│ ┬│ ┬├┤ ├┬┘
-═╩╝└─┘└─┘┴   ╩ ┴ ┴└─┘└─┘└─┘┴└─
+╔╦╗┌─┐┌─┐┌─┐╔╗ ┌─┐┌┐┌┌┬┐
+ ║║├┤ ├┤ ├─┘╠╩╗│ ││││ ││
+═╩╝└─┘└─┘┴  ╚═╝└─┘┘└┘─┴┘
 """
 
-__prog__ = "deeptagger"
-__title__ = 'DeepTagger'
-__summary__ = 'Part-of-speech tagger based on Deep Learning.'
-__uri__ = 'https://github.com/mtreviso/deeptagger'
+__prog__ = "deepbond"
+__title__ = 'DeepBond'
+__summary__ = 'Deep neural approach to Boundary and Disfluency Detection'
+__uri__ = 'https://github.com/mtreviso/deepbond'
 
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
 __author__ = 'Marcos Treviso'
 __email__ = 'marcostreviso@usp.br'

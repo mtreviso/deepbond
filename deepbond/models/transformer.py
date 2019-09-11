@@ -104,6 +104,7 @@ class DecoderLayer(nn.Module):
         self.self_attn = TransformerAttention(self_attn, dropout=dropout)
         self.src_attn = TransformerAttention(src_attn, dropout=dropout)
         self.position_ffn = TransformerFFN(position_ffn, dropout=dropout)
+        self.hidden_size = position_ffn.hidden_size
 
     def forward(self, x, tgt_mask, memory, src_mask):
         x = self.self_attn(x, mask=tgt_mask)
@@ -213,7 +214,7 @@ class Transformer(nn.Module):
             query_size,
             key_size,
             value_size,
-            attn_hidden_size,
+            hidden_size,
             dropout=dropout_attention,
         )
         decoder_ff = PositionwiseFeedForward(hidden_size, ff_hidden_size)
