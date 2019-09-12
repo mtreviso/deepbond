@@ -10,7 +10,6 @@ PAD_ID = 1
 
 # this should be set later after building fields
 TAGS_PAD_ID = 0
-NB_LABELS = 0
 
 # output_dir
 OUTPUT_DIR = 'runs'

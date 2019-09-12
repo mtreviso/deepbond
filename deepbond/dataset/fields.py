@@ -58,12 +58,11 @@ def build_vocabs(fields_tuples, train_dataset, all_datasets, options):
     )
 
     # build vocab based on all datasets
-    tags_field.build_vocab(*all_datasets)
+    tags_field.build_vocab(*all_datasets, specials_first=False)
 
     # set global constants to their correct value
     constants.PAD_ID = dict_fields['words'].vocab.stoi[constants.PAD]
     constants.TAGS_PAD_ID = dict_fields['tags'].vocab.stoi[constants.PAD]
-    constants.NB_LABELS = len(dict_fields['tags'].vocab)
 
 
 def load_vocabs(path, fields_tuples):
@@ -84,7 +83,6 @@ def load_vocabs(path, fields_tuples):
     # ensure global constants to their correct value
     constants.PAD_ID = dict_fields['words'].vocab.stoi[constants.PAD]
     constants.TAGS_PAD_ID = dict_fields['tags'].vocab.stoi[constants.PAD]
-    constants.NB_LABELS = len(dict_fields['tags'].vocab)
 
 
 def save_vocabs(path, fields_tuples):
@@ -126,7 +124,7 @@ class TagsField(Field):
        and pad_token to constants.PAD as default."""
 
     def __init__(self, **kwargs):
-        super().__init__(unk_token=constants.UNK,
+        super().__init__(unk_token=None,
                          pad_token=constants.PAD,
                          is_target=True,
                          batch_first=True,
