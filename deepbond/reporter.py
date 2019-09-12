@@ -37,17 +37,19 @@ class Reporter:
         self.mode = None
         self.epoch = None
         self.output_dir = output_dir
-        self.template_head = 'Loss    (val / epoch) | '
-        self.template_head += 'Acc    (val / epoch) | '
-        self.template_head += 'Acc oov train  (val / epoch) | '
-        self.template_head += 'Acc oov emb  (val / epoch) | '
-        self.template_head += 'Acc sent.  (val / epoch) |'
+        self.template_head =  'Loss    (val / epoch) | '
+        self.template_head += 'Prec.     '
+        self.template_head += 'Rec.    '
+        self.template_head += 'F1     (val / epoch) | '
+        self.template_head += 'SER    (val / epoch) | '
+        self.template_head += 'MCC    (val / epoch) |'
         self.template_line = get_line_bar(self.template_head)
         self.template_body = '{:7.4f} ({:.4f} / {:2d}) |'
+        self.template_body += '{:7.4f}  '
+        self.template_body += '{:7.4f}  '
         self.template_body += '{:7.4f} ({:.4f} / {:2d}) |'
-        self.template_body += '{:15.4f} ({:.4f} / {:2d}) |'
-        self.template_body += '{:13.4f} ({:.4f} / {:2d}) |'
-        self.template_body += '{:11.4f} ({:.4f} / {:2d}) |'
+        self.template_body += '{:7.4f} ({:.4f} / {:2d}) |'
+        self.template_body += '{:7.4f} ({:.4f} / {:2d}) |'
         self.template_footer = '---'
 
     def set_mode(self, mode):
@@ -69,18 +71,17 @@ class Reporter:
                 stats_dict['loss'],
                 stats_dict['best_loss'].value,
                 stats_dict['best_loss'].epoch,
-                stats_dict['acc'],
-                stats_dict['best_acc'].value,
-                stats_dict['best_acc'].epoch,
-                stats_dict['acc_oov'],
-                stats_dict['best_acc_oov'].value,
-                stats_dict['best_acc_oov'].epoch,
-                stats_dict['acc_emb'],
-                stats_dict['best_acc_emb'].value,
-                stats_dict['best_acc_emb'].epoch,
-                stats_dict['acc_sent'],
-                stats_dict['best_acc_sent'].value,
-                stats_dict['best_acc_sent'].epoch
+                stats_dict['prec_rec_f1'][0],
+                stats_dict['prec_rec_f1'][1],
+                stats_dict['prec_rec_f1'][2],
+                stats_dict['best_prec_rec_f1'].value[2],
+                stats_dict['best_prec_rec_f1'].epoch,
+                stats_dict['ser'],
+                stats_dict['best_ser'].value,
+                stats_dict['best_ser'].epoch,
+                stats_dict['mcc'],
+                stats_dict['best_mcc'].value,
+                stats_dict['best_mcc'].epoch,
             )
         )
 
@@ -99,8 +100,16 @@ class Reporter:
             for metric, value in stats_dict.items():
                 if isinstance(value, BestValueEpoch):
                     continue
-                mode_metric = '{}/{}'.format(self.mode, metric)
-                self.tb_writer.add_scalar(mode_metric, value, self.epoch)
+                if metric == 'prec_rec_f1':
+                    mm_0 = '{}/{}'.format(self.mode, 'precision')
+                    mm_1 = '{}/{}'.format(self.mode, 'recall')
+                    mm_2 = '{}/{}'.format(self.mode, 'f1')
+                    self.tb_writer.add_scalar(mm_0, value[0], self.epoch)
+                    self.tb_writer.add_scalar(mm_1, value[1], self.epoch)
+                    self.tb_writer.add_scalar(mm_2, value[2], self.epoch)
+                else:
+                    mode_metric = '{}/{}'.format(self.mode, metric)
+                    self.tb_writer.add_scalar(mode_metric, value, self.epoch)
 
     def report_stats_history(self, stats_history):
         self.show_head()

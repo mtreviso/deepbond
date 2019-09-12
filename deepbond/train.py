@@ -73,7 +73,7 @@ def run(options):
 
     # STATS
     logging.info('Word vocab size: {}'.format(len(words_field.vocab)))
-    logging.info('Tag vocab size: {}'.format(len(tags_field.vocab)))
+    logging.info('Tag vocab size: {}'.format(len(tags_field.vocab) - 1))
     logging.info('Number of training examples: {}'.format(len(train_dataset)))
     if dev_dataset:
         logging.info('Number of dev examples: {}'.format(len(dev_dataset)))
@@ -85,13 +85,13 @@ def run(options):
     trainer = Trainer(train_iter, model, optim, sched, options,
                       dev_iter=dev_iter, test_iter=test_iter)
 
-    exit()
-
     if options.resume_epoch and options.load is None:
         logging.info('Resuming training...')
         trainer.resume(options.resume_epoch)
 
     trainer.train()
+
+    exit()
 
     if options.save:
         logging.info('Saving path: {}'.format(options.save))

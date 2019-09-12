@@ -9,7 +9,7 @@ python3 -m deepbond train \
                       --train-path "data/transcriptions/ss/Controle" \
 					  --test-path "data/transcriptions/ss/CCL-A/" \
 					  --punctuations ".?!" \
-					  --output-dir "runs/macmorpho-completo/" \
+					  --output-dir "runs/test-cinderela/" \
 					  --train-batch-size 8 \
 					  --dev-batch-size 8 \
 					  --epochs 5 \
@@ -21,7 +21,7 @@ python3 -m deepbond train \
 					  --add-embeddings-vocab \
 					  --keep-rare-with-vectors \
 					  --add-embeddings-vocab \
-                      --save "saved-models/macmorpho-completo/" \
+                      --save "saved-models/test-cinderela/" \
                       --tensorboard \
 
 

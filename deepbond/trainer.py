@@ -42,11 +42,10 @@ class Trainer:
         self.dev_stats_history = []
         self.test_stats_history = []
         self.final_report = options.final_report
-        train_vocab = train_iter.dataset.fields['words'].vocab.orig_stoi
-        emb_vocab = train_iter.dataset.fields['words'].vocab.vectors_words
-        self.train_stats = Stats(emb_vocab=emb_vocab)
-        self.dev_stats = Stats(train_vocab=train_vocab, emb_vocab=emb_vocab)
-        self.test_stats = Stats(train_vocab=train_vocab, emb_vocab=emb_vocab)
+        tags_vocab = train_iter.dataset.fields['tags'].vocab.stoi
+        self.train_stats = Stats(tags_vocab)
+        self.dev_stats = Stats(tags_vocab)
+        self.test_stats = Stats(tags_vocab)
         self.reporter = Reporter(options.output_dir, options.tensorboard)
 
     def train(self):
@@ -75,10 +74,9 @@ class Trainer:
                 self.test_epoch()
 
             # Only save if an improvement occurred
-            if self.save_best_only:
-                if self.dev_stats.best_acc.epoch == epoch:
-                    logging.info('Accuracy improved '
-                                 'on epoch {}'.format(epoch))
+            if self.save_best_only and self.dev_iter is not None:
+                if self.dev_stats.best_prec_rec_f1.epoch == epoch:
+                    logging.info('F1 improved on epoch {}'.format(epoch))
                     self.save(epoch)
             else:
                 # Otherwise, save if a checkpoint was reached
@@ -87,15 +85,15 @@ class Trainer:
                     self.save(epoch)
 
             # Stop training before the total number of epochs
-            if self.early_stopping_patience > 0:
+            if self.early_stopping_patience > 0 and self.dev_iter is not None:
                 # Only stop if the desired patience epochs was reached
-                passed_epochs = epoch - self.dev_stats.best_acc.epoch
+                passed_epochs = epoch - self.dev_stats.best_prec_rec_f1.epoch
                 if passed_epochs == self.early_stopping_patience:
-                    logging.info('Training stopped! No improvements on acc. '
+                    logging.info('Training stopped! No improvements on F1 '
                                  'after {} epochs'.format(passed_epochs))
                     if self.restore_best_model:
-                        if self.dev_stats.best_acc.epoch < epoch:
-                            self.restore_epoch(self.dev_stats.best_acc.epoch)
+                        if self.dev_stats.best_prec_rec_f1.epoch < epoch:
+                            self.restore_epoch(self.dev_stats.best_prec_rec_f1.epoch)  # NOQA
                     break
 
         elapsed = time.time() - start_time
@@ -136,9 +134,7 @@ class Trainer:
 
     def _train(self):
         self.model.train()
-        indexes = []
         for i, batch in enumerate(self.train_iter, start=1):
-            indexes.extend(batch.words)
 
             # basic training steps:
             self.model.zero_grad()
@@ -154,17 +150,13 @@ class Trainer:
             acum_loss = self.train_stats.get_loss()
             self.reporter.report_progress(i, len(self.train_iter), acum_loss)
 
-        inv_vocab = self.train_iter.dataset.fields['words'].vocab.itos
-        words = indexes_to_words(indexes, inv_vocab)
-        self.train_stats.calc(self.current_epoch, words)
+        self.train_stats.calc(self.current_epoch)
         self.scheduler.step()
 
     def _eval(self, ds_iterator, stats):
         self.model.eval()
-        indexes = []
         with torch.no_grad():
             for i, batch in enumerate(ds_iterator, start=1):
-                indexes.extend(batch.words)
 
                 # basic prediction steps:
                 pred = self.model(batch)
@@ -177,9 +169,7 @@ class Trainer:
                 acum_loss = stats.get_loss()
                 self.reporter.report_progress(i, len(ds_iterator), acum_loss)
 
-        inv_vocab = ds_iterator.dataset.fields['words'].vocab.itos
-        words = indexes_to_words(indexes, inv_vocab)
-        stats.calc(self.current_epoch, words)
+        stats.calc(self.current_epoch)
 
     def save(self, current_epoch):
         epoch_dir = 'epoch_{}'.format(current_epoch)
