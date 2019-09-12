@@ -9,6 +9,9 @@ python3 -m deepbond train \
                       --train-path "data/transcriptions/ss/Controle" \
 					  --test-path "data/transcriptions/ss/CCL-A/" \
 					  --punctuations ".?!" \
+					  --loss-weights "balanced" \
+					  --embeddings-format "word2vec" \
+					  --embeddings-path "data/embeddings/word2vec/pt_word2vec_sg_600.kv.emb" \
 					  --output-dir "runs/test-cinderela/" \
 					  --train-batch-size 8 \
 					  --dev-batch-size 8 \

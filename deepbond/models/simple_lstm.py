@@ -29,7 +29,7 @@ class SimpleLSTM(Model):
         hidden_size = options.hidden_size[0]
 
         if loss_weights is not None:
-            loss_weights = torch.tensor(loss_weights)
+            loss_weights = torch.tensor(loss_weights).float()
 
         word_embeddings = None
         if self.words_field.vocab.vectors is not None:
