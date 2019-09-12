@@ -48,7 +48,11 @@ def run(options):
 
     datasets = [train_dataset, dev_dataset, test_dataset]
     datasets = list(filter(lambda x: x is not None, datasets))
-    loss_weights = train_dataset.get_loss_weights()
+
+    # GET LOSS WEIGHTS
+    loss_weights = None
+    if options.loss_weights == 'balanced':
+        loss_weights = train_dataset.get_loss_weights()
 
     # BUILD
     if not options.load:
