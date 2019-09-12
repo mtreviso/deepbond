@@ -20,12 +20,9 @@ class CNN(Model):
         self.relu = None
         self.sigmoid = None
 
-    def build(self, options):
-        loss_weights = None
-        if options.loss_weights == 'balanced':
-            # TODO
-            # loss_weights = calc_balanced(loss_weights, tags_field)
-            loss_weights = torch.FloatTensor(loss_weights)
+    def build(self, options, loss_weights=None):
+        if loss_weights is not None:
+            loss_weights = torch.tensor(loss_weights)
 
         word_embeddings = None
         if self.words_field.vocab.vectors is not None:

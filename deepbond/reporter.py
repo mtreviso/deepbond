@@ -37,7 +37,7 @@ class Reporter:
         self.mode = None
         self.epoch = None
         self.output_dir = output_dir
-        self.template_head =  'Loss    (val / epoch) | '
+        self.template_head = 'Loss    (val / epoch) | '
         self.template_head += 'Prec.     '
         self.template_head += 'Rec.    '
         self.template_head += 'F1     (val / epoch) | '

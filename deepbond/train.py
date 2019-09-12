@@ -48,13 +48,14 @@ def run(options):
 
     datasets = [train_dataset, dev_dataset, test_dataset]
     datasets = list(filter(lambda x: x is not None, datasets))
+    loss_weights = train_dataset.get_loss_weights()
 
     # BUILD
     if not options.load:
         logging.info('Building vocabulary...')
         fields.build_vocabs(fields_tuples, train_dataset, datasets, options)
         logging.info('Building model...')
-        model = models.build(options, fields_tuples)
+        model = models.build(options, fields_tuples, loss_weights)
         logging.info('Building optimizer...')
         optim = optimizer.build(options, model.parameters())
         logging.info('Building scheduler...')
@@ -65,7 +66,7 @@ def run(options):
         logging.info('Loading vocabularies...')
         fields.load_vocabs(options.load, fields_tuples)
         logging.info('Loading model...')
-        model = models.load(options.load, fields_tuples)
+        model = models.load(options.load, fields_tuples, loss_weights)
         logging.info('Loading optimizer...')
         optim = optimizer.load(options.load, model.parameters())
         logging.info('Loading scheduler...')

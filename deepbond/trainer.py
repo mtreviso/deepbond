@@ -7,7 +7,6 @@ import torch
 from deepbond import models
 from deepbond import optimizer
 from deepbond import scheduler
-from deepbond.models.utils import indexes_to_words
 from deepbond.reporter import Reporter
 from deepbond.stats import Stats
 

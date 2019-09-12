@@ -1,3 +1,5 @@
+from sklearn.utils.class_weight import compute_class_weight
+
 from deepbond.dataset.corpus import Corpus
 from deepbond.dataset.modules.dataset import LazyDataset
 
@@ -39,3 +41,12 @@ class SSDataset(LazyDataset):
         examples = list(corpus)
         fields = corpus.attr_fields
         super().__init__(examples, fields, filter_pred)
+
+    def get_loss_weights(self):
+        tags_vocab = self.fields['tags'].vocab.stoi
+        y = []
+        for ex in self.examples:
+            ex_classes = [tags_vocab[t] for t in ex.tags]
+            y.extend(ex_classes)
+        classes = list(set(y))
+        return compute_class_weight('balanced', classes, y)

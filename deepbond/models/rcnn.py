@@ -29,16 +29,13 @@ class RCNN(Model):
         self.relu = None
         self.sigmoid = None
 
-    def build(self, options):
+    def build(self, options, loss_weights=None):
         # prefix_embeddings_size = options.prefix_embeddings_size
         # suffix_embeddings_size = options.suffix_embeddings_size
         # caps_embeddings_size = options.caps_embeddings_size
         hidden_size = options.hidden_size[0]
-        loss_weights = None
-        if options.loss_weights == 'balanced':
-            # TODO
-            # loss_weights = calc_balanced(loss_weights, tags_field)
-            loss_weights = torch.FloatTensor(loss_weights)
+        if loss_weights is not None:
+            loss_weights = torch.tensor(loss_weights)
 
         word_embeddings = None
         if self.words_field.vocab.vectors is not None:

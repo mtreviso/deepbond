@@ -1,10 +1,3 @@
-FIX:
-    corpus.py
-    train.py
-    predict.py
-
-    reporter.py
-    stats.py
-    tagger.py
-
-
+fix class_weights
+add word2vec embeddings
+replicate deepbond RCNN
