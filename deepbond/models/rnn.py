@@ -49,9 +49,6 @@ class RNN(Model):
         )
 
         features_size = options.word_embeddings_size
-        if self.use_handcrafed:
-            self.handcrafted.build(options)
-            features_size += self.handcrafted.features_size
 
         if options.freeze_embeddings:
             self.word_emb.weight.requires_grad = False
@@ -116,13 +113,6 @@ class RNN(Model):
         # (bs, ts) -> (bs, ts, emb_dim)
         h = self.word_emb(h)
         h = self.dropout_emb(h)
-
-        feats = [h]
-        if self.use_handcrafed:
-            feats.append(self.handcrafted.forward(batch))
-
-        if feats:
-            h = torch.cat(feats, dim=-1)
 
         # (bs, ts, pool_size) -> (bs, ts, hidden_size)
         h = pack(h, lengths, batch_first=True)

@@ -45,10 +45,6 @@ class CNN(Model):
             self.word_emb.weight.requires_grad = False
             self.word_emb.bias.requires_grad = False
 
-        if self.use_handcrafed:
-            self.handcrafted.build(options)
-            features_size += self.handcrafted.features_size
-
         self.cnn_1d = nn.Conv1d(in_channels=features_size,
                                 out_channels=options.conv_size,
                                 kernel_size=options.kernel_size,
@@ -78,14 +74,6 @@ class CNN(Model):
 
         # (bs, ts) -> (bs, ts, emb_dim)
         h = self.word_emb(h)
-
-        feats = [h]
-        if self.use_handcrafed:
-            feats.append(self.handcrafted.forward(batch))
-
-        if feats:
-            h = torch.cat(feats, dim=-1)
-
         h = self.dropout_emb(h)
 
         # Turn (bs, ts, emb_dim) into (bs, emb_dim, ts) for CNN

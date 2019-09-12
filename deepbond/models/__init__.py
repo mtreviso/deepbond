@@ -22,11 +22,7 @@ def build(options, fields_tuples):
     dict_fields = defaultdict(lambda: None)
     dict_fields.update(dict(fields_tuples))
     model_class = available_models[options.model]
-    model = model_class(dict_fields['words'],
-                        dict_fields['tags'],
-                        prefixes_field=dict_fields['prefixes'],
-                        suffixes_field=dict_fields['suffixes'],
-                        caps_field=dict_fields['caps'])
+    model = model_class(dict_fields['words'], dict_fields['tags'])
     model.build(options)
     if options.gpu_id is not None:
         model = model.cuda(options.gpu_id)
