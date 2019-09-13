@@ -50,8 +50,6 @@ python3 -m deepbond train \
 					  --early-stopping-patience 5 \
 					  --restore-best-model \
 
-exit;
-
 python3 -m deepbond predict \
                       --load "saved-models/test-cinderela-togo/" \
 					  --prediction-type classes \

@@ -47,7 +47,6 @@ class SimpleLSTM(Model):
 
         if options.freeze_embeddings:
             self.word_emb.weight.requires_grad = False
-            self.word_emb.bias.requires_grad = False
 
         self.is_bidir = options.bidirectional
         self.sum_bidir = options.sum_bidir

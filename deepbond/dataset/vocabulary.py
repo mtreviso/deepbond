@@ -102,7 +102,7 @@ class Vocabulary(Vocab):
 
         if add_vectors_vocab and vectors is not None:
             if max_size is not None and \
-                sum(v.stoi for v in vectors) + \
+                sum(len(v.stoi) for v in vectors) + \
                     len(self.itos) > max_size:
                 warnings.warn('Adding the vectors vocabulary will make '
                               'len(vocab) > max_vocab_size!')

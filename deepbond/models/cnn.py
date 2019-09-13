@@ -40,7 +40,6 @@ class CNN(Model):
         features_size = options.word_embeddings_size
         if options.freeze_embeddings:
             self.word_emb.weight.requires_grad = False
-            self.word_emb.bias.requires_grad = False
 
         self.cnn_1d = nn.Conv1d(in_channels=features_size,
                                 out_channels=options.conv_size,

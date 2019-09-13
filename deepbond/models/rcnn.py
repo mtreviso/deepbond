@@ -57,7 +57,6 @@ class RCNN(Model):
 
         if options.freeze_embeddings:
             self.word_emb.weight.requires_grad = False
-            self.word_emb.bias.requires_grad = False
 
         features_size = options.word_embeddings_size
 
