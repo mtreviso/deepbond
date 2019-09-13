@@ -1,3 +1,4 @@
+# pip3 install --user gensim
 from gensim.models import Word2Vec, KeyedVectors
 
 input_file_path = '../data/embeddings/word2vec/pt_word2vec_sg_600.emb'
