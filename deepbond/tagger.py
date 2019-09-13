@@ -82,6 +82,10 @@ class Tagger:
         options.update(kwargs)
         options = Namespace(**options)
 
+        # fix the case when the hidden_size is passed as a function's arg
+        if not isinstance(options.hidden_size, list):
+            options.hidden_size = [options.hidden_size]
+
         # configure stuff
         options.gpu_id = self.gpu_id
         options.output_dir = config_utils.configure_output(options.output_dir)

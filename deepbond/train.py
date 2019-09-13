@@ -100,6 +100,7 @@ def run(options):
 
     trainer.train()
 
+    # SAVE
     if options.save:
         logging.info('Saving path: {}'.format(options.save))
         config_path = Path(options.save)
