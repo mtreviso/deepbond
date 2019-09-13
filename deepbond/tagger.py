@@ -115,13 +115,8 @@ class Tagger:
         # set the current gpu
         self.options.gpu_id = self.gpu_id
 
-        # set dummy loss_weights (the correct values are going to be loaded)
-        loss_weights = None
-        if self.options.loss_weights == 'balanced':
-            loss_weights = [0] * (len(self.fields_tuples[-1][1].vocab) - 1)
-
         # load model, optimizer and scheduler
-        self.model = models.load(dir_path, self.fields_tuples, loss_weights)
+        self.model = models.load(dir_path, self.fields_tuples)
         self.optimizer = optimizer.load(dir_path, self.model.parameters())
         self.scheduler = scheduler.load(dir_path, self.optimizer)
 

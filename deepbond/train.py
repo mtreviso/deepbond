@@ -69,12 +69,8 @@ def run(options):
     else:
         logging.info('Loading vocabularies...')
         fields.load_vocabs(options.load, fields_tuples)
-        # set dummy loss_weights (the correct values are going to be loaded)
-        loss_weights = None
-        if options.loss_weights == 'balanced':
-            loss_weights = [0] * (len(tags_field.vocab) - 1)
         logging.info('Loading model...')
-        model = models.load(options.load, fields_tuples, loss_weights)
+        model = models.load(options.load, fields_tuples)
         logging.info('Loading optimizer...')
         optim = optimizer.load(options.load, model.parameters())
         logging.info('Loading scheduler...')

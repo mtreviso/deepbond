@@ -6,6 +6,8 @@ from torch.nn.utils.rnn import pad_packed_sequence as unpack
 
 from deepbond import constants
 from deepbond.models.model import Model
+from deepbond.modules.attention import Attention
+from deepbond.modules.scorer import DotProductScorer
 
 
 class RCNN(Model):
@@ -22,9 +24,10 @@ class RCNN(Model):
         self.max_pool = None
         self.is_bidir = None
         self.sum_bidir = None
-        self.gru = None
+        self.rnn_type = None
+        self.rnn = None
         self.hidden = None
-        self.dropout_gru = None
+        self.dropout_rnn = None
         self.linear_out = None
         self.relu = None
         self.sigmoid = None
@@ -65,17 +68,27 @@ class RCNN(Model):
 
         self.is_bidir = options.bidirectional
         self.sum_bidir = options.sum_bidir
-        self.gru = nn.GRU(options.conv_size // options.pool_length +
-                          options.pool_length // 2,
-                          hidden_size,
-                          bidirectional=self.is_bidir,
-                          batch_first=True)
+        self.rnn_type = options.rnn_type
+
+        rnn_class = nn.RNN
+        if self.rnn_type == 'gru':
+            rnn_class = nn.GRU
+        elif self.rnn_type == 'lstm':
+            rnn_class = nn.LSTM
+        self.rnn = rnn_class(options.conv_size // options.pool_length +
+                             options.pool_length // 2,
+                             hidden_size,
+                             bidirectional=self.is_bidir,
+                             batch_first=True)
         self.hidden = None
-        self.dropout_gru = nn.Dropout(options.dropout)
+        self.dropout_rnn = nn.Dropout(options.dropout)
 
         n = 2 if self.is_bidir else 1
         n = 1 if self.sum_bidir else n
         self.linear_out = nn.Linear(n * hidden_size, self.nb_classes)
+
+        self.scorer = DotProductScorer(scaled=True)
+        self.attn = Attention(self.scorer)
 
         self.relu = torch.nn.ReLU()
         self.sigmoid = torch.nn.Sigmoid()
@@ -88,24 +101,24 @@ class RCNN(Model):
         self.is_built = True
 
     def init_weights(self):
-        torch.nn.init.xavier_uniform_(self.cnn_1d.weight)
-        torch.nn.init.constant_(self.cnn_1d.bias, 0.)
-        torch.nn.init.xavier_uniform_(self.gru.weight_ih_l0)
-        torch.nn.init.xavier_uniform_(self.gru.weight_hh_l0)
-        torch.nn.init.constant_(self.gru.bias_ih_l0, 0.)
-        torch.nn.init.constant_(self.gru.bias_hh_l0, 0.)
-        torch.nn.init.xavier_uniform_(self.linear_out.weight)
-        torch.nn.init.constant_(self.linear_out.bias, 0.)
-        if self.is_bidir:
-            torch.nn.init.xavier_uniform_(self.gru.weight_ih_l0_reverse)
-            torch.nn.init.xavier_uniform_(self.gru.weight_hh_l0_reverse)
-            torch.nn.init.constant_(self.gru.bias_ih_l0_reverse, 0.)
-            torch.nn.init.constant_(self.gru.bias_hh_l0_reverse, 0.)
+        def init_xavier(module):
+            for name, param in module.named_parameters():
+                if 'bias' in name:
+                    torch.nn.init.constant_(param, 0.)
+                elif 'weight' in name:
+                    torch.nn.init.xavier_uniform_(param)
+        init_xavier(self.rnn)
+        init_xavier(self.cnn_1d)
+        init_xavier(self.linear_out)
 
     def init_hidden(self, batch_size, hidden_size):
         # The axes semantics are (num_layers, minibatch_size, hidden_dim)
         num_layers = 2 if self.is_bidir else 1
-        return torch.zeros(num_layers, batch_size, hidden_size)
+        if self.rnn_type == 'lstm':
+            return (torch.zeros(num_layers, batch_size, hidden_size),
+                    torch.zeros(num_layers, batch_size, hidden_size))
+        else:
+            return torch.zeros(num_layers, batch_size, hidden_size)
 
     def forward(self, batch):
         assert self.is_built
@@ -114,8 +127,8 @@ class RCNN(Model):
         mask = h != constants.PAD_ID
         lengths = mask.int().sum(dim=-1)
 
-        # initialize GRU hidden state
-        self.hidden = self.init_hidden(h.shape[0], self.gru.hidden_size)
+        # initialize RNN hidden state
+        self.hidden = self.init_hidden(h.shape[0], self.rnn.hidden_size)
 
         # (bs, ts) -> (bs, ts, emb_dim)
         h = self.word_emb(h)
@@ -135,17 +148,23 @@ class RCNN(Model):
 
         # (bs, ts, pool_size) -> (bs, ts, hidden_size)
         h = pack(h, lengths, batch_first=True)
-        h, self.hidden = self.gru(h, self.hidden)
+        h, self.hidden = self.rnn(h, self.hidden)
         h, _ = unpack(h, batch_first=True)
-        h = self.dropout_gru(h)
+        h = self.dropout_rnn(h)
 
         # if you'd like to sum instead of concatenate:
         if self.sum_bidir:
-            h = (h[:, :, :self.gru.hidden_size] +
-                 h[:, :, self.gru.hidden_size:])
+            h = (h[:, :, :self.rnn.hidden_size] +
+                 h[:, :, self.rnn.hidden_size:])
+
+        # self attention
+        h, _ = self.attn(h, h, h, mask=mask)
 
         # (bs, ts, hidden_size) -> (bs, ts, nb_classes)
-        h = F.log_softmax(self.linear_out(h), dim=-1)
+        h = self.linear_out(h)
+
+        # (bs, ts, nb_classes) -> (bs, ts, nb_classes) in simplex
+        h = F.log_softmax(h, dim=-1)
 
         # remove <bos> and <eos> tokens
         # (bs, ts, nb_classes) -> (bs, ts-2, nb_classes)

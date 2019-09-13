@@ -34,8 +34,15 @@ def load_state(path, model):
     model.load(str(model_path))
 
 
-def load(path, fields_tuples, loss_weights):
+def load(path, fields_tuples):
     options = opts.load(path)
+
+    # set dummy loss_weights (the correct values are going to be loaded)
+    tags_field = dict(fields_tuples)['tags']
+    loss_weights = None
+    if options.loss_weights == 'balanced':
+        loss_weights = [0] * (len(tags_field.vocab) - 1)
+
     model = build(options, fields_tuples, loss_weights)
     load_state(path, model)
     return model

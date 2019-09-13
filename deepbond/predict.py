@@ -43,6 +43,7 @@ def run(options):
     fields.load_vocabs(options.load, fields_tuples)
 
     logging.info('Loading model...')
+
     model = models.load(options.load, fields_tuples)
 
     predicter = Predicter(dataset_iter, model)
@@ -51,7 +52,7 @@ def run(options):
     if options.prediction_type == 'classes':
         prediction_tags = transform_classes_to_tags(tags_field, predictions)
         predictions_str = transform_predictions_to_text(prediction_tags)
-    elif options.prediction_type == 'probas':
+    else:
         predictions_str = transform_predictions_to_text(predictions)
 
     if options.text is None:
