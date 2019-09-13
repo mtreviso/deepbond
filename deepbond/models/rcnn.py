@@ -70,9 +70,13 @@ class RCNN(Model):
             self.max_pool = nn.MaxPool1d(options.pool_length,
                                          padding=options.pool_length // 2)
 
+            features_size = (options.conv_size // options.pool_length +
+                             options.pool_length // 2)
+
         self.is_bidir = options.bidirectional
         self.sum_bidir = options.sum_bidir
         self.rnn_type = options.rnn_type
+        n = 1
 
         if options.use_rnn:
             rnn_class = nn.RNN
@@ -80,22 +84,22 @@ class RCNN(Model):
                 rnn_class = nn.GRU
             elif self.rnn_type == 'lstm':
                 rnn_class = nn.LSTM
-            self.rnn = rnn_class(options.conv_size // options.pool_length +
-                                 options.pool_length // 2,
+            self.rnn = rnn_class(features_size,
                                  hidden_size,
                                  bidirectional=self.is_bidir,
                                  batch_first=True)
             self.hidden = None
             self.dropout_rnn = nn.Dropout(options.dropout)
-
-        n = 2 if self.is_bidir else 1
-        n = 1 if self.sum_bidir else n
-        if options.use_linear:
-            self.linear_out = nn.Linear(n * hidden_size, self.nb_classes)
+            features_size = hidden_size
+            n = 2 if self.is_bidir else 1
+            n = 1 if self.sum_bidir else n
 
         if options.use_attention:
             self.scorer = DotProductScorer(scaled=True)
             self.attn = Attention(self.scorer)
+
+        if options.use_linear:
+            self.linear_out = nn.Linear(n * features_size, self.nb_classes)
 
         if options.use_crf:
             self.crf = CRF(self.nb_classes+3,
@@ -109,6 +113,8 @@ class RCNN(Model):
 
         self.init_weights()
 
+        import ipdb; ipdb.set_trace()
+
         # Loss
         self._loss = nn.NLLLoss(weight=loss_weights,
                                 ignore_index=constants.TAGS_PAD_ID)
@@ -121,9 +127,12 @@ class RCNN(Model):
                     torch.nn.init.constant_(param, 0.)
                 elif 'weight' in name:
                     torch.nn.init.xavier_uniform_(param)
-        init_xavier(self.rnn)
-        init_xavier(self.cnn_1d)
-        init_xavier(self.linear_out)
+        if self.cnn_1d is not None:
+            init_xavier(self.cnn_1d)
+        if self.rnn is not None:
+            init_xavier(self.rnn)
+        if self.linear_out is not None:
+            init_xavier(self.linear_out)
 
     def init_hidden(self, batch_size, hidden_size):
         # The axes semantics are (num_layers, minibatch_size, hidden_dim)
@@ -140,9 +149,6 @@ class RCNN(Model):
         h = batch.words
         mask = h != constants.PAD_ID
         lengths = mask.int().sum(dim=-1)
-
-        # initialize RNN hidden state
-        self.hidden = self.init_hidden(h.shape[0], self.rnn.hidden_size)
 
         # (bs, ts) -> (bs, ts, emb_dim)
         h = self.word_emb(h)
@@ -162,6 +168,9 @@ class RCNN(Model):
             h = self.max_pool(h)
 
         if self.rnn is not None:
+            # initialize RNN hidden state
+            self.hidden = self.init_hidden(h.shape[0], self.rnn.hidden_size)
+
             # (bs, ts, pool_size) -> (bs, ts, hidden_size)
             h = pack(h, lengths, batch_first=True)
             h, self.hidden = self.rnn(h, self.hidden)
