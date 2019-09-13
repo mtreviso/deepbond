@@ -37,10 +37,10 @@ class Stats(object):
         self.mcc = None
 
         # this attrs will be set when calc method is called
-        self.best_prec_rec_f1 = BestValueEpoch(value=[0, 0, 0], epoch=0)
-        self.best_ser = BestValueEpoch(value=0, epoch=0)
-        self.best_mcc = BestValueEpoch(value=0, epoch=0)
-        self.best_loss = BestValueEpoch(value=np.Inf, epoch=0)
+        self.best_prec_rec_f1 = BestValueEpoch(value=[0, 0, 0], epoch=1)
+        self.best_ser = BestValueEpoch(value=float('inf'), epoch=1)
+        self.best_mcc = BestValueEpoch(value=0, epoch=1)
+        self.best_loss = BestValueEpoch(value=float('inf'), epoch=1)
 
         # private (used for lazy calculation)
         self._flattened_preds = None
