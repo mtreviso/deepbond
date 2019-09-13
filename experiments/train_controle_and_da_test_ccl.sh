@@ -9,8 +9,6 @@ python3 -m deepbond train \
                       --train-path "data/transcriptions/ss/Controle" \
 					  --dev-path "data/transcriptions/ss/DA-Leve/" \
 					  --test-path "data/transcriptions/ss/CCL-A/" \
-					  --embeddings-format "word2vec" \
-                      --embeddings-path "data/embeddings/word2vec/pt_word2vec_sg_600.kv.emb" \
 					  --punctuations ".?!" \
 					  --loss-weights "balanced" \
 					  --train-batch-size 8 \
@@ -26,19 +24,20 @@ python3 -m deepbond train \
 					  --output-dir "runs/test-cinderela/" \
                       --save "saved-models/test-cinderela/" \
                       --tensorboard \
+                      --use-conv \
+                      --use-attention \
+                      --use-linear \
+
+
+#                      --embeddings-format "word2vec" \
+#                      --embeddings-path "data/embeddings/word2vec/pt_word2vec_sg_600.kv.emb" \
+
+exit;
 
 python3 -m deepbond predict \
-                      --load "saved-models/testing-cinderela/" \
+                      --load "saved-models/test-cinderela/" \
 					  --prediction-type classes \
 					  --output-dir "predictions/testing-cinderela/" \
 					  --test-path "data/transcriptions/ss/CCL-A/" \
 					  # --text "Há livros escritos para evitar espaços vazios na estante ."
-
-
-#--embeddings-format "word2vec" \
-#--embeddings-path "data/embeddings/word2vec/pt_word2vec_sg_600.kv.emb" \
-#--dev-path "data/transcriptions/ss/macmorpho_v1/dev.txt" \
-
-#kfold kfold-stratified
-#
 

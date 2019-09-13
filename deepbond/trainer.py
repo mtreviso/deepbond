@@ -51,11 +51,13 @@ class Trainer:
         # Perform an evaluation on dev set if it is available
         if self.dev_iter is not None:
             logging.info('Evaluating before training...')
+            self.reporter.set_epoch(0)
             self.dev_epoch()
 
         # Perform an evaluation on test set if it is available
         if self.test_iter is not None:
             logging.info('Testing before training...')
+            self.reporter.set_epoch(0)
             self.test_epoch()
 
         start_time = time.time()

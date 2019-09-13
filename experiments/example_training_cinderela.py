@@ -13,11 +13,11 @@ args = {
   'test_path': 'data/transcriptions/ss/DA-Leve/',
 
   'model': 'rcnn',
-  'rnn_type': 'lstm',
+  'rnn_type': 'gru',
   'bidirectional': True,
   'train_batch_size': 4,
   'dev_batch_size': 4,
-  'optimizer': 'rmsprop',
+  'optimizer': 'adam',
   'final_report': True,
   'epochs': 1,
   'hidden_size': [100],
