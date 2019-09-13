@@ -14,7 +14,8 @@ log/
 
 # torchtext vectors cache
 .vector_cache
-
+.vscode/*
+.vscode
 # Local run directory
 runs/
 
