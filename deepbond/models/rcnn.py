@@ -112,8 +112,6 @@ class RCNN(Model):
 
         self.init_weights()
 
-        import ipdb; ipdb.set_trace()
-
         # Loss
         self._loss = nn.NLLLoss(weight=loss_weights,
                                 ignore_index=constants.TAGS_PAD_ID)
