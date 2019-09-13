@@ -2,7 +2,21 @@ from deepbond import Tagger
 
 import os
 
+
+def join_text_and_periods(text, classes):
+    new_text = []
+    tokens = text.split()
+    for token, label in zip(tokens, classes):
+        if label == '_':
+            new_text.append(token)
+        else:
+            new_text.append(token)
+            new_text.append('.')
+    return ' '.join(new_text)
+
+
 text = 'Há livros escritos para evitar espaços vazios na estante .'
+
 
 args = {
     'model': 'rcnn',
@@ -37,6 +51,10 @@ for fold in os.listdir(folds_dir):
     print("Fold Number:", fold)
     train_path = os.path.join(folds_dir, fold, 'train')
     test_path = os.path.join(folds_dir, fold, 'test')
+    pred_path = os.path.join(folds_dir, fold, 'pred')
+
+    if not os.path.exists(pred_path):
+            os.mkdir(pred_path)
 
     tagger = Tagger()
     tagger.train(train_path=train_path,
@@ -49,12 +67,15 @@ for fold in os.listdir(folds_dir):
       with open(os.path.join(test_path,file),'r', encoding='utf-8') as f:
         text = f.read().strip()
    
-
         classes = tagger.predict_classes(text)
         tags = tagger.transform_classes_to_tags(classes)
+        pred_text = join_text_and_periods(text,tags)
+        with open(os.path.join(pred_path,file),'w', encoding='utf-8') as fl:
+            fl.write(pred_text)
 
-        print(text)
-        print(tags)
+
+        #print(text)
+        #print(tags)
     del tagger
 
 # loading now!
