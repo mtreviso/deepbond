@@ -28,7 +28,7 @@ class Vocabulary(Vocab):
         vectors_cache=None,
         keep_rare_with_vectors=True,
         add_vectors_vocab=False,
-        specials_first=False,
+        specials_first=True,
     ):
         """Create a Vocab object from a collections.Counter.
 

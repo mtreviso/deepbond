@@ -48,6 +48,16 @@ class Trainer:
         self.reporter = Reporter(options.output_dir, options.tensorboard)
 
     def train(self):
+        # Perform an evaluation on dev set if it is available
+        if self.dev_iter is not None:
+            logging.info('Evaluating before training...')
+            self.dev_epoch()
+
+        # Perform an evaluation on test set if it is available
+        if self.test_iter is not None:
+            logging.info('Testing before training...')
+            self.test_epoch()
+
         start_time = time.time()
         for epoch in range(self.current_epoch, self.epochs + 1):
             logging.info('Epoch {} of {}'.format(epoch, self.epochs))
@@ -72,7 +82,7 @@ class Trainer:
                 logging.info('Testing...')
                 self.test_epoch()
 
-            # Only save if an improvement occurred
+            # Only save if an improvement has occurred
             if self.save_best_only and self.dev_iter is not None:
                 if self.dev_stats.best_prec_rec_f1.epoch == epoch:
                     logging.info('F1 improved on epoch {}'.format(epoch))
@@ -150,6 +160,8 @@ class Trainer:
             self.reporter.report_progress(i, len(self.train_iter), acum_loss)
 
         self.train_stats.calc(self.current_epoch)
+
+        # scheduler.step() after training
         self.scheduler.step()
 
     def _eval(self, ds_iterator, stats):

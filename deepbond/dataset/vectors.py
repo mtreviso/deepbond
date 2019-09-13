@@ -148,12 +148,3 @@ FastText = partial(WordEmbeddings, emb_format='fasttext')
 Glove = partial(WordEmbeddings, emb_format='glove')
 Fonseca = partial(WordEmbeddings, emb_format='fonseca', map_fn=to_fonseca)
 TextVectors = partial(WordEmbeddings, emb_format='text')
-
-AvailableVectors = {
-    'polyglot': Polyglot,
-    'word2vec': Word2Vec,
-    'fasttext': FastText,
-    'glove': Glove,
-    'fonseca': Fonseca,
-    'text': TextVectors,
-}

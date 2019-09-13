@@ -11,7 +11,8 @@ from deepbond.dataset.vectors import (Polyglot,
                                       Word2Vec,
                                       FastText,
                                       Glove,
-                                      Fonseca)
+                                      Fonseca,
+                                      TextVectors)
 
 
 available_embeddings = {
@@ -20,6 +21,7 @@ available_embeddings = {
     'fasttext': FastText,
     'glove': Glove,
     'fonseca': Fonseca,
+    'text': TextVectors
 }
 
 
