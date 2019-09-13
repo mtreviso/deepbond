@@ -43,15 +43,18 @@ for fold in os.listdir(folds_dir):
                  test_path=test_path,
                  dropout=0.2,
                  **args)
-
     # alternatively, you can pass them like this:
     # tagger.train(train_path='path/to/', model='rcnn', epochs=2, use_caps=True)
+    for file in os.listdir(test_path):
+      with open(os.path.join(test_path,file),'r', encoding='utf-8') as f:
+        text = f.read().strip()
+   
 
-    classes = tagger.predict_classes(text)
-    tags = tagger.transform_classes_to_tags(classes)
+        classes = tagger.predict_classes(text)
+        tags = tagger.transform_classes_to_tags(classes)
 
-    print(text)
-    print(tags)
+        print(text)
+        print(tags)
     del tagger
 
 # loading now!
