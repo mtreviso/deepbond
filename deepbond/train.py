@@ -50,12 +50,12 @@ def run(options):
 
     datasets = [train_dataset, dev_dataset, test_dataset]
     datasets = list(filter(lambda x: x is not None, datasets))
-    loss_weights = None
 
     # BUILD
     if not options.load:
         logging.info('Building vocabulary...')
         fields.build_vocabs(fields_tuples, train_dataset, datasets, options)
+        loss_weights = None
         if options.loss_weights == 'balanced':
             loss_weights = train_dataset.get_loss_weights()
         logging.info('Building model...')
@@ -69,8 +69,10 @@ def run(options):
     else:
         logging.info('Loading vocabularies...')
         fields.load_vocabs(options.load, fields_tuples)
+        # set dummy loss_weights (the correct values are going to be loaded)
+        loss_weights = None
         if options.loss_weights == 'balanced':
-            loss_weights = train_dataset.get_loss_weights()
+            loss_weights = [0] * (len(tags_field.vocab) - 1)
         logging.info('Loading model...')
         model = models.load(options.load, fields_tuples, loss_weights)
         logging.info('Loading optimizer...')

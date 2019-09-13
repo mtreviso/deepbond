@@ -21,7 +21,6 @@ python3 -m deepbond train \
 					  --early-stopping-patience 2 \
 					  --restore-best-model \
 					  --final-report \
-					  --add-embeddings-vocab \
 					  --keep-rare-with-vectors \
 					  --add-embeddings-vocab \
                       --save "saved-models/test-cinderela/" \

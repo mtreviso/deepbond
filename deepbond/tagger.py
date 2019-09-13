@@ -92,11 +92,11 @@ class Tagger:
         self.options = options
 
         # train!
-        fields_tuples, model, optimizer, scheduler = train.run(self.options)
+        fields_tuples, model, optim, sched = train.run(self.options)
         self.fields_tuples = fields_tuples
         self.model = model
-        self.optimizer = optimizer
-        self.scheduler = scheduler
+        self.optimizer = optim
+        self.scheduler = sched
 
         # the tagger can be considered loaded
         self._loaded = True
@@ -105,17 +105,19 @@ class Tagger:
         # load options from the json file
         self.options = opts.load(dir_path)
 
-        # append loaded fields_tuples
-        self.fields_tuples += features.load(dir_path)
-
         # load vocabularies for each field
         fields.load_vocabs(dir_path, self.fields_tuples)
 
         # set the current gpu
         self.options.gpu_id = self.gpu_id
 
+        # set dummy loss_weights (the correct values are going to be loaded)
+        loss_weights = None
+        if self.options.loss_weights == 'balanced':
+            loss_weights = [0] * (len(self.fields_tuples[-1][1].vocab) - 1)
+
         # load model, optimizer and scheduler
-        self.model = models.load(dir_path, self.fields_tuples)
+        self.model = models.load(dir_path, self.fields_tuples, loss_weights)
         self.optimizer = optimizer.load(dir_path, self.model.parameters())
         self.scheduler = scheduler.load(dir_path, self.optimizer)
 
