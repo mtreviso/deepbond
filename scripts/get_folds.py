@@ -1,9 +1,10 @@
-import numpy as np
-import os 
+import os
 import shutil
+
+import numpy as np
+
 np.random.seed(1)
 import argparse
-import warnings
 
 
 def check_args(args):
@@ -66,7 +67,6 @@ def main(data_dir,folds_dir):
                     shutil.copyfile(os.path.join(typ_path,file),os.path.join(fold_train_out,file))
 
     
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--data', '-c', type=str,

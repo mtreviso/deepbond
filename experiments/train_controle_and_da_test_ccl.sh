@@ -27,7 +27,7 @@ python3 -m deepbond train \
                       --use-conv \
                       --use-attention \
                       --use-linear \
-
+                      --use-rnn \
 
 #                      --embeddings-format "word2vec" \
 #                      --embeddings-path "data/embeddings/word2vec/pt_word2vec_sg_600.kv.emb" \
