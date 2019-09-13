@@ -129,3 +129,4 @@ class TagsField(Field):
                          is_target=True,
                          batch_first=True,
                          **kwargs)
+        self.vocab_cls = Vocabulary

@@ -6,10 +6,6 @@ from torchtext.vocab import Vocab
 from deepbond.constants import UNK_ID, UNK, PAD, START, STOP
 
 
-def _default_unk_index():
-    return UNK_ID  # should be zero
-
-
 class Vocabulary(Vocab):
     """Defines a vocabulary object that will be used to numericalize a field.
 
@@ -31,7 +27,8 @@ class Vocabulary(Vocab):
         unk_init=None,
         vectors_cache=None,
         keep_rare_with_vectors=True,
-        add_vectors_vocab=False
+        add_vectors_vocab=False,
+        specials_first=False,
     ):
         """Create a Vocab object from a collections.Counter.
 
@@ -68,13 +65,15 @@ class Vocabulary(Vocab):
         counter = counter.copy()
         min_freq = max(min_freq, 1)
 
-        self.itos = list(specials)
+        self.itos = []
+        if specials_first:
+            self.itos = list(specials)
+            max_size = None if max_size is None else max_size + len(self.itos)
+
         # frequencies of special tokens are not counted when building vocab
         # in frequency order
         for tok in specials:
             del counter[tok]
-
-        max_size = None if max_size is None else max_size + len(self.itos)
 
         # sort by frequency, then alphabetically
         words_and_frequencies = sorted(counter.items(), key=lambda tup: tup[0])
@@ -98,7 +97,7 @@ class Vocabulary(Vocab):
             else:
                 self.itos.append(word)
 
-        self.orig_stoi = defaultdict(_default_unk_index)
+        self.orig_stoi = defaultdict(self._default_unk_index)
         self.orig_stoi.update({tok: i for i, tok in enumerate(self.itos)})
 
         if add_vectors_vocab and vectors is not None:
@@ -114,9 +113,12 @@ class Vocabulary(Vocab):
             self.itos.extend(list(v_itos))
 
         if '<unk>' in specials:  # hard-coded for now
-            self.stoi = defaultdict(_default_unk_index)
+            self.stoi = defaultdict(self._default_unk_index)
         else:
             self.stoi = defaultdict()
+
+        if not specials_first:
+            self.itos.extend(list(specials))
 
         # stoi is simply a reverse dict for itos
         self.stoi.update({tok: i for i, tok in enumerate(self.itos)})
@@ -129,6 +131,15 @@ class Vocabulary(Vocab):
             self.load_vectors(vectors, unk_init=unk_init, cache=vectors_cache)
         else:
             assert unk_init is None and vectors_cache is None
+
+    def _default_unk_index(self):
+        return UNK_ID  # should be zero
+
+    def __setstate__(self, state):
+        stoi = defaultdict(self._default_unk_index)
+        stoi.update(state['stoi'])
+        state['stoi'] = stoi
+        self.__dict__.update(state)
 
 
 def merge_vocabularies(
