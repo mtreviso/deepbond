@@ -46,7 +46,7 @@ for fold in os.listdir(folds_dir):
     # alternatively, you can pass them like this:
     # tagger.train(train_path='path/to/', model='rcnn', epochs=2, use_caps=True)
     for file in os.listdir(test_path):
-      with open(os.path.join(test_path,file),'r',encodding='utf-8') as f:
+      with open(os.path.join(test_path,file),'r', encoding='utf-8') as f:
         text = f.read().strip()
    
 
