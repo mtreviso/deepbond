@@ -1,4 +1,9 @@
 from deepbond import Tagger
+import numpy as np
+import os 
+import shutil
+
+
 
 text = 'Há livros escritos para evitar espaços vazios na estante .'
 
@@ -32,6 +37,35 @@ args = {
   'tensorboard': True,
 
 }
+
+data_dir = '../../transcriptions/ss'
+folds_dir = '../../folds'
+
+if not os.path.exists(folds_dir ):
+    os.mkdir(folds_dir)
+
+n_folds = 5
+classes_dir = os.listdir(data_dir)
+
+for dir in classes_dir:
+  file_list = os.listdir(dir)
+  np.random.shuffle(file_list)
+  num_files = len(filelist)
+  test_len = int(num_files/n_folds)
+  fold_dir = os.path.join(folds_dir,dir)
+  if not os.path.exists(fold_dir):
+    os.mkdir(fold_dir)
+  
+  for id in range(4,numfiles,test_len)):
+    fold_out_dir_name = os.path.join(fold_dir,str(id))
+    if not os.path.exists(fold_out_dir_name):
+      os.mkdir(fold_out_dir_name) 
+    fold_test_out = os.path.join(fold_out_dir_name,'test')
+    fold_train_out= os.path.join(fold_out_dir_name,'train')
+    for file in file_list[int(id-test_len):id]
+      shutil.copyfile(os.path.join(fold_test_out), 'file2.txt')
+
+
 
 tagger = Tagger()
 tagger.train(dropout=0.2, **args)
