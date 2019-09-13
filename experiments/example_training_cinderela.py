@@ -1,6 +1,6 @@
 from deepbond import Tagger
 
-
+import os
 
 text = 'Há livros escritos para evitar espaços vazios na estante .'
 
