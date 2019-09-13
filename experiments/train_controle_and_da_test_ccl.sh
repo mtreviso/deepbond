@@ -22,7 +22,6 @@ python3 -m deepbond train \
                       --model rcnn \
                       \
                       --emb-dropout 0 \
-                      --freeze-embeddings \
                       --embeddings-format "word2vec" \
                       --embeddings-path "data/embeddings/word2vec/pt_word2vec_sg_600.kv.emb" \
                       \
@@ -33,7 +32,7 @@ python3 -m deepbond train \
                       \
                       --use-rnn \
                       --rnn-type gru \
-                      --hidden-size 100 \
+                      --hidden-size 200 \
                       --bidirectional \
                       --sum-bidir \
                       --dropout 0.5 \
@@ -41,9 +40,9 @@ python3 -m deepbond train \
                       --use-linear \
                       \
 					  --loss-weights "balanced" \
-					  --train-batch-size 8 \
-					  --dev-batch-size 8 \
-					  --epochs 10 \
+					  --train-batch-size 2 \
+					  --dev-batch-size 2 \
+					  --epochs 20 \
 					  --optimizer "adam" \
 					  --save-best-only \
 					  --early-stopping-patience 5 \
@@ -52,7 +51,10 @@ python3 -m deepbond train \
 python3 -m deepbond predict \
                       --prediction-type classes \
                       --load "saved-models/test-cinderela-togo/" \
-					  --output-dir "predictions/testing-cinderela-togo/" \
 					  --test-path "data/transcriptions/folds/CCL-A/0/test/" \
+					  --output-dir "data/transcriptions/folds/CCL-A/0/pred/" \
 					  # --text "Há livros escritos para evitar espaços vazios na estante ."
+
+
+
 

@@ -172,12 +172,16 @@ class RCNN(Model):
             h = pack(h, lengths, batch_first=True)
             h, self.hidden = self.rnn(h, self.hidden)
             h, _ = unpack(h, batch_first=True)
-            h = self.dropout_rnn(h)
 
             # if you'd like to sum instead of concatenate:
             if self.sum_bidir:
                 h = (h[:, :, :self.rnn.hidden_size] +
                      h[:, :, self.rnn.hidden_size:])
+
+            h = self.sigmoid(h)
+
+            # apply dropout
+            h = self.dropout_rnn(h)
 
         if self.attn is not None:
             # self attention

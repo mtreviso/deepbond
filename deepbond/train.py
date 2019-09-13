@@ -85,6 +85,13 @@ def run(options):
     if test_dataset:
         logging.info('Number of test examples: {}'.format(len(test_dataset)))
 
+    logging.info('Model info: ')
+    logging.info(str(model))
+    logging.info('Optimizer info: ')
+    logging.info(str(optim))
+    logging.info('Scheduler info: ')
+    logging.info(str(sched))
+
     # TRAIN
     logging.info('Building trainer...')
     trainer = Trainer(train_iter, model, optim, sched, options,
