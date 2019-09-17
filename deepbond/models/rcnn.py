@@ -170,6 +170,7 @@ class RCNN(Model):
 
             # (bs, ts, pool_size) -> (bs, ts, hidden_size)
             h = pack(h, lengths, batch_first=True)
+            self.hidden = self.hidden.to(batch.words.device)
             h, self.hidden = self.rnn(h, self.hidden)
             h, _ = unpack(h, batch_first=True)
 
