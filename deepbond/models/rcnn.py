@@ -132,13 +132,14 @@ class RCNN(Model):
             init_xavier(self.linear_out)
 
     def init_hidden(self, batch_size, hidden_size):
-        # The axes semantics are (num_layers, minibatch_size, hidden_dim)
-        num_layers = 2 if self.is_bidir else 1
+        # The axes semantics are (nb_layers, minibatch_size, hidden_dim)
+        nb_layers = 2 if self.is_bidir else 1
+        device = self.device
         if self.rnn_type == 'lstm':
-            return (torch.zeros(num_layers, batch_size, hidden_size),
-                    torch.zeros(num_layers, batch_size, hidden_size))
+            return (torch.zeros(nb_layers, batch_size, hidden_size).to(device),
+                    torch.zeros(nb_layers, batch_size, hidden_size).to(device))
         else:
-            return torch.zeros(num_layers, batch_size, hidden_size)
+            return torch.zeros(nb_layers, batch_size, hidden_size.to(device))
 
     def forward(self, batch):
         assert self.is_built
@@ -148,7 +149,7 @@ class RCNN(Model):
         lengths = mask.int().sum(dim=-1)
 
         # (bs, ts) -> (bs, ts, emb_dim)
-        h = self.word_emb(h).to(batch.words.device)
+        h = self.word_emb(h)
         h = self.dropout_emb(h)
 
         # Turn (bs, ts, emb_dim) into (bs, emb_dim, ts) for CNN
@@ -170,7 +171,6 @@ class RCNN(Model):
 
             # (bs, ts, pool_size) -> (bs, ts, hidden_size)
             h = pack(h, lengths, batch_first=True)
-            self.hidden = self.hidden.to(batch.words.device)
             h, self.hidden = self.rnn(h, self.hidden)
             h, _ = unpack(h, batch_first=True)
 

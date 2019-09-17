@@ -85,13 +85,13 @@ class RNN(Model):
         pass
 
     def init_hidden(self, batch_size, hidden_size):
-        # The axes semantics are (num_layers, minibatch_size, hidden_dim)
-        num_layers = 2 if self.is_bidir else 1
+        # The axes semantics are (nb_layers, minibatch_size, hidden_dim)
+        nb_layers = 2 if self.is_bidir else 1
         if self.rnn_type == 'lstm':
-            return (torch.zeros(num_layers, batch_size, hidden_size),
-                    torch.zeros(num_layers, batch_size, hidden_size))
+            return (torch.zeros(nb_layers, batch_size, hidden_size),
+                    torch.zeros(nb_layers, batch_size, hidden_size))
         else:
-            return torch.zeros(num_layers, batch_size, hidden_size)
+            return torch.zeros(nb_layers, batch_size, hidden_size)
 
     def forward(self, batch):
         assert self.is_built
