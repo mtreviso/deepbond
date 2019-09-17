@@ -22,8 +22,6 @@ python3 -m deepbond train \
                       --model rcnn \
                       \
                       --emb-dropout 0 \
-                      --embeddings-format "word2vec" \
-                      --embeddings-path "data/embeddings/word2vec/pt_word2vec_sg_600.kv.emb" \
                       \
                       --use-conv \
                       --conv-size 100 \
@@ -56,5 +54,4 @@ python3 -m deepbond predict \
 					  # --text "Há livros escritos para evitar espaços vazios na estante ."
 
 
-
-
+python3 scripts/join_original_text_with_predicted_labels.py data/transcriptions/folds/CCL-A/0/train/ data/transcriptions/folds/CCL-A/0/pred/predictions/
