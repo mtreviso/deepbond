@@ -18,7 +18,7 @@ class SimpleLSTM(Model):
         self.dropout_emb = None
         self.is_bidir = None
         self.sum_bidir = None
-        self.gru = None
+        self.lstm = None
         self.hidden = None
         self.dropout_gru = None
         self.linear_out = None
@@ -50,10 +50,10 @@ class SimpleLSTM(Model):
 
         self.is_bidir = options.bidirectional
         self.sum_bidir = options.sum_bidir
-        self.gru = nn.LSTM(features_size,
-                           hidden_size,
-                           bidirectional=options.bidirectional,
-                           batch_first=True)
+        self.lstm = nn.LSTM(features_size,
+                            hidden_size,
+                            bidirectional=options.bidirectional,
+                            batch_first=True)
         self.hidden = None
 
         n = 2 if self.is_bidir else 1
@@ -76,24 +76,27 @@ class SimpleLSTM(Model):
     def init_weights(self):
         pass
 
-    def init_hidden(self, batch_size, hidden_size):
+    def init_hidden(self, batch_size, hidden_size, device=None):
         # The axes semantics are (nb_layers, minibatch_size, hidden_dim)
         nb_layers = 2 if self.is_bidir else 1
-        return (torch.zeros(nb_layers, batch_size, hidden_size),
-                torch.zeros(nb_layers, batch_size, hidden_size))
+        return (torch.zeros(nb_layers, batch_size, hidden_size).to(device),
+                torch.zeros(nb_layers, batch_size, hidden_size).to(device))
 
     def forward(self, batch):
         assert self.is_built
 
+        batch_size = batch.words.shape[0]
+        device = batch.words.device
+
         # (ts, bs) -> (bs, ts)
-        bs, ts = batch.words.shape
         h = batch.words
         mask = h != constants.PAD_ID
         lengths = mask.int().sum(dim=-1)
 
         # initialize GRU hidden state
-        self.hidden = self.init_hidden(batch.words.shape[0],
-                                       self.gru.hidden_size)
+        self.hidden = self.init_hidden(
+            batch_size, self.lstm.hidden_size, device=device
+        )
 
         # (bs, ts) -> (bs, ts, emb_dim)
         h = self.word_emb(h)
@@ -101,13 +104,13 @@ class SimpleLSTM(Model):
 
         # (bs, ts, pool_size) -> (bs, ts, hidden_size)
         h = pack(h, lengths, batch_first=True)
-        h, self.hidden = self.gru(h, self.hidden)
+        h, self.hidden = self.lstm(h, self.hidden)
         h, _ = unpack(h, batch_first=True)
 
         # if you'd like to sum instead of concatenate:
         if self.sum_bidir:
-            h = (h[:, :, :self.gru.hidden_size] +
-                 h[:, :, self.gru.hidden_size:])
+            h = (h[:, :, :self.lstm.hidden_size] +
+                 h[:, :, self.lstm.hidden_size:])
 
         h = self.dropout_gru(h)
 

@@ -5,6 +5,7 @@ from torch.nn.utils.rnn import pack_padded_sequence as pack
 from torch.nn.utils.rnn import pad_packed_sequence as unpack
 
 from deepbond import constants
+from deepbond.initialization import init_xavier, init_kaiming
 from deepbond.models.model import Model
 from deepbond.modules.attention import Attention
 from deepbond.modules.crf import CRF
@@ -118,31 +119,28 @@ class RCNN(Model):
         self.is_built = True
 
     def init_weights(self):
-        def init_xavier(module):
-            for name, param in module.named_parameters():
-                if 'bias' in name:
-                    torch.nn.init.constant_(param, 0.)
-                elif 'weight' in name:
-                    torch.nn.init.xavier_uniform_(param)
         if self.cnn_1d is not None:
-            init_xavier(self.cnn_1d)
+            init_kaiming(self.cnn_1d, dist='uniform', nonlinearity='relu')
         if self.rnn is not None:
-            init_xavier(self.rnn)
+            init_xavier(self.rnn, dist='uniform')
         if self.linear_out is not None:
-            init_xavier(self.linear_out)
+            init_xavier(self.linear_out, dist='uniform')
 
-    def init_hidden(self, batch_size, hidden_size):
+    def init_hidden(self, batch_size, hidden_size, device=None):
         # The axes semantics are (nb_layers, minibatch_size, hidden_dim)
         nb_layers = 2 if self.is_bidir else 1
-        device = self.device
+
         if self.rnn_type == 'lstm':
             return (torch.zeros(nb_layers, batch_size, hidden_size).to(device),
                     torch.zeros(nb_layers, batch_size, hidden_size).to(device))
         else:
-            return torch.zeros(nb_layers, batch_size, hidden_size.to(device))
+            return torch.zeros(nb_layers, batch_size, hidden_size).to(device)
 
     def forward(self, batch):
         assert self.is_built
+
+        batch_size = batch.words.shape[0]
+        device = batch.words.device
 
         h = batch.words
         mask = h != constants.PAD_ID
@@ -167,7 +165,9 @@ class RCNN(Model):
 
         if self.rnn is not None:
             # initialize RNN hidden state
-            self.hidden = self.init_hidden(h.shape[0], self.rnn.hidden_size)
+            self.hidden = self.init_hidden(
+                batch_size, self.rnn.hidden_size, device=device
+            )
 
             # (bs, ts, pool_size) -> (bs, ts, hidden_size)
             h = pack(h, lengths, batch_first=True)

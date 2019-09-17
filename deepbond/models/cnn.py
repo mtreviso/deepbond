@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from deepbond import constants
+from deepbond.initialization import init_kaiming, init_xavier
 from deepbond.models.model import Model
 
 
@@ -58,10 +59,10 @@ class CNN(Model):
         self.is_built = True
 
     def init_weights(self):
-        torch.nn.init.xavier_uniform_(self.cnn_1d.weight)
-        torch.nn.init.constant_(self.cnn_1d.bias, 0.)
-        torch.nn.init.xavier_uniform_(self.linear_out.weight)
-        torch.nn.init.constant_(self.linear_out.bias, 0.)
+        if self.cnn_1d is not None:
+            init_kaiming(self.cnn_1d, dist='uniform', nonlinearity='relu')
+        if self.linear_out is not None:
+            init_xavier(self.linear_out, dist='uniform')
 
     def forward(self, batch):
         assert self.is_built

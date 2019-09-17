@@ -5,6 +5,7 @@ from torch.nn.utils.rnn import pack_padded_sequence as pack
 from torch.nn.utils.rnn import pad_packed_sequence as unpack
 
 from deepbond import constants
+from deepbond.initialization import init_xavier, init_kaiming
 from deepbond.models.model import Model
 
 
@@ -82,29 +83,37 @@ class RNN(Model):
         self.is_built = True
 
     def init_weights(self):
-        pass
+        if self.cnn_1d is not None:
+            init_kaiming(self.cnn_1d, dist='uniform', nonlinearity='relu')
+        if self.rnn is not None:
+            init_xavier(self.rnn, dist='uniform')
+        if self.linear_out is not None:
+            init_xavier(self.linear_out, dist='uniform')
 
-    def init_hidden(self, batch_size, hidden_size):
+    def init_hidden(self, batch_size, hidden_size, device=None):
         # The axes semantics are (nb_layers, minibatch_size, hidden_dim)
         nb_layers = 2 if self.is_bidir else 1
         if self.rnn_type == 'lstm':
-            return (torch.zeros(nb_layers, batch_size, hidden_size),
-                    torch.zeros(nb_layers, batch_size, hidden_size))
+            return (torch.zeros(nb_layers, batch_size, hidden_size).to(device),
+                    torch.zeros(nb_layers, batch_size, hidden_size).to(device))
         else:
-            return torch.zeros(nb_layers, batch_size, hidden_size)
+            return torch.zeros(nb_layers, batch_size, hidden_size).to(device)
 
     def forward(self, batch):
         assert self.is_built
 
+        batch_size = batch.words.shape[0]
+        device = batch.words.device
+
         # (ts, bs) -> (bs, ts)
-        bs, ts = batch.words.shape
         h = batch.words
         mask = h != constants.PAD_ID
         lengths = mask.int().sum(dim=-1)
 
         # initialize GRU hidden state
-        self.hidden = self.init_hidden(batch.words.shape[0],
-                                       self.rnn.hidden_size)
+        self.hidden = self.init_hidden(
+            batch_size, self.rnn.hidden_size, device=device
+        )
 
         # (bs, ts) -> (bs, ts, emb_dim)
         h = self.word_emb(h)
