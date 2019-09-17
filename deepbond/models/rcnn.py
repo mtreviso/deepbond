@@ -148,7 +148,7 @@ class RCNN(Model):
         lengths = mask.int().sum(dim=-1)
 
         # (bs, ts) -> (bs, ts, emb_dim)
-        h = self.word_emb(h)
+        h = self.word_emb(h).to(batch.words.device)
         h = self.dropout_emb(h)
 
         # Turn (bs, ts, emb_dim) into (bs, emb_dim, ts) for CNN
