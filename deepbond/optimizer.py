@@ -18,7 +18,7 @@ available_optimizers = {
     'sgd': torch.optim.SGD,
     'asgd': torch.optim.ASGD,
     'rmsprop': torch.optim.RMSprop,
-    'adamw': torch.optim.AdamW,
+    #'adamw': torch.optim.AdamW,
 }
 
 available_step_decays = {
