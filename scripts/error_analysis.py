@@ -220,9 +220,12 @@ class ErrorAnalysisSS:
 
 	def micro_report(self, gold_list, pred_list):
 		self.tp, self.tn, self.fp, self.fn = 0, 0, 0, 0
-		indexes = [int(x.split('-')[-1].split('.')[0]) for x in pred_list]
-		gold_list_sorted = [gold_list[i] for i in indexes]
-		golds, preds = self._populate(gold_list_sorted, pred_list)
+		
+		#indexes = [int(x.split('-')[-1].split('.')[0]) for x in pred_list]
+		#gold_list_sorted = [gold_list[i] for i in indexes]
+		#golds, preds = self._populate(gold_list_sorted, pred_list)
+		print(	gold_list, pred_list)	
+		golds, preds = self._populate(gold_list, pred_list)
 		self.raw_count(np.array(preds), np.array(golds))
 		self.show_stats(*self.prf(golds, preds), *self.cer_nist(golds, preds))
 		self.show_confusion_table()
