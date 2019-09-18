@@ -10,7 +10,7 @@ def build(dataset, device, batch_size, is_train):
         repeat=False,
         sort_key=dataset.sort_key,
         sort=False,
-        sort_within_batch=False,  # use apply_packed_sequences instead
+        sort_within_batch=False,
         # shuffle batches
         shuffle=is_train,
         device=device,
