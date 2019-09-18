@@ -88,8 +88,4 @@ class CNN(Model):
         # (bs, ts, pool_size) -> (bs, ts, nb_classes)
         h = F.log_softmax(self.linear_out(h), dim=-1)
 
-        # remove <bos> and <eos> tokens
-        # (bs, ts, nb_classes) -> (bs, ts-2, nb_classes)
-        h = h[:, 1:-1, :]
-
         return h

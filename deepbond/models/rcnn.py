@@ -7,6 +7,7 @@ from torch.nn.utils.rnn import pad_packed_sequence as unpack
 from deepbond import constants
 from deepbond.initialization import init_xavier, init_kaiming
 from deepbond.models.model import Model
+from deepbond.models.utils import apply_packed_sequence
 from deepbond.modules.attention import Attention
 from deepbond.modules.crf import CRF
 from deepbond.modules.scorer import DotProductScorer
@@ -170,9 +171,12 @@ class RCNN(Model):
             )
 
             # (bs, ts, pool_size) -> (bs, ts, hidden_size)
-            h = pack(h, lengths, batch_first=True)
-            h, self.hidden = self.rnn(h, self.hidden)
-            h, _ = unpack(h, batch_first=True)
+            # h = pack(h, lengths, batch_first=True)
+            # h, self.hidden = self.rnn(h, self.hidden)
+            # h, _ = unpack(h, batch_first=True)
+            h, self.hidden = apply_packed_sequence(
+                self.rnn, h, lengths, hidden=self.hidden
+            )
 
             # if you'd like to sum instead of concatenate:
             if self.sum_bidir:
@@ -194,9 +198,5 @@ class RCNN(Model):
 
         # (bs, ts, nb_classes) -> (bs, ts, nb_classes) in simplex
         h = F.log_softmax(h, dim=-1)
-
-        # remove <bos> and <eos> tokens
-        # (bs, ts, nb_classes) -> (bs, ts-2, nb_classes)
-        h = h[:, 1:-1, :]
 
         return h

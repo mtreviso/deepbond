@@ -1,7 +1,7 @@
 import torch
 
 from deepbond import constants
-from deepbond.models.utils import unmask
+from deepbond.models.utils import unmask, remove_bos_and_eos_symbols
 
 
 class Predicter:
@@ -17,8 +17,9 @@ class Predicter:
             for batch in self.dataset_iter:
                 mask = batch.words != constants.PAD_ID
                 if pred_type == 'classes':
-                    pred = unmask(self.model.predict_classes(batch), mask)
+                    preds = unmask(self.model.predict_classes(batch), mask)
                 else:
-                    pred = unmask(self.model.predict_proba(batch), mask)
-                predictions.extend(pred)
+                    preds = unmask(self.model.predict_proba(batch), mask)
+                preds = remove_bos_and_eos_symbols(preds)
+                predictions.extend(preds)
         return predictions

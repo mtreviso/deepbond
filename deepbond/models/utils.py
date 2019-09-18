@@ -31,6 +31,14 @@ def unmask(tensor, mask):
     return [x[:lengths[i]].tolist() for i, x in enumerate(tensor)]
 
 
+def remove_bos_and_eos_symbols(predictions):
+    """
+    :param predictions: list of lists
+    :return: list of lists without the initial and final elements
+    """
+    return [pred[1:-1] for pred in predictions]
+
+
 def unroll(list_of_lists, rec=False):
     """
     :param list_of_lists: a list that contains lists
@@ -108,29 +116,36 @@ def make_mergeable_tensors(t1, t2):
     return new_t1, new_t2
 
 
-def apply_packed_sequence(rnn, embedding, lengths):
+def apply_packed_sequence(rnn, padded_sequences, lengths, hidden=None):
     """
-    Code from Unbabel OpenKiwi
+    Code adapted from Unbabel OpenKiwi
 
     Runs a forward pass of embeddings through an rnn using packed sequence.
     Args:
        rnn: The RNN that that we want to compute a forward pass with.
-       embedding (FloatTensor b x seq x dim): A batch of sequence embeddings.
+       padded_sequences (FloatTensor b x seq x dim): A batch of sequence seqs.
        lengths (LongTensor batch): The length of each sequence in the batch.
-
+       hidden (FloatTensor, optional): hidden state for the rnn.
     Returns:
        output: The output of the RNN `rnn` with input `embedding`
     """
     # Sort Batch by sequence length
+    total_length = padded_sequences.size(1)  # Get the max sequence length
     lengths_sorted, permutation = torch.sort(lengths, descending=True)
-    embedding_sorted = embedding[permutation]
+    padded_sequences_sorted = padded_sequences[permutation]
 
     # Use Packed Sequence
-    embedding_packed = pack(embedding_sorted, lengths_sorted, batch_first=True)
-    outputs_packed, _ = rnn(embedding_packed)
-    outputs_sorted, _ = unpack(outputs_packed, batch_first=True)
+    embedding_packed = pack(
+        padded_sequences_sorted, lengths_sorted, batch_first=True
+    )
+    outputs_packed, hidden = rnn(embedding_packed, hidden)
+    outputs_sorted, _ = unpack(
+        outputs_packed, batch_first=True, total_length=total_length
+    )
 
     # Restore original order
     _, permutation_rev = torch.sort(permutation, descending=False)
     outputs = outputs_sorted[permutation_rev]
-    return outputs
+    hidden[0] = hidden[0][permutation_rev]
+    hidden[1] = hidden[1][permutation_rev]
+    return outputs, hidden
