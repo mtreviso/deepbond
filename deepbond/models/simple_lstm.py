@@ -104,7 +104,7 @@ class SimpleLSTM(Model):
 
         # (bs, ts, pool_size) -> (bs, ts, hidden_size)
         h = pack(h, lengths, batch_first=True, enforce_sorted=False)
-        h, self.hidden = self.rnn(h, self.hidden)
+        h, self.hidden = self.lstm(h, self.hidden)
         h, _ = unpack(h, batch_first=True)
 
         # if you'd like to sum instead of concatenate:

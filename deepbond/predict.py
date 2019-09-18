@@ -23,6 +23,7 @@ def run(options):
 
     dataset_iter = None
     save_dir_path = None
+
     if options.test_path is not None and options.text is None:
         logging.info('Building test dataset: {}'.format(options.test_path))
         test_tuples = list(filter(lambda x: x[0] != 'tags', fields_tuples))
