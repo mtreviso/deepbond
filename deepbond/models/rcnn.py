@@ -7,7 +7,6 @@ from torch.nn.utils.rnn import pad_packed_sequence as unpack
 from deepbond import constants
 from deepbond.initialization import init_xavier, init_kaiming
 from deepbond.models.model import Model
-from deepbond.models.utils import apply_packed_sequence
 from deepbond.modules.attention import Attention
 from deepbond.modules.crf import CRF
 from deepbond.modules.scorer import DotProductScorer

@@ -6,7 +6,6 @@ from torch.nn.utils.rnn import pad_packed_sequence as unpack
 
 from deepbond import constants
 from deepbond.models.model import Model
-from deepbond.models.utils import apply_packed_sequence
 
 
 class SimpleLSTM(Model):
