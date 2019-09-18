@@ -1,7 +1,7 @@
-flake8==3.5.0
-bumpversion==0.5.3
-pytest==3.7.1
-pytest-xdist==1.22.5
+flake8
+bumpversion
+pytest
+pytest-xdist
 polyglot
 gensim
 tensorboardx
