@@ -58,4 +58,4 @@ python3 -m deepbond predict \
                       # --text "Há livros escritos para evitar espaços vazios na estante ."
 
 
-python3 scripts/join_original_text_with_predicted_labels.py data/transcriptions/folds/CCL-A/0/train/ data/transcriptions/folds/CCL-A/0/pred/predictions/
+python3 scripts/join_original_text_with_predicted_labels.py data/transcriptions/folds/CCL-A/0/test/ data/transcriptions/folds/CCL-A/0/pred/predictions/

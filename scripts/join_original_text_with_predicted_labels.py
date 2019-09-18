@@ -1,9 +1,13 @@
+import re
 from pathlib import Path
 import sys
+
+punctuations = '!#$%&*+,-./:;<=>?@^|~'
 
 
 def join_words_and_labels(words, labels):
     new_text = []
+    assert len(words) == len(labels)
     for word, label in zip(words, labels):
         if label == '_':
             new_text.append(word)
@@ -16,20 +20,23 @@ def join_words_and_labels(words, labels):
 def read_original_dir(dir_path):
     texts = []
     for f_path in sorted(dir_path.iterdir()):
-        with f_path.open('r', encoding='utf8') as f:
-            texts.append(f.read().split())
+        texts.append(read_original_file(f_path))
     return texts
 
 
 def read_original_file(f_path):
+    global punctuations
     with f_path.open('r', encoding='utf8') as f:
-        texts = f.read().split()
-        return texts
+        text = f.read()
+        text = re.sub(r'[%s]' % re.escape(punctuations), '', text)
+        text = re.sub(r'\ +', ' ', text).strip()
+        return text.split()
 
 
 def write_labels(path, texts):
     dir_path = Path(path)
-    for orig_words, f_path in zip(texts, sorted(dir_path.iterdir())):
+    assert len(list(dir_path.iterdir())) == len(texts)
+    for f_path, orig_words in zip(sorted(dir_path.iterdir()), texts):
         f = f_path.open('r', encoding='utf8')
         labels = f.read().split()
         words_labels = join_words_and_labels(orig_words, labels)
