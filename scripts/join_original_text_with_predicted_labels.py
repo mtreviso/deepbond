@@ -23,7 +23,6 @@ def read_original_dir(path):
 
 
 def write_labels(path, texts):
-    import ipdb
     dir_path = Path(path)
     for orig_words, f_path in zip(texts, sorted(dir_path.iterdir())):
         f = f_path.open('r', encoding='utf8')
