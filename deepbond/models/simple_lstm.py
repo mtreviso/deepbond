@@ -6,6 +6,7 @@ from torch.nn.utils.rnn import pad_packed_sequence as unpack
 
 from deepbond import constants
 from deepbond.models.model import Model
+from deepbond.models.utils import apply_packed_sequence
 
 
 class SimpleLSTM(Model):
@@ -103,9 +104,9 @@ class SimpleLSTM(Model):
         h = self.dropout_emb(h)
 
         # (bs, ts, pool_size) -> (bs, ts, hidden_size)
-        h = pack(h, lengths, batch_first=True)
-        h, self.hidden = self.lstm(h, self.hidden)
-        h, _ = unpack(h, batch_first=True)
+        h, self.hidden = apply_packed_sequence(
+            self.rnn, h, lengths, hidden=self.hidden
+        )
 
         # if you'd like to sum instead of concatenate:
         if self.sum_bidir:
@@ -116,5 +117,9 @@ class SimpleLSTM(Model):
 
         # (bs, ts, hidden_size) -> (bs, ts, nb_classes)
         h = F.log_softmax(self.linear_out(h), dim=-1)
+
+        # remove <bos> and <eos> tokens
+        # (bs, ts, nb_classes) -> (bs, ts-2, nb_classes)
+        h = h[:, 1:-1, :]
 
         return h

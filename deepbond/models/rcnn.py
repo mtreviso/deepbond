@@ -199,4 +199,8 @@ class RCNN(Model):
         # (bs, ts, nb_classes) -> (bs, ts, nb_classes) in simplex
         h = F.log_softmax(h, dim=-1)
 
+        # remove <bos> and <eos> tokens
+        # (bs, ts, nb_classes) -> (bs, ts-2, nb_classes)
+        h = h[:, 1:-1, :]
+
         return h
