@@ -2,3 +2,9 @@ torch>=1.2.0
 numpy
 torchtext
 pytest
+sklearn
+future
+pyyaml
+setuptools
+six
+typing

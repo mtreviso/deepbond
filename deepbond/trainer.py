@@ -116,10 +116,14 @@ class Trainer:
             self.reporter.report_stats_history(self.train_stats_history)
             if self.dev_iter:
                 logging.info('Dev final report: ')
-                self.reporter.report_stats_history(self.dev_stats_history)
+                self.reporter.report_stats_history(
+                    self.dev_stats_history, start=0
+                )
             if self.test_iter:
                 logging.info('Test final report: ')
-                self.reporter.report_stats_history(self.test_stats_history)
+                self.reporter.report_stats_history(
+                    self.test_stats_history, start=0
+                )
         self.reporter.close()
 
     def train_epoch(self):

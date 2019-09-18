@@ -4,4 +4,3 @@ pytest
 pytest-xdist
 polyglot
 gensim
-tensorboardx
