@@ -1,5 +1,4 @@
 import logging
-from pathlib import Path
 
 from deepbond.stats import BestValueEpoch
 
