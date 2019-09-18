@@ -1,17 +1,16 @@
-import numpy as np
-
 from argparse import Namespace
 from pathlib import Path
 
+import numpy as np
+
 from deepbond import config_utils
-from deepbond.dataset import dataset, fields
-from deepbond import features
 from deepbond import iterator
 from deepbond import models
 from deepbond import optimizer
-from deepbond import scheduler
 from deepbond import opts
+from deepbond import scheduler
 from deepbond import train
+from deepbond.dataset import dataset, fields
 from deepbond.predict import transform_classes_to_tags
 from deepbond.predicter import Predicter
 

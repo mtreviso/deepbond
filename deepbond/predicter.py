@@ -26,7 +26,7 @@ class Predicter:
                     preds = unmask(
                         self.model.predict_proba(batch),
                         mask,
-                        is_words_mask = True
+                        is_words_mask=True
                     )
                 predictions.extend(preds)
         return predictions
