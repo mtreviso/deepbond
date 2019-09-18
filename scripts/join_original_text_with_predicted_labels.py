@@ -13,17 +13,21 @@ def join_words_and_labels(words, labels):
     return new_text
 
 
-def read_original_dir(path):
+def read_original_dir(dir_path):
     texts = []
-    dir_path = Path(path)
     for f_path in sorted(dir_path.iterdir()):
         with f_path.open('r', encoding='utf8') as f:
             texts.append(f.read().split())
     return texts
 
 
+def read_original_file(f_path):
+    with f_path.open('r', encoding='utf8') as f:
+        texts = f.read().split()
+        return texts
+
+
 def write_labels(path, texts):
-    import ipdb
     dir_path = Path(path)
     for orig_words, f_path in zip(texts, sorted(dir_path.iterdir())):
         f = f_path.open('r', encoding='utf8')
@@ -40,5 +44,11 @@ if __name__ == '__main__':
     original_dir = sys.argv[1]
     predicted_dir = sys.argv[2]
 
-    original_texts = read_original_dir(original_dir)
+    original_path = Path(original_dir)
+    if original_path.is_dir():
+        original_texts = read_original_dir(original_path)
+    elif original_path.is_file():
+        original_texts = read_original_file(original_path)
+    else:
+        raise Exception('You should inform a path to a dir or to a file.')
     write_labels(predicted_dir, original_texts)

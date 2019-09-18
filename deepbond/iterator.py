@@ -12,7 +12,7 @@ def build(dataset, device, batch_size, is_train):
         # set to true if you want use pack_padded_sequences
         sort_key=dataset.sort_key,
         sort=False,
-        sort_within_batch=True,
+        sort_within_batch=is_train,
         # shuffle batches
         shuffle=is_train,
         device=device,

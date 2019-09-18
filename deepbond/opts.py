@@ -89,8 +89,8 @@ def preprocess_opts(parser):
                             'examples separated by new lines')
     group.add_argument('--punctuations',
                        type=str,
-                       default=' ',
-                       help='.,?!:;*+$<=>|')
+                       default='.,?!:;*+$<=>|',
+                       help='Punctuation symbols to be treated as labels.')
 
     # Truncation options
     group = parser.add_argument_group('data-pruning')
