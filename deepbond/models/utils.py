@@ -19,24 +19,25 @@ def indexes_to_words(indexes, itos):
     return words
 
 
-def unmask(tensor, mask):
+def unmask(tensor, mask, is_words_mask=False):
     """
     Unmask a tensor and convert it back to a list of lists.
+
     :param tensor: a torch.tensor object
     :param mask: a torch.tensor object with 1 indicating a valid position
                  and 0 elsewhere
+    :param is_words_mask: whether the mask was calculated using words (True)
+    or tags (False)
     :return: a list of lists with variable length
     """
-    lengths = mask.int().sum(dim=-1).tolist()
+    lengths = mask.int().sum(dim=-1)
+    # if the mask was calculated using words, then we subtract 2
+    # in order to remove the size of the <bos> and <eos> tokens
+    # which are already removed from the tensor in the forward pass
+    if is_words_mask:
+        lengths -= 2
+    lengths = lengths.tolist()
     return [x[:lengths[i]].tolist() for i, x in enumerate(tensor)]
-
-
-def remove_bos_and_eos_symbols(predictions):
-    """
-    :param predictions: list of lists
-    :return: list of lists without the initial and final elements
-    """
-    return [pred[1:-1] for pred in predictions]
 
 
 def unroll(list_of_lists, rec=False):

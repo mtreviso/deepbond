@@ -50,9 +50,11 @@ def run(options):
     logging.info('Loading model...')
     model = models.load(options.load, fields_tuples)
 
+    logging.info('Predicting...')
     predicter = Predicter(dataset_iter, model)
     predictions = predicter.predict(options.prediction_type)
 
+    logging.info('Preparing to save...')
     if options.prediction_type == 'classes':
         prediction_tags = transform_classes_to_tags(tags_field, predictions)
         predictions_str = transform_predictions_to_text(prediction_tags)
