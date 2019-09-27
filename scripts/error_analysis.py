@@ -22,7 +22,7 @@ class ErrorAnalysisSS:
         self.tp, self.tn, self.fp, self.fn = 0, 0, 0, 0
         self.most_tp_before, self.most_fp_before, self.most_fn_before = None, None, None
         self.most_tp_after, self.most_fp_after, self.most_fn_after = None, None, None
-	print('no init',gold_dir, pred_dir)
+        print('no init',gold_dir, pred_dir)
         logger.info('Micro averaged F1: ')
         self.micro_report(gold_dir, pred_dir)
 
