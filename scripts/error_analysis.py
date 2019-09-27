@@ -348,7 +348,7 @@ if __name__ == '__main__':
 
     pred_dir = sys.argv[2]
     # data/transcriptions/folds/CCL-A/[0-9]*/pred/predictions/*
-
+    print("no main",gold_dir,pred_dir)
     logger.debug('Analyzing errors for gold data: {}'.format(gold_dir))
     logger.debug('Analyzing errors for pred data: {}'.format(pred_dir))
     ea = ErrorAnalysisSS(gold_dir=gold_dir, pred_dir=pred_dir)
