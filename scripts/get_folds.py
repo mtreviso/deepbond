@@ -69,7 +69,7 @@ def main(data_dir,folds_dir):
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data', '-c', type=str,
+    parser.add_argument('--data', '-d', type=str,
                         required=True,
                         help='Corpus path, Exemplo: ../../transcriptions/ss')
     parser.add_argument('--output', '-o', type=str,
