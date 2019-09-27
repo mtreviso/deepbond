@@ -22,7 +22,6 @@ class ErrorAnalysisSS:
         self.tp, self.tn, self.fp, self.fn = 0, 0, 0, 0
         self.most_tp_before, self.most_fp_before, self.most_fn_before = None, None, None
         self.most_tp_after, self.most_fp_after, self.most_fn_after = None, None, None
-        print('no init',gold_dir, pred_dir)
         logger.info('Micro averaged F1: ')
         self.micro_report(gold_dir, pred_dir)
 
@@ -348,7 +347,6 @@ if __name__ == '__main__':
 
     pred_dir = sys.argv[2]
     # data/transcriptions/folds/CCL-A/[0-9]*/pred/predictions/*
-    print("no main",gold_dir,pred_dir)
     logger.debug('Analyzing errors for gold data: {}'.format(gold_dir))
     logger.debug('Analyzing errors for pred data: {}'.format(pred_dir))
     ea = ErrorAnalysisSS(gold_dir=gold_dir, pred_dir=pred_dir)
