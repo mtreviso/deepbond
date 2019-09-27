@@ -344,7 +344,7 @@ if __name__ == '__main__':
     logger.debug = print
     gold_dir = sys.argv[1]
     # data/transcriptions/folds/CCL-A/[0-9]*/test/*
-
+    print( sys.argv)
     pred_dir = sys.argv[2]
     # data/transcriptions/folds/CCL-A/[0-9]*/pred/predictions/*
     logger.debug('Analyzing errors for gold data: {}'.format(gold_dir))
