@@ -1,10 +1,12 @@
+import random
+import argparse
 import os
 import shutil
 
 import numpy as np
 
+random.seed(1)
 np.random.seed(1)
-import argparse
 
 
 def check_args(args):
@@ -18,55 +20,57 @@ def check_args(args):
     return data, output
 
 
-def main(data_dir,folds_dir):
+def main(data_dir, folds_dir):
     if not os.path.exists(folds_dir):
         os.mkdir(folds_dir)
 
     n_folds = 5
-    classes_list_dir= os.listdir(data_dir)
+    classes_list_dir = os.listdir(data_dir)
 
     for dir in classes_list_dir:
-        class_path = os.path.join(data_dir,dir)
+        class_path = os.path.join(data_dir, dir)
         file_list = os.listdir(class_path)
         np.random.shuffle(file_list)
         num_files = len(file_list)
-        test_len = int(num_files/n_folds)
-        fold_dir = os.path.join(folds_dir,dir)
+        test_len = int(num_files / n_folds)
+        fold_dir = os.path.join(folds_dir, dir)
         if not os.path.exists(fold_dir):
             os.mkdir(fold_dir)
-        
-        for id in range(0,num_files,test_len):
-            fold_out_dir_name = os.path.join(fold_dir,str(id))
+
+        fold_nb = 0
+        for id in range(0, num_files, test_len):
+            fold_out_dir_name = os.path.join(fold_dir, str(fold_nb))
+            fold_nb += 1
             if not os.path.exists(fold_out_dir_name):
-                os.mkdir(fold_out_dir_name) 
-            fold_test_out = os.path.join(fold_out_dir_name,'test')
+                os.mkdir(fold_out_dir_name)
+            fold_test_out = os.path.join(fold_out_dir_name, 'test')
             if not os.path.exists(fold_test_out):
-                os.mkdir(fold_test_out) 
+                os.mkdir(fold_test_out)
 
-            fold_train_out= os.path.join(fold_out_dir_name,'train')
+            fold_train_out = os.path.join(fold_out_dir_name, 'train')
             if not os.path.exists(fold_train_out):
-                os.mkdir(fold_train_out) 
+                os.mkdir(fold_train_out)
 
-            #test files
-            test_files = file_list[id:int(id+test_len)]
+            # test files
+            test_files = file_list[id:int(id + test_len)]
             for file in test_files:
-                shutil.copyfile(os.path.join(class_path,file),os.path.join(fold_test_out,file))
+                shutil.copyfile(os.path.join(class_path, file), os.path.join(fold_test_out, file))
 
-            #train files
-            train_files = file_list[0:id]+file_list[int(id+test_len):]
+            # train files
+            train_files = file_list[0:id] + file_list[int(id + test_len):]
             for file in train_files:
-                shutil.copyfile(os.path.join(class_path,file),os.path.join(fold_train_out,file))
+                shutil.copyfile(os.path.join(class_path, file), os.path.join(fold_train_out, file))
 
             # get for another class to train
             for typ in classes_list_dir:
                 if dir == typ:
                     continue
-                typ_path = os.path.join(data_dir,typ)
-                other_class_file_list =  os.listdir(typ_path)
+                typ_path = os.path.join(data_dir, typ)
+                other_class_file_list = os.listdir(typ_path)
                 for file in other_class_file_list:
-                    shutil.copyfile(os.path.join(typ_path,file),os.path.join(fold_train_out,file))
+                    shutil.copyfile(os.path.join(typ_path, file), os.path.join(fold_train_out, file))
 
-    
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--data', '-d', type=str,
