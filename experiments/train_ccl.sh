@@ -34,8 +34,8 @@ traindb(){
                             --pool-length 3 \
                             \
                             --use-rnn \
-                            --rnn-type lstm \
-                            --hidden-size 50 \
+                            --rnn-type gru \
+                            --hidden-size 200 \
                             --bidirectional \
                             --sum-bidir \
                             --dropout 0.5 \
@@ -46,7 +46,7 @@ traindb(){
                             --train-batch-size 1 \
                             --dev-batch-size 1 \
                             --epochs 40 \
-                            --optimizer "adamax" \
+                            --optimizer "adamw" \
                             --learning-rate 0.001 \
                             --weight-decay 0.01 \
                             --save-best-only \
