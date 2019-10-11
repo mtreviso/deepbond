@@ -7,6 +7,8 @@ from deepbond import models
 from deepbond.dataset import dataset, fields
 from deepbond.predicter import Predicter
 
+logger = logging.getLogger(__name__)
+
 
 def run(options):
     words_field = fields.WordsField()
@@ -25,37 +27,37 @@ def run(options):
     save_dir_path = None
 
     if options.test_path is not None and options.text is None:
-        logging.info('Building test dataset: {}'.format(options.test_path))
+        logger.info('Building test dataset: {}'.format(options.test_path))
         test_tuples = list(filter(lambda x: x[0] != 'tags', fields_tuples))
         test_dataset = dataset.build(options.test_path, test_tuples, options)
 
-        logging.info('Building test iterator...')
+        logger.info('Building test iterator...')
         dataset_iter = iterator.build(test_dataset, options.gpu_id,
                                       options.dev_batch_size, is_train=False)
         save_dir_path = options.test_path
 
     if options.text is not None and options.test_path is None:
-        logging.info('Preparing text...')
+        logger.info('Preparing text...')
         test_tuples = list(filter(lambda x: x[0] != 'tags', fields_tuples))
         test_dataset = dataset.build_texts(options.text, test_tuples, options)
 
-        logging.info('Building iterator...')
+        logger.info('Building iterator...')
         dataset_iter = iterator.build(test_dataset, options.gpu_id,
                                       options.dev_batch_size, is_train=False)
 
         save_dir_path = None
 
-    logging.info('Loading vocabularies...')
+    logger.info('Loading vocabularies...')
     fields.load_vocabs(options.load, fields_tuples)
 
-    logging.info('Loading model...')
+    logger.info('Loading model...')
     model = models.load(options.load, fields_tuples)
 
-    logging.info('Predicting...')
+    logger.info('Predicting...')
     predicter = Predicter(dataset_iter, model)
     predictions = predicter.predict(options.prediction_type)
 
-    logging.info('Preparing to save...')
+    logger.info('Preparing to save...')
     if options.prediction_type == 'classes':
         prediction_tags = transform_classes_to_tags(tags_field, predictions)
         predictions_str = transform_predictions_to_text(prediction_tags)
@@ -69,8 +71,8 @@ def run(options):
             save_dir_path=save_dir_path,
         )
     else:
-        logging.info(options.text)
-        logging.info(predictions_str)
+        logger.info(options.text)
+        logger.info(predictions_str)
 
     return predictions
 
@@ -88,7 +90,7 @@ def save_predictions(directory, predictions_str, save_dir_path=None):
         output_path = Path(directory, constants.PREDICTIONS)
         save_predictions_in_a_file(output_path, predictions_str)
 
-    logging.info('Predictions saved in {}'.format(output_path))
+    logger.info('Predictions saved in {}'.format(output_path))
 
 
 def save_predictions_in_a_file(output_file_path, predictions_str):

@@ -14,6 +14,7 @@ from deepbond.dataset.vectors import (Polyglot,
                                       Fonseca,
                                       TextVectors)
 
+logger = logging.getLogger(__name__)
 
 available_embeddings = {
     'polyglot': Polyglot,
@@ -31,7 +32,7 @@ def load_vectors(options):
         # load the word embeddings only if a correct format is provided
         assert options.embeddings_format in available_embeddings.keys()
 
-        logging.info('Loading {} word embeddings from: {}'.format(
+        logger.info('Loading {} word embeddings from: {}'.format(
             options.embeddings_format, options.embeddings_path)
         )
         word_emb_cls = available_embeddings[options.embeddings_format]

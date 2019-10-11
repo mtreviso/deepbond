@@ -2,6 +2,8 @@ import logging
 
 from deepbond.stats import BestValueEpoch
 
+logger = logging.getLogger(__name__)
+
 
 def get_line_bar(template_head):
     line_head = list('-' * len(template_head))
@@ -13,18 +15,19 @@ def get_line_bar(template_head):
 
 class Reporter:
     """
-    Simple class to print stats on the screen using logging.info and
+    Simple class to print stats on the screen using logger.info and
     optionally, tensorboard.
 
     Args:
         output_dir (str): Path location to save tensorboard artifacts.
         use_tensorboard (bool): Wheter to log stats on tensorboard server.
     """
+
     def __init__(self, output_dir, use_tensorboard):
         self.tb_writer = None
         if use_tensorboard:
-            logging.info('Starting tensorboard logger...')
-            logging.info('Type `tensorboard --logdir runs/` in your terminal '
+            logger.info('Starting tensorboard logger...')
+            logger.info('Type `tensorboard --logdir runs/` in your terminal '
                          'to see live stats.')
             from torch.utils.tensorboard import SummaryWriter
             self.tb_writer = SummaryWriter(output_dir)
@@ -53,11 +56,11 @@ class Reporter:
         self.epoch = epoch
 
     def show_head(self):
-        logging.info(self.template_head)
-        logging.info(self.template_line)
+        logger.info(self.template_head)
+        logger.info(self.template_line)
 
     def show_footer(self):
-        logging.info(self.template_footer)
+        logger.info(self.template_footer)
 
     def show_stats(self, stats_dict, epoch=None):
         text = self.template_body.format(
@@ -78,7 +81,7 @@ class Reporter:
         )
         if epoch is not None:
             text += '< Ep. {}'.format(epoch)
-        logging.info(text)
+        logger.info(text)
 
     def report_progress(self, i, nb_iters, loss):
         print('Loss ({}/{}): {:.4f}'.format(i, nb_iters, loss), end='\r')

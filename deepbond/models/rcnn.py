@@ -120,7 +120,7 @@ class RCNN(Model):
 
     def init_weights(self):
         if self.cnn_1d is not None:
-            init_kaiming(self.cnn_1d, dist='uniform', nonlinearity='relu')
+            init_xavier(self.cnn_1d, dist='uniform', nonlinearity='relu')
         if self.rnn is not None:
             init_xavier(self.rnn, dist='uniform')
         if self.linear_out is not None:

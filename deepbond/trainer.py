@@ -10,6 +10,8 @@ from deepbond import scheduler
 from deepbond.reporter import Reporter
 from deepbond.stats import Stats
 
+logger = logging.getLogger(__name__)
+
 
 class Trainer:
 
@@ -50,25 +52,25 @@ class Trainer:
     def train(self):
         # Perform an evaluation on dev set if it is available
         if self.dev_iter is not None:
-            logging.info('Evaluating before training...')
+            logger.info('Evaluating before training...')
             self.reporter.set_epoch(0)
             self.dev_epoch()
 
         # Perform an evaluation on test set if it is available
         if self.test_iter is not None:
-            logging.info('Testing before training...')
+            logger.info('Testing before training...')
             self.reporter.set_epoch(0)
             self.test_epoch()
 
         start_time = time.time()
         for epoch in range(self.current_epoch, self.epochs + 1):
-            logging.info('Epoch {} of {}'.format(epoch, self.epochs))
+            logger.info('Epoch {} of {}'.format(epoch, self.epochs))
 
             self.reporter.set_epoch(epoch)
             self.current_epoch = epoch
 
             # Train a single epoch
-            logging.info('Training...')
+            logger.info('Training...')
             self.train_epoch()
 
             # Perform an evaluation on dev set if it is available
@@ -76,18 +78,18 @@ class Trainer:
                 # Only perform if a checkpoint was reached
                 if (self.dev_checkpoint_epochs > 0
                         and epoch % self.dev_checkpoint_epochs == 0):
-                    logging.info('Evaluating...')
+                    logger.info('Evaluating...')
                     self.dev_epoch()
 
             # Perform an evaluation on test set if it is available
             if self.test_iter is not None:
-                logging.info('Testing...')
+                logger.info('Testing...')
                 self.test_epoch()
 
             # Only save if an improvement has occurred
             if self.save_best_only and self.dev_iter is not None:
                 if self.dev_stats.best_prec_rec_f1.epoch == epoch:
-                    logging.info('F1 improved on epoch {}'.format(epoch))
+                    logger.info('F1 improved on epoch {}'.format(epoch))
                     self.save(epoch)
             else:
                 # Otherwise, save if a checkpoint was reached
@@ -100,7 +102,7 @@ class Trainer:
                 # Only stop if the desired patience epochs was reached
                 passed_epochs = epoch - self.dev_stats.best_prec_rec_f1.epoch
                 if passed_epochs == self.early_stopping_patience:
-                    logging.info('Training stopped! No improvements on F1 '
+                    logger.info('Training stopped! No improvements on F1 '
                                  'after {} epochs'.format(passed_epochs))
                     if self.restore_best_model:
                         if self.dev_stats.best_prec_rec_f1.epoch < epoch:
@@ -109,18 +111,18 @@ class Trainer:
 
         elapsed = time.time() - start_time
         hms = time.strftime("%Hh:%Mm:%Ss", time.gmtime(elapsed))
-        logging.info('Training ended after {}'.format(hms))
+        logger.info('Training ended after {}'.format(hms))
 
         if self.final_report:
-            logging.info('Training final report: ')
+            logger.info('Training final report: ')
             self.reporter.report_stats_history(self.train_stats_history)
             if self.dev_iter:
-                logging.info('Dev final report: ')
+                logger.info('Dev final report: ')
                 self.reporter.report_stats_history(
                     self.dev_stats_history, start=0
                 )
             if self.test_iter:
-                logging.info('Test final report: ')
+                logger.info('Test final report: ')
                 self.reporter.report_stats_history(
                     self.test_stats_history, start=0
                 )
@@ -192,13 +194,13 @@ class Trainer:
         epoch_dir = 'epoch_{}'.format(current_epoch)
         output_path = Path(self.output_dir, epoch_dir)
         output_path.mkdir(exist_ok=True)
-        logging.info('Saving training state to {}'.format(output_path))
+        logger.info('Saving training state to {}'.format(output_path))
         models.save(output_path, self.model)
         optimizer.save(output_path, self.optimizer)
         scheduler.save(output_path, self.scheduler)
 
     def load(self, directory):
-        logging.info('Loading training state from {}'.format(directory))
+        logger.info('Loading training state from {}'.format(directory))
         models.load_state(directory, self.model)
         optimizer.load_state(directory, self.optimizer)
         scheduler.load_state(directory, self.scheduler)

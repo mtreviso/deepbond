@@ -3,6 +3,8 @@ from abc import ABCMeta, abstractmethod
 
 import torch
 
+logger = logging.getLogger(__name__)
+
 
 class Model(torch.nn.Module):
     __metaclass__ = ABCMeta
@@ -47,11 +49,11 @@ class Model(torch.nn.Module):
         return classes
 
     def load(self, path):
-        logging.debug("Loading model weights from {}".format(path))
+        logger.info("Loading model weights from {}".format(path))
         self.load_state_dict(
             torch.load(str(path), map_location=lambda storage, loc: storage)
         )
 
     def save(self, path):
-        logging.debug("Saving model weights to {}".format(path))
+        logger.info("Saving model weights to {}".format(path))
         torch.save(self.state_dict(), str(path))
