@@ -86,7 +86,8 @@ class AttentionRCNN(Model):
         #
 
         # they are equal for self-attention
-        query_size = key_size = value_size = features_size
+        n = 1 if not self.is_bidir or self.sum_bidir else 2
+        query_size = key_size = value_size = n * features_size
 
         if options.attn_scorer == 'dot_product':
             self.attn_scorer = DotProductScorer(scaled=True)
@@ -101,7 +102,13 @@ class AttentionRCNN(Model):
                                                options.attn_hidden_size,
                                                op='concat')
         elif options.attn_scorer == 'mlp':
-            self.attn_scorer = MLPScorer(query_size, key_size)
+            if options.attn_type == 'multihead':
+                self.attn_scorer = MLPScorer(
+                    options.attn_hidden_size // options.attn_nb_heads,
+                    options.attn_hidden_size // options.attn_nb_heads
+                )
+            else:
+                self.attn_scorer = MLPScorer(query_size, key_size)
         else:
             raise Exception('Attention scorer `{}` not available'.format(
                 options.attn_scorer))
@@ -119,6 +126,7 @@ class AttentionRCNN(Model):
                 options.attn_hidden_size,
                 dropout=options.attn_dropout
             )
+            features_size = options.attn_hidden_size
         else:
             raise Exception('Attention `{}` not available'.format(
                 options.attn_type))
@@ -126,8 +134,7 @@ class AttentionRCNN(Model):
         #
         # Linear
         #
-        n = 1 if not self.is_bidir or self.sum_bidir else 2
-        self.linear_out = nn.Linear(n * features_size, self.nb_classes)
+        self.linear_out = nn.Linear(features_size, self.nb_classes)
 
         self.init_weights()
         self.is_built = True

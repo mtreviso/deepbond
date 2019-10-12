@@ -21,6 +21,11 @@ python3 -m deepbond train \
 					             --add-embeddings-vocab \
                       \
                       --model rcnn_attn \
+                      --attn-type 'multihead' \
+                      --attn-scorer 'mlp' \
+                      --attn-hidden-size 20 \
+                      --attn-dropout 0.5 \
+                      --attn-nb-heads 2 \
                       \
                       --emb-dropout 0 \
                       --freeze-embeddings \
