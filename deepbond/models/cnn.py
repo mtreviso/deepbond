@@ -10,20 +10,8 @@ from deepbond.models.model import Model
 class CNN(Model):
     """Simple Convolutional Neural Network 1D."""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # layers
-        self.word_emb = None
-        self.dropout_emb = None
-        self.cnn_1d = None
-        self.max_pool = None
-        self.linear_out = None
-        self.relu = None
-        self.sigmoid = None
-
-    def build(self, options, loss_weights=None):
-        if loss_weights is not None:
-            loss_weights = torch.tensor(loss_weights).float()
+    def __init__(self, words_field, tags_field, options):
+        super().__init__(words_field, tags_field)
 
         word_embeddings = None
         if self.words_field.vocab.vectors is not None:
@@ -54,8 +42,6 @@ class CNN(Model):
         self.relu = torch.nn.ReLU()
 
         self.init_weights()
-        self._loss = nn.NLLLoss(weight=loss_weights,
-                                ignore_index=constants.TAGS_PAD_ID)
         self.is_built = True
 
     def init_weights(self):

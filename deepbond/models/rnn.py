@@ -5,34 +5,15 @@ from torch.nn.utils.rnn import pack_padded_sequence as pack
 from torch.nn.utils.rnn import pad_packed_sequence as unpack
 
 from deepbond import constants
-from deepbond.initialization import init_xavier, init_kaiming
+from deepbond.initialization import init_xavier
 from deepbond.models.model import Model
 
 
 class RNN(Model):
-    """Just a regular rnn (LSTM or GRU) network."""
+    """Just a regular rnn (RNN, LSTM or GRU) network."""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # layers
-        self.word_emb = None
-        self.dropout_emb = None
-        self.is_bidir = None
-        self.sum_bidir = None
-        self.rnn_layers = 1
-        self.rnn_type = 'rnn'
-        self.rnn = None
-        self.hidden = None
-        self.dropout_rnn = None
-        self.linear_out = None
-        self.selu = None
-        self.sigmoid = None
-
-    def build(self, options, loss_weights=None):
-        hidden_size = options.hidden_size[0]
-
-        if loss_weights is not None:
-            loss_weights = torch.tensor(loss_weights).float()
+    def __init__(self, words_field, tags_field, options):
+        super().__init__(words_field, tags_field)
 
         word_embeddings = None
         if self.words_field.vocab.vectors is not None:
@@ -61,13 +42,14 @@ class RNN(Model):
         elif self.rnn_type == 'lstm':
             rnn_class = nn.LSTM
 
+        hidden_size = options.hidden_size[0]
+        self.hidden = None
         self.rnn = rnn_class(features_size,
                              hidden_size,
                              bidirectional=self.is_bidir,
                              batch_first=True)
 
-        n = 2 if self.is_bidir else 1
-        n = 1 if self.sum_bidir else n
+        n = 1 if not self.is_bidir or self.sum_bidir else 2
         self.linear_out = nn.Linear(n * hidden_size, self.nb_classes)
 
         self.selu = torch.nn.SELU()
@@ -75,16 +57,9 @@ class RNN(Model):
         self.dropout_rnn = nn.Dropout(options.dropout)
 
         self.init_weights()
-
-        # Loss
-        self._loss = nn.NLLLoss(weight=loss_weights,
-                                ignore_index=constants.TAGS_PAD_ID)
-
         self.is_built = True
 
     def init_weights(self):
-        if self.cnn_1d is not None:
-            init_kaiming(self.cnn_1d, dist='uniform', nonlinearity='relu')
         if self.rnn is not None:
             init_xavier(self.rnn, dist='uniform')
         if self.linear_out is not None:
@@ -101,6 +76,7 @@ class RNN(Model):
 
     def forward(self, batch):
         assert self.is_built
+        assert self._loss is not None
 
         batch_size = batch.words.shape[0]
         device = batch.words.device
@@ -110,7 +86,7 @@ class RNN(Model):
         mask = h != constants.PAD_ID
         lengths = mask.int().sum(dim=-1)
 
-        # initialize GRU hidden state
+        # initialize RNN hidden state
         self.hidden = self.init_hidden(
             batch_size, self.rnn.hidden_size, device=device
         )

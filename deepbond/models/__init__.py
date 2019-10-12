@@ -6,11 +6,9 @@ from deepbond import opts
 from .cnn import CNN
 from .rnn import RNN
 from .rcnn import RCNN
-from .simple_lstm import SimpleLSTM
 
 
 available_models = {
-    'simple_lstm': SimpleLSTM,
     'rcnn': RCNN,
     'cnn': CNN,
     'rnn': RNN,
@@ -22,8 +20,12 @@ def build(options, fields_tuples, loss_weights):
     dict_fields = defaultdict(lambda: None)
     dict_fields.update(dict(fields_tuples))
     model_class = available_models[options.model]
-    model = model_class(dict_fields['words'], dict_fields['tags'])
-    model.build(options, loss_weights)
+    model = model_class(
+        dict_fields['words'],
+        dict_fields['tags'],
+        options
+    )
+    model.build_loss(loss_weights)
     if options.gpu_id is not None:
         model = model.cuda(options.gpu_id)
     return model
@@ -31,13 +33,16 @@ def build(options, fields_tuples, loss_weights):
 
 def load_state(path, model):
     model_path = Path(path, constants.MODEL)
-    model.load(str(model_path))
+    model.load(model_path)
 
 
-def load(path, fields_tuples):
+def load(path, fields_tuples, current_gpu_id):
     options = opts.load(path)
 
-    # set dummy loss_weights (the correct values are going to be loaded)
+    # set gpu device to the current device
+    options.gpu_id = current_gpu_id
+
+    # hack: set dummy loss_weights (the correct values are going to be loaded)
     tags_field = dict(fields_tuples)['tags']
     loss_weights = None
     if options.loss_weights == 'balanced':
