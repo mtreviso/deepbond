@@ -28,7 +28,7 @@ class Reporter:
         if use_tensorboard:
             logger.info('Starting tensorboard logger...')
             logger.info('Type `tensorboard --logdir runs/` in your terminal '
-                         'to see live stats.')
+                        'to see live stats.')
             from torch.utils.tensorboard import SummaryWriter
             self.tb_writer = SummaryWriter(output_dir)
         self.mode = None

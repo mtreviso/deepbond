@@ -103,7 +103,7 @@ class Trainer:
                 passed_epochs = epoch - self.dev_stats.best_prec_rec_f1.epoch
                 if passed_epochs == self.early_stopping_patience:
                     logger.info('Training stopped! No improvements on F1 '
-                                 'after {} epochs'.format(passed_epochs))
+                                'after {} epochs'.format(passed_epochs))
                     if self.restore_best_model:
                         if self.dev_stats.best_prec_rec_f1.epoch < epoch:
                             self.restore_epoch(self.dev_stats.best_prec_rec_f1.epoch)  # NOQA
