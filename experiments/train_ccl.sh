@@ -28,19 +28,15 @@ traindb(){
                             --embeddings-path "data/embs/word2vec/pt_word2vec_sg_600.kv.emb" \
                             --freeze-embeddings \
                             \
-                            --use-conv \
                             --conv-size 100 \
                             --kernel-size 7 \
                             --pool-length 3 \
                             \
-                            --use-rnn \
                             --rnn-type gru \
                             --hidden-size 200 \
                             --bidirectional \
                             --sum-bidir \
                             --dropout 0.5 \
-                            \
-                            --use-linear \
                             \
                             --loss-weights "balanced" \
                             --train-batch-size 1 \
