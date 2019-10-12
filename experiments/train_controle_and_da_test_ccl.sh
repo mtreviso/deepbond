@@ -20,7 +20,7 @@ python3 -m deepbond train \
                       --keep-rare-with-vectors \
 					             --add-embeddings-vocab \
                       \
-                      --model rnn \
+                      --model rcnn_attn \
                       \
                       --emb-dropout 0 \
                       --freeze-embeddings \

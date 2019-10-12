@@ -21,7 +21,7 @@ traindb(){
                             --keep-rare-with-vectors \
                             --add-embeddings-vocab \
                             \
-                            --model rcnn \
+                            --model rcnn_attn \
                             \
                             --emb-dropout 0.0 \
                             --embeddings-format "word2vec" \

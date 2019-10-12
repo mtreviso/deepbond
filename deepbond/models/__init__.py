@@ -6,9 +6,11 @@ from deepbond import opts
 from .cnn import CNN
 from .rnn import RNN
 from .rcnn import RCNN
+from .rcnn_attn import AttentionRCNN
 
 
 available_models = {
+    'rcnn_attn': AttentionRCNN,
     'rcnn': RCNN,
     'cnn': CNN,
     'rnn': RNN,

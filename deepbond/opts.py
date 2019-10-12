@@ -202,6 +202,26 @@ def model_opts(parser):
                             'hidden layer will be created. Please, take a '
                             'look to your selected model documentation '
                             'before setting this option.')
+    group.add_argument('--attn-type',
+                       type=str,
+                       default='regular',
+                       choices=['regular', 'multihead'],
+                       help='The type of attention.')
+    group.add_argument('--attn-scorer',
+                       type=str,
+                       default='dot_product',
+                       choices=['dot_product', 'general', 'add', 'concat',
+                                'mlp'],
+                       help='The way the attention similarity is calculated.')
+    group.add_argument('--attn-hidden-size',
+                       type=int,
+                       default=100,
+                       help='Size of hidden size for linear projections inside'
+                            'the attention mechanism.')
+    group.add_argument('--attn-dropout',
+                       type=float,
+                       default=0.0,
+                       help='Dropout rate applied after attention.')
 
 
 def train_opts(parser):
