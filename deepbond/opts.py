@@ -222,6 +222,10 @@ def model_opts(parser):
                        type=float,
                        default=0.0,
                        help='Dropout rate applied after attention.')
+    group.add_argument('--attn-nb-heads',
+                       type=int,
+                       default=4,
+                       help='Number of heads for multiheaded attention.')
 
 
 def train_opts(parser):

@@ -112,7 +112,7 @@ class AttentionRCNN(Model):
         elif options.attn_type == 'multihead':
             self.attn = MultiHeadedAttention(
                 self.attn_scorer,
-                self.attn_nb_heads,
+                options.attn_nb_heads,
                 query_size,
                 key_size,
                 value_size,
