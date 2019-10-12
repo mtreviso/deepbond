@@ -202,21 +202,6 @@ def model_opts(parser):
                             'hidden layer will be created. Please, take a '
                             'look to your selected model documentation '
                             'before setting this option.')
-    group.add_argument('--use-conv',
-                       action='store_true',
-                       help='Whether to add the conv layer to the RCNN.')
-    group.add_argument('--use-rnn',
-                       action='store_true',
-                       help='Whether to add the rnn layer to the RCNN.')
-    group.add_argument('--use-linear',
-                       action='store_true',
-                       help='Whether to add the linear-out layer to the RCNN.')
-    group.add_argument('--use-attention',
-                       action='store_true',
-                       help='Whether to add the self-attn layer to the RCNN.')
-    group.add_argument('--use-crf',
-                       action='store_true',
-                       help='Whether to add the crf layer to the RCNN.')
 
 
 def train_opts(parser):
