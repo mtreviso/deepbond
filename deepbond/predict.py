@@ -51,7 +51,7 @@ def run(options):
     fields.load_vocabs(options.load, fields_tuples)
 
     logger.info('Loading model...')
-    model = models.load(options.load, fields_tuples)
+    model = models.load(options.load, fields_tuples, options.gpu_id)
 
     logger.info('Predicting...')
     predicter = Predicter(dataset_iter, model)

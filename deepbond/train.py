@@ -72,7 +72,7 @@ def run(options):
         logger.info('Loading vocabularies...')
         fields.load_vocabs(options.load, fields_tuples)
         logger.info('Loading model...')
-        model = models.load(options.load, fields_tuples)
+        model = models.load(options.load, fields_tuples, options.gpu_id)
         logger.info('Loading optimizer...')
         optim = optimizer.load(options.load, model.parameters())
         logger.info('Loading scheduler...')

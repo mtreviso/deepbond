@@ -115,7 +115,7 @@ class Tagger:
         self.options.gpu_id = self.gpu_id
 
         # load model, optimizer and scheduler
-        self.model = models.load(dir_path, self.fields_tuples)
+        self.model = models.load(dir_path, self.fields_tuples, self.gpu_id)
         self.optimizer = optimizer.load(dir_path, self.model.parameters())
         self.scheduler = scheduler.load(dir_path, self.optimizer)
 
