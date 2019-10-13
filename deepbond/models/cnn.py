@@ -36,6 +36,7 @@ class CNN(Model):
                                 padding=options.kernel_size // 2)
         self.max_pool = nn.MaxPool1d(options.pool_length,
                                      padding=options.pool_length // 2)
+        self.dropout_cnn = nn.Dropout(options.cnn_dropout)
         self.linear_out = nn.Linear(options.conv_size // options.pool_length +
                                     options.pool_length // 2,
                                     self.nb_classes)
@@ -70,6 +71,7 @@ class CNN(Model):
 
         # (bs, ts, conv_size) -> (bs, ts, pool_size)
         h = self.max_pool(h)
+        h = self.dropout_cnn(h)
 
         # (bs, ts, pool_size) -> (bs, ts, nb_classes)
         h = F.log_softmax(self.linear_out(h), dim=-1)

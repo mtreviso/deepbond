@@ -48,6 +48,7 @@ class AttentionCNN(Model):
                                 padding=options.kernel_size // 2)
         self.max_pool = nn.MaxPool1d(options.pool_length,
                                      padding=options.pool_length // 2)
+        self.dropout_cnn = nn.Dropout(options.cnn_dropout)
         self.relu = torch.nn.ReLU()
 
         features_size = (options.conv_size // options.pool_length +
@@ -133,6 +134,7 @@ class AttentionCNN(Model):
 
         # (bs, ts, conv_size) -> (bs, ts, pool_size)
         h = self.max_pool(h)
+        h = self.dropout_cnn(h)
 
         # (bs, ts, pool_size) -> (bs, ts, pool_size)
         h, _ = self.attn(h, h, h, mask=mask)
