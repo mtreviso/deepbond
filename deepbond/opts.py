@@ -168,7 +168,7 @@ def model_opts(parser):
                        help='Size of pooling window.')
     group.add_argument('--cnn-dropout',
                        type=float,
-                       default=0.4,
+                       default=0.0,
                        help='Dropout rate applied after conv+pool layers.')
     group.add_argument('--rnn-dropout',
                        type=float,
