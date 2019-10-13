@@ -93,6 +93,8 @@ def run(options):
     logger.info(str(optim))
     logger.info('Scheduler info: ')
     logger.info(str(sched))
+    nb_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    logger.info('Nb of trainable parameters: {}'.format(nb_params))
 
     # TRAIN
     logger.info('Building trainer...')
