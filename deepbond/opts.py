@@ -51,6 +51,10 @@ def general_opts(parser):
                        action='store_true',
                        help='Whether to use tensorboardX for logging stats'
                             ' in addition to the regular output logger.')
+    group.add_argument('--print-parameters-per-layer',
+                       action='store_true',
+                       help='Whether to print the number of parameters for'
+                            'each layer.')
 
     # Save and load
     group = parser.add_argument_group('save-load')

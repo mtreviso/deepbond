@@ -6,6 +6,7 @@ python3 -m deepbond train \
 					            --output-dir "runs/test-cinderela/" \
                       --save "saved-models/test-cinderela/" \
                       --tensorboard \
+                      --print-parameters-per-layer \
                       --final-report \
                       \
                       --train-path "data/folds/CCL-A/0/train/" \
@@ -18,7 +19,7 @@ python3 -m deepbond train \
                       --vocab-size 9999999 \
                       --vocab-min-frequency 1 \
                       --keep-rare-with-vectors \
-					             --add-embeddings-vocab \
+					            --add-embeddings-vocab \
                       \
                       --model rcnn_attn \
                       --attn-type 'multihead' \
@@ -26,6 +27,7 @@ python3 -m deepbond train \
                       --attn-hidden-size 20 \
                       --attn-dropout 0.5 \
                       --attn-nb-heads 2 \
+                      --attn-multihead-hidden-size 40 \
                       \
                       --emb-dropout 0 \
                       --freeze-embeddings \
@@ -35,14 +37,14 @@ python3 -m deepbond train \
                       --pool-length 3 \
                       \
                       --rnn-type gru \
-                      --hidden-size 100 \
+                      --hidden-size 20 \
                       --bidirectional \
                       --sum-bidir \
                       --dropout 0.7 \
                       \
                       --loss-weights "balanced" \
-                      --train-batch-size 4 \
-                      --dev-batch-size 4 \
+                      --train-batch-size 2 \
+                      --dev-batch-size 2 \
                       --epochs 2 \
                       --optimizer "adamw" \
                       --learning-rate 0.001 \

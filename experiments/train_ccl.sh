@@ -25,9 +25,9 @@ traindb(){
                             --attn-type "regular" \
                             --attn-scorer "general" \
                             --attn-hidden-size 200 \
-                            --attn-dropout 0.5 \
+                            --attn-dropout 0.0 \
                             --attn-nb-heads 4 \
-                            --attn-multihead-hidden-size 200 \
+                            --attn-multihead-hidden-size 36 \
                             \
                             --emb-dropout 0.0 \
                             --embeddings-format "word2vec" \

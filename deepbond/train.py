@@ -93,8 +93,16 @@ def run(options):
     logger.info(str(optim))
     logger.info('Scheduler info: ')
     logger.info(str(sched))
-    nb_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    logger.info('Nb of trainable parameters: {}'.format(nb_params))
+
+    nb_trainable_params = 0
+    for p_name, p_tensor in model.named_parameters():
+        if p_tensor.requires_grad:
+            if options.print_parameters_per_layer:
+                logger.info('{} {}: {}'.format(p_name,
+                                               tuple(p_tensor.size()),
+                                               p_tensor.size().numel()))
+            nb_trainable_params += p_tensor.size().numel()
+    logger.info('Nb of trainable parameters: {}'.format(nb_trainable_params))
 
     # TRAIN
     logger.info('Building trainer...')
