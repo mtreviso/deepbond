@@ -54,7 +54,7 @@ class RNN(Model):
 
         self.selu = torch.nn.SELU()
         self.dropout_emb = nn.Dropout(options.emb_dropout)
-        self.dropout_rnn = nn.Dropout(options.dropout)
+        self.dropout_rnn = nn.Dropout(options.rnn_dropout)
 
         self.init_weights()
         self.is_built = True

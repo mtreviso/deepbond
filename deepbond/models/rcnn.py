@@ -71,7 +71,7 @@ class RCNN(Model):
                              hidden_size,
                              bidirectional=self.is_bidir,
                              batch_first=True)
-        self.dropout_rnn = nn.Dropout(options.dropout)
+        self.dropout_rnn = nn.Dropout(options.rnn_dropout)
         self.sigmoid = torch.nn.Sigmoid()
 
         features_size = hidden_size

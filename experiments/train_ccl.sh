@@ -42,7 +42,7 @@ traindb(){
                             --hidden-size 200 \
                             --bidirectional \
                             --sum-bidir \
-                            --dropout 0.5 \
+                            --rnn-dropout 0.5 \
                             \
                             --loss-weights "balanced" \
                             --train-batch-size 1 \
