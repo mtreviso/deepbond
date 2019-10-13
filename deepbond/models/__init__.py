@@ -3,13 +3,14 @@ from pathlib import Path
 
 from deepbond import constants
 from deepbond import opts
-from .cnn import CNN
-from .rnn import RNN
-from .rcnn import RCNN
-from .rcnn_attn import AttentionRCNN
-
+from deepbond.models.cnn import CNN
+from deepbond.models.cnn_attn import AttentionCNN
+from deepbond.models.rcnn import RCNN
+from deepbond.models.rcnn_attn import AttentionRCNN
+from deepbond.models.rnn import RNN
 
 available_models = {
+    'cnn_attn': AttentionCNN,
     'rcnn_attn': AttentionRCNN,
     'rcnn': RCNN,
     'cnn': CNN,
