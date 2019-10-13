@@ -21,7 +21,13 @@ traindb(){
                             --keep-rare-with-vectors \
                             --add-embeddings-vocab \
                             \
-                            --model rcnn_attn \
+                            --model cnn_attn \
+                            --attn-type "regular" \
+                            --attn-scorer "general" \
+                            --attn-hidden-size 200 \
+                            --attn-dropout 0.5 \
+                            --attn-nb-heads 4 \
+                            --attn-multihead-hidden-size 200 \
                             \
                             --emb-dropout 0.0 \
                             --embeddings-format "word2vec" \

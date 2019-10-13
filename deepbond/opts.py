@@ -216,7 +216,7 @@ def model_opts(parser):
     group.add_argument('--attn-hidden-size',
                        type=int,
                        default=100,
-                       help='Size of hidden size for linear projections inside'
+                       help='Hidden size for linear projections inside'
                             'the attention mechanism.')
     group.add_argument('--attn-dropout',
                        type=float,
@@ -226,6 +226,11 @@ def model_opts(parser):
                        type=int,
                        default=4,
                        help='Number of heads for multiheaded attention.')
+    group.add_argument('--attn-multihead-hidden-size',
+                       type=int,
+                       default=100,
+                       help='Hidden size for linear projection for projecting'
+                            'query, keys and values in multiheaded attention.')
 
 
 def train_opts(parser):

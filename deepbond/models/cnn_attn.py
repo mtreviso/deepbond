@@ -73,13 +73,7 @@ class AttentionCNN(Model):
                                                options.attn_hidden_size,
                                                op='concat')
         elif options.attn_scorer == 'mlp':
-            if options.attn_type == 'multihead':
-                self.attn_scorer = MLPScorer(
-                    options.attn_hidden_size // options.attn_nb_heads,
-                    options.attn_hidden_size // options.attn_nb_heads
-                )
-            else:
-                self.attn_scorer = MLPScorer(query_size, key_size)
+            self.attn_scorer = MLPScorer(query_size, key_size)
         else:
             raise Exception('Attention scorer `{}` not available'.format(
                 options.attn_scorer))
@@ -94,10 +88,10 @@ class AttentionCNN(Model):
                 query_size,
                 key_size,
                 value_size,
-                options.attn_hidden_size,
+                options.attn_multihead_hidden_size,
                 dropout=options.attn_dropout
             )
-            features_size = options.attn_hidden_size
+            features_size = options.attn_multihead_hidden_size
         else:
             raise Exception('Attention `{}` not available'.format(
                 options.attn_type))
