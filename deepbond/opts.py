@@ -239,6 +239,10 @@ def model_opts(parser):
                        default=100,
                        help='Hidden size for linear projection for projecting'
                             'query, keys and values in multiheaded attention.')
+    group.add_argument('--transformer-encoder-layers',
+                       type=int,
+                       default=1,
+                       help='Number of stacked transformer encoder layers.')
 
 
 def train_opts(parser):
