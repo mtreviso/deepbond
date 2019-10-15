@@ -1,10 +1,8 @@
 import numpy as np
-import torch
+from sklearn.metrics import precision_recall_fscore_support, matthews_corrcoef
 
 from deepbond import constants
 from deepbond.models.utils import unroll, unmask
-
-from sklearn.metrics import precision_recall_fscore_support, matthews_corrcoef
 
 
 class BestValueEpoch:
@@ -22,12 +20,10 @@ class Stats(object):
         emb_vocab (dict): dict with words found in embeddings data
     """
     def __init__(self, tags_vocab):
-        self.mask_id = constants.TAGS_PAD_ID
         self.tags_vocab = tags_vocab
 
         # this attrs will be updated every time a new prediction is added
         self.pred_classes = []
-        self.pred_probs = []
         self.golds = []
         self.loss = 0
 
@@ -48,7 +44,6 @@ class Stats(object):
 
     def reset(self):
         self.pred_classes.clear()
-        self.pred_probs.clear()
         self.golds.clear()
         self.loss = 0
         self.prec_rec_f1 = None
@@ -61,14 +56,11 @@ class Stats(object):
     def nb_batches(self):
         return len(self.golds)
 
-    def update(self, loss, preds, golds):
-        pred_probs = torch.exp(preds)  # assuming log softmax at the nn output
-        pred_classes = pred_probs.argmax(dim=-1)
+    def update(self, loss, pred_classes, golds):
         self.loss += loss
 
         # unmask & flatten predictions and gold labels before storing them
-        mask = golds != self.mask_id
-        self.pred_probs.append(unroll(unmask(pred_probs, mask)))
+        mask = golds != constants.TAGS_PAD_ID
         self.pred_classes.append(unroll(unmask(pred_classes, mask)))
         self.golds.append(unroll(unmask(golds, mask)))
 

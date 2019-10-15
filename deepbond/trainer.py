@@ -161,7 +161,8 @@ class Trainer:
             self.optimizer.step()
 
             # keep stats object updated:
-            self.train_stats.update(loss.item(), pred, batch.tags)
+            pred_tags = self.model.predict_classes(batch)
+            self.train_stats.update(loss.item(), pred_tags, batch.tags)
 
             # report current loss to the user:
             acum_loss = self.train_stats.get_loss()
@@ -182,7 +183,8 @@ class Trainer:
                 loss = self.model.loss(pred, batch.tags)
 
                 # keep stats object updated:
-                stats.update(loss.item(), pred, batch.tags)
+                pred_tags = self.model.predict_classes(batch)
+                stats.update(loss.item(), pred_tags, batch.tags)
 
                 # report current loss to the user:
                 acum_loss = stats.get_loss()
