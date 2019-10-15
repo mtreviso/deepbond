@@ -83,6 +83,20 @@ def sequence_mask(lengths, max_len=None):
     return aranges < lengths.unsqueeze(1)
 
 
+def neighbours_mask(size, window_size):
+    """Mask for neighbour positions.
+
+    Args:
+        size(int): squared tensor size
+        window_size(int): how many elements to be considered as valid around
+            the ith element (including ith).
+    """
+    z = torch.ones(size, size, dtype=torch.int8)
+    mask = (torch.triu(z, diagonal=1 + window_size // 2) +
+            torch.tril(z, diagonal=- window_size // 2))
+    return z - mask
+
+
 def unsqueeze_as(tensor, as_tensor, dim=-1):
     """Expand new dimensions based on a template tensor along `dim` axis."""
     x = tensor
