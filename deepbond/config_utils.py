@@ -50,6 +50,7 @@ def configure_seed(seed):
     if torch.cuda.is_available():
         torch.cuda.manual_seed(seed)
         torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
 
 
 def empty_cache(gpu_id):
