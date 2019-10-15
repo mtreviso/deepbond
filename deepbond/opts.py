@@ -137,6 +137,11 @@ def preprocess_opts(parser):
     group.add_argument('--embeddings-path',
                        type=str,
                        help='Path to word embeddings file for source.')
+    group.add_argument('--embeddings-binary',
+                       action='store_true',
+                       help='Whether the provided embeddings are in binary '
+                            'format or not. By default they are treated as '
+                            'not binary.')
 
 
 def model_opts(parser):

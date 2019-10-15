@@ -21,22 +21,24 @@ traindb(){
                             --keep-rare-with-vectors \
                             --add-embeddings-vocab \
                             \
-                            --model cnn_attn \
-                            --attn-type "regular" \
-                            --attn-scorer "general" \
+                            --model rcnn \
+                            --attn-type "multihead" \
+                            --attn-scorer "dot_product" \
                             --attn-hidden-size 200 \
-                            --attn-dropout 0.0 \
-                            --attn-nb-heads 4 \
-                            --attn-multihead-hidden-size 36 \
+                            --attn-dropout 0.5 \
+                            --attn-nb-heads 2 \
+                            --attn-multihead-hidden-size 34 \
                             \
                             --emb-dropout 0.0 \
-                            --embeddings-format "word2vec" \
-                            --embeddings-path "data/embs/word2vec/pt_word2vec_sg_600.kv.emb" \
+                            --embeddings-format "text" \
+                            --embeddings-path "data/embs/word2vec/pt_word2vec_sg_600.small.pickle.emb" \
+                            --embeddings-binary \
                             --freeze-embeddings \
                             \
                             --conv-size 100 \
                             --kernel-size 7 \
                             --pool-length 3 \
+                            --cnn-dropout 0.0 \
                             \
                             --rnn-type gru \
                             --hidden-size 200 \

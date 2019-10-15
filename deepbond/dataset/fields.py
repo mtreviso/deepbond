@@ -36,7 +36,10 @@ def load_vectors(options):
             options.embeddings_format, options.embeddings_path)
         )
         word_emb_cls = available_embeddings[options.embeddings_format]
-        vectors = word_emb_cls(options.embeddings_path, binary=False)
+        vectors = word_emb_cls(
+            options.embeddings_path,
+            binary=options.embeddings_binary
+        )
     return vectors
 
 

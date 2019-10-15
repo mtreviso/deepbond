@@ -21,13 +21,13 @@ python3 -m deepbond train \
                       --keep-rare-with-vectors \
 					            --add-embeddings-vocab \
                       \
-                      --model rcnn_attn \
+                      --model cnn_attn \
                       --attn-type 'multihead' \
-                      --attn-scorer 'mlp' \
-                      --attn-hidden-size 20 \
-                      --attn-dropout 0.5 \
-                      --attn-nb-heads 2 \
-                      --attn-multihead-hidden-size 40 \
+                      --attn-scorer 'general' \
+                      --attn-hidden-size 200 \
+                      --attn-dropout 0.0 \
+                      --attn-nb-heads 4 \
+                      --attn-multihead-hidden-size 136 \
                       \
                       --emb-dropout 0 \
                       --freeze-embeddings \
@@ -35,16 +35,17 @@ python3 -m deepbond train \
                       --conv-size 100 \
                       --kernel-size 7 \
                       --pool-length 3 \
+                      --cnn-dropout 0.0 \
                       \
                       --rnn-type gru \
-                      --hidden-size 20 \
+                      --hidden-size 200 \
                       --bidirectional \
                       --sum-bidir \
-                      --dropout 0.7 \
+                      --rnn-dropout 0.7 \
                       \
                       --loss-weights "balanced" \
-                      --train-batch-size 2 \
-                      --dev-batch-size 2 \
+                      --train-batch-size 1 \
+                      --dev-batch-size 1 \
                       --epochs 2 \
                       --optimizer "adamw" \
                       --learning-rate 0.001 \
