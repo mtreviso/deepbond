@@ -21,12 +21,12 @@ class CRF(nn.Module):
     """
 
     def __init__(
-        self, 
-        nb_labels, 
-        bos_tag_id, 
-        eos_tag_id, 
-        pad_tag_id=None, 
-        batch_first=True
+        self,
+        nb_labels,
+        bos_tag_id,
+        eos_tag_id,
+        pad_tag_id=None,
+        batch_first=True,
     ):
         super().__init__()
 
@@ -43,27 +43,30 @@ class CRF(nn.Module):
         # initialize transitions from a random uniform distribution between -0.1 and 0.1
         nn.init.uniform_(self.transitions, -0.1, 0.1)
 
+    def apply_bos_and_eos_constraints(self):
         # enforce contraints (rows=from, columns=to) with a big negative number
         # so exp(-10000) will tend to zero
-
         # no transitions allowed to the beginning of sentence
         self.transitions.data[:, self.BOS_TAG_ID] = -10000.0
         # no transition alloed from the end of sentence
         self.transitions.data[self.EOS_TAG_ID, :] = -10000.0
 
+    def apply_pad_constraints(self):
         if self.PAD_TAG_ID is not None:
             # no transitions from padding
             self.transitions.data[self.PAD_TAG_ID, :] = -10000.0
             # no transitions to padding
             self.transitions.data[:, self.PAD_TAG_ID] = -10000.0
-            # except if the end of sentence is reached
-            # or we are already in a pad position
-            self.transitions.data[self.PAD_TAG_ID, self.EOS_TAG_ID] = 0.0
+            # except if we are already in a pad position or we reach eos
             self.transitions.data[self.PAD_TAG_ID, self.PAD_TAG_ID] = 0.0
+            self.transitions.data[self.EOS_TAG_ID, self.PAD_TAG_ID] = 0.0
 
     def forward(self, emissions, tags, mask=None):
+        return self.neg_log_likelihood(emissions, tags, mask=mask)
+
+    def neg_log_likelihood(self, emissions, tags, mask=None):
         """Compute the negative log-likelihood. See `log_likelihood` method."""
-        nll = -self.log_likelihood(emissions, tags, mask=mask)
+        nll = - self.log_likelihood(emissions, tags, mask=mask)
         return nll
 
     def log_likelihood(self, emissions, tags, mask=None):
@@ -81,7 +84,6 @@ class CRF(nn.Module):
                 If None, all positions are considered valid.
                 Shape of (batch_size, seq_len) if batch_first is True,
                 (seq_len, batch_size) otherwise.
-
         Returns:
             torch.Tensor: the log-likelihoods for each sequence in the batch.
                 Shape of (batch_size,)
@@ -94,6 +96,7 @@ class CRF(nn.Module):
 
         if mask is None:
             mask = torch.ones(emissions.shape[:2], dtype=torch.float)
+            mask = mask.to(emissions.device)
 
         scores = self._compute_scores(emissions, tags, mask=mask)
         partition = self._compute_log_partition(emissions, mask=mask)
@@ -119,6 +122,7 @@ class CRF(nn.Module):
         """
         if mask is None:
             mask = torch.ones(emissions.shape[:2], dtype=torch.float)
+            mask = mask.to(emissions.device)
 
         scores, sequences = self._viterbi_decode(emissions, mask)
         return scores, sequences
@@ -137,6 +141,7 @@ class CRF(nn.Module):
         """
         batch_size, seq_length = tags.shape
         scores = torch.zeros(batch_size)
+        scores = scores.to(tags.device)
 
         # save first and last tags to be used later
         first_tags = tags[:, 0]
@@ -157,9 +162,12 @@ class CRF(nn.Module):
 
         # now lets do this for each remaining word
         for i in range(1, seq_length):
+            # print(i, tags[:, i])
+            # if i == 270:
+            #     import ipdb; ipdb.set_trace()
 
             # we could: iterate over batches, check if we reached a mask symbol
-            # and stop the iteration, but vecotrizing is faster due to gpu,
+            # and stop the iteration, but vectorizing is faster due to gpu,
             # so instead we perform an element-wise multiplication
             is_valid = mask[:, i]
 
