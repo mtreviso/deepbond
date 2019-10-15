@@ -3,18 +3,32 @@ from pathlib import Path
 
 from deepbond import constants
 from deepbond import opts
+from deepbond.models.attn_crf import AttentionCRF
 from deepbond.models.cnn import CNN
-from deepbond.models.cnn_attn import AttentionCNN
+from deepbond.models.cnn_attn import CNNAttention
+from deepbond.models.cnn_attn_crf import CNNAttentionCRF
+from deepbond.models.crf import LinearCRF
 from deepbond.models.rcnn import RCNN
-from deepbond.models.rcnn_attn import AttentionRCNN
+from deepbond.models.rcnn_attn import RCNNAttention
+from deepbond.models.rcnn_attn_crf import RCNNAttentionCRF
 from deepbond.models.rnn import RNN
+from deepbond.models.rnn_attn_crf import RNNAttentionCRF
+from deepbond.models.rnn_crf import RNNCRF
+from deepbond.models.self_attn import SelfAttention
 
 available_models = {
-    'cnn_attn': AttentionCNN,
-    'rcnn_attn': AttentionRCNN,
-    'rcnn': RCNN,
+    'attn_crf': AttentionCRF,
     'cnn': CNN,
+    'cnn_attn': CNNAttention,
+    'cnn_attn_crf': CNNAttentionCRF,
+    'crf': LinearCRF,
+    'rcnn': RCNN,
+    'rcnn_attn': RCNNAttention,
+    'rcnn_attn_crf': RCNNAttentionCRF,
     'rnn': RNN,
+    'rnn_attn_crf': RNNAttentionCRF,
+    'rnn_crf': RNNCRF,
+    'self_attn': SelfAttention,
 }
 
 

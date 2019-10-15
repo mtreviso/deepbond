@@ -1,19 +1,17 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 from deepbond import constants
-from deepbond.initialization import init_xavier, init_kaiming
+from deepbond.initialization import init_xavier
 from deepbond.models.model import Model
 from deepbond.modules.attention import Attention
+from deepbond.modules.multi_headed_attention import MultiHeadedAttention
 from deepbond.modules.scorer import (DotProductScorer, GeneralScorer,
                                      OperationScorer, MLPScorer)
 
-from deepbond.modules.multi_headed_attention import MultiHeadedAttention
 
-
-class CNNAttention(Model):
-    """CNN with Attention on top"""
+class SelfAttention(Model):
+    """Self attention + linear projection"""
 
     def __init__(self, words_field, tags_field, options):
         super().__init__(words_field, tags_field)
@@ -38,21 +36,6 @@ class CNNAttention(Model):
             self.word_emb.weight.requires_grad = False
 
         features_size = options.word_embeddings_size
-
-        #
-        # CNN 1D
-        #
-        self.cnn_1d = nn.Conv1d(in_channels=features_size,
-                                out_channels=options.conv_size,
-                                kernel_size=options.kernel_size,
-                                padding=options.kernel_size // 2)
-        self.max_pool = nn.MaxPool1d(options.pool_length,
-                                     padding=options.pool_length // 2)
-        self.dropout_cnn = nn.Dropout(options.cnn_dropout)
-        self.relu = torch.nn.ReLU()
-
-        features_size = (options.conv_size // options.pool_length +
-                         options.pool_length // 2)
 
         #
         # Attention
@@ -106,8 +89,6 @@ class CNNAttention(Model):
         self.is_built = True
 
     def init_weights(self):
-        if self.cnn_1d is not None:
-            init_kaiming(self.cnn_1d, dist='uniform', nonlinearity='relu')
         if self.linear_out is not None:
             init_xavier(self.linear_out, dist='uniform')
 
@@ -117,33 +98,19 @@ class CNNAttention(Model):
 
         h = batch.words
         mask = h != constants.PAD_ID
-        lengths = mask.int().sum(dim=-1)
 
         # (bs, ts) -> (bs, ts, emb_dim)
         h = self.word_emb(h)
         h = self.dropout_emb(h)
 
-        # Turn (bs, ts, emb_dim) into (bs, emb_dim, ts) for CNN
-        h = h.transpose(1, 2)
-
-        # (bs, emb_dim, ts) -> (bs, conv_size, ts)
-        h = self.relu(self.cnn_1d(h))
-
-        # Turn (bs, conv_size, ts) into (bs, ts, conv_size) for Pooling
-        h = h.transpose(1, 2)
-
-        # (bs, ts, conv_size) -> (bs, ts, pool_size)
-        h = self.max_pool(h)
-        h = self.dropout_cnn(h)
-
-        # (bs, ts, pool_size) -> (bs, ts, pool_size)
+        # (bs, ts, emb_dim) -> (bs, ts, emb_dim)
         h, _ = self.attn(h, h, h, mask=mask)
 
-        # (bs, ts, pool_size) -> (bs, ts, nb_classes)
+        # (bs, ts, emb_dim) -> (bs, ts, nb_classes)
         h = self.linear_out(h)
 
         # (bs, ts, nb_classes) -> (bs, ts, nb_classes) in simplex
-        h = F.log_softmax(h, dim=-1)
+        h = torch.log_softmax(h, dim=-1)
 
         # remove <bos> and <eos> tokens
         # (bs, ts, nb_classes) -> (bs, ts-2, nb_classes)
