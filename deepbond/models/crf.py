@@ -34,6 +34,14 @@ class LinearCRF(Model):
 
         features_size = options.word_embeddings_size
 
+        # Hidden
+        self.linear_hidden = None
+        self.sigmoid = nn.Sigmoid()
+        hidden_size = options.hidden_size[0]
+        if hidden_size > 0:
+            self.linear_hidden = nn.Linear(features_size, hidden_size)
+            features_size = hidden_size
+
         #
         # Linear
         #
@@ -85,6 +93,10 @@ class LinearCRF(Model):
         # (bs, ts) -> (bs, ts, emb_dim)
         h = self.word_emb(h)
         h = self.dropout_emb(h)
+
+        if self.linear_hidden is not None:
+            h = self.linear_hidden(h)
+            h = self.sigmoid(h)
 
         # (bs, ts, emb_dim) -> (bs, ts, nb_classes)
         h = self.linear_out(h)
