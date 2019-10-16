@@ -6,10 +6,12 @@ from deepbond import opts
 from deepbond.models.cnn import CNN
 from deepbond.models.cnn_attn import CNNAttention
 from deepbond.models.cnn_attn_crf import CNNAttentionCRF
+from deepbond.models.cnn_crf import CNNCRF
 from deepbond.models.crf import LinearCRF
 from deepbond.models.rcnn import RCNN
 from deepbond.models.rcnn_attn import RCNNAttention
 from deepbond.models.rcnn_attn_crf import RCNNAttentionCRF
+from deepbond.models.rcnn_crf import RCNNCRF
 from deepbond.models.rnn import RNN
 from deepbond.models.rnn_attn_crf import RNNAttentionCRF
 from deepbond.models.rnn_crf import RNNCRF
@@ -20,10 +22,12 @@ available_models = {
     'cnn': CNN,
     'cnn_attn': CNNAttention,
     'cnn_attn_crf': CNNAttentionCRF,
+    'cnn_crf': CNNCRF,
     'crf': LinearCRF,
     'rcnn': RCNN,
     'rcnn_attn': RCNNAttention,
     'rcnn_attn_crf': RCNNAttentionCRF,
+    'rcnn_crf': RCNNCRF,
     'rnn': RNN,
     'rnn_attn_crf': RNNAttentionCRF,
     'rnn_crf': RNNCRF,
