@@ -4,6 +4,7 @@ import re
 from pathlib import Path
 
 from gensim.models import KeyedVectors
+from gensim.models.wrappers import FastText
 
 
 def normalize(text):
@@ -48,20 +49,30 @@ if __name__ == '__main__':
     parser.add_argument('--binary',
                         action='store_true',
                         help='Whether to save the embeddings are in binary format or not.')
-
+    parser.add_argument("-f", "--format",
+                        type=str,
+                        default="word2vec",
+                        choices=['word2vec', 'fasttext'],
+                        help="embeddings format")
     args = parser.parse_args()
 
     vocab = get_vocab(args.data_path)
     print('Vocab size: {}'.format(len(vocab)))
 
-    embeddings = KeyedVectors.load_word2vec_format(args.emb_path,
-                                                   unicode_errors='ignore',
-                                                   binary=True)
+    if args.format == 'word2vec':
+        embeddings = KeyedVectors.load_word2vec_format(args.emb_path,
+                                                       unicode_errors='ignore',
+                                                       binary=True)
+    else:
+        embeddings = FastText.load_fasttext_format(args.emb_path)
 
     word_vectors = {}
     for word in vocab:
         if word in embeddings:
             word_vectors[word] = embeddings[word]
+        else:
+            print('{} not found in model vocab. It will be replaced later '
+                  'by and unknown vector.'.format(word))
 
     if args.binary:
         with open(args.output_path, 'wb') as handle:

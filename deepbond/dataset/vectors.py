@@ -40,6 +40,14 @@ class WordEmbeddings(Vectors):
 
     def __getitem__(self, token):
         mapped_token = self.map_fn(token)
+        if self.emb_format == 'fasttext':
+            if mapped_token in self.vectors:
+                return self.vectors[mapped_token]
+            elif mapped_token.lower() in self.vectors:
+                return self.vectors[mapped_token.lower()]
+            else:
+                return self.unk_vector.clone()
+
         if mapped_token in self.stoi:
             return self.vectors[self.stoi[mapped_token]]
         elif token in self.stoi:
@@ -65,7 +73,19 @@ class WordEmbeddings(Vectors):
             self.dim = embeddings.shape[1]
             self.vectors = torch.tensor(embeddings.vectors).view(-1, self.dim)
 
-        elif self.emb_format in ['word2vec', 'fasttext']:
+        elif self.emb_format == 'fasttext':
+            try:
+                from gensim.models.wrappers import FastText
+            except ImportError:
+                logger.error('Please install `gensim` package first.')
+                return None
+            self.vectors = FastText.load_fasttext_format(name)
+            self.itos = list(self.vectors.wv.vocab.keys())
+            self.stoi = dict(zip(self.itos, range(len(self.itos))))
+            self.unk_vector = self.vectors['<unk>']
+            self.dim = self.vectors.vector_size
+
+        elif self.emb_format == 'word2vec':
             try:
                 from gensim.models import KeyedVectors
             except ImportError:
@@ -115,7 +135,8 @@ class WordEmbeddings(Vectors):
             self.dim = embeddings.shape[1]
             self.vectors = torch.tensor(embeddings).view(-1, self.dim)
 
-        self.unk_vector = self.vectors.mean(0).unsqueeze(0)
+        if self.unk_vector is None:
+            self.unk_vector = self.vectors.mean(0).unsqueeze(0)
 
 
 def to_polyglot(token):
