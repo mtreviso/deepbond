@@ -3,8 +3,7 @@ import pickle
 import re
 from pathlib import Path
 
-from gensim.models import KeyedVectors
-from gensim.models.wrappers import FastText
+from gensim.models import KeyedVectors, FastText
 
 
 def normalize(text):

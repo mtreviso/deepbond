@@ -11,8 +11,7 @@ After transforming to KeyedVectors, FastText is not able to get ngrams vectors a
 import argparse
 
 # pip3 install --user gensim
-from gensim.models import Word2Vec, KeyedVectors
-from gensim.models.wrappers import FastText
+from gensim.models import Word2Vec, KeyedVectors, FastText
 
 
 if __name__ == '__main__':

@@ -42,10 +42,12 @@ class WordEmbeddings(Vectors):
         mapped_token = self.map_fn(token)
         if self.emb_format == 'fasttext':
             if mapped_token in self.vectors:
-                return self.vectors[mapped_token]
+                return torch.from_numpy(self.vectors[mapped_token])
             elif mapped_token.lower() in self.vectors:
-                return self.vectors[mapped_token.lower()]
+                print(mapped_token)
+                return torch.from_numpy(self.vectors[mapped_token.lower()])
             else:
+                print(mapped_token)
                 return self.unk_vector.clone()
 
         if mapped_token in self.stoi:
@@ -75,7 +77,7 @@ class WordEmbeddings(Vectors):
 
         elif self.emb_format == 'fasttext':
             try:
-                from gensim.models.wrappers import FastText
+                from gensim.models import FastText
             except ImportError:
                 logger.error('Please install `gensim` package first.')
                 return None
