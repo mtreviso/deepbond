@@ -11,7 +11,7 @@ from deepbond.modules.scorer import (DotProductScorer, GeneralScorer,
                                      OperationScorer, MLPScorer)
 
 
-class AttentionCRF(Model):
+class SelfAttentionCRF(Model):
     """Self Attention + CRF on top"""
 
     def __init__(self, words_field, tags_field, options):
