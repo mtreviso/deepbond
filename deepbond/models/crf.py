@@ -51,10 +51,10 @@ class LinearCRF(Model):
             self.nb_classes,
             bos_tag_id=self.tags_field.vocab.stoi['_'],  # hack
             eos_tag_id=self.tags_field.vocab.stoi['.'],  # hack
-            pad_tag_id=self.tags_field.vocab.stoi[constants.PAD],
+            pad_tag_id=None,
             batch_first=True,
         )
-        self.crf.apply_pad_constraints()
+        # self.crf.apply_pad_constraints()
 
         self.init_weights()
         self.is_built = True
@@ -63,16 +63,19 @@ class LinearCRF(Model):
         if self.linear_out is not None:
             init_xavier(self.linear_out, dist='uniform')
 
-    @property
-    def nb_classes(self):
-        return len(self.tags_field.vocab.stoi)  # include pad index
-
     def build_loss(self, loss_weights=None):
         self._loss = self.crf
 
     def loss(self, emissions, gold):
         mask = gold != constants.TAGS_PAD_ID
-        return self._loss(emissions, gold, mask=mask.float())
+        crf_gold = gold.clone()
+        # it can be any valid tag id number, since they will be masked out in
+        # the CRF anyway. Here I choose 0 (can't be pad_id because num_tags is
+        # len(tags_vocab) -1), so there is no transition to pad, unless
+        # we emit a score for pad as well, which can make the neural net to
+        # think that pad is a valid label
+        crf_gold[mask == 0] = 0
+        return self._loss(emissions, crf_gold, mask=mask.float())
 
     def predict_classes(self, batch):
         emissions = self.forward(batch)

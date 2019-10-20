@@ -129,10 +129,9 @@ class RCNNAttentionCRF(Model):
             self.nb_classes,
             bos_tag_id=self.tags_field.vocab.stoi['_'],  # hack
             eos_tag_id=self.tags_field.vocab.stoi['.'],  # hack
-            pad_tag_id=self.tags_field.vocab.stoi[constants.PAD],
+            pad_tag_id=None,
             batch_first=True,
         )
-        self.crf.apply_pad_constraints()
 
         #
         # Linear
@@ -150,16 +149,14 @@ class RCNNAttentionCRF(Model):
         if self.linear_out is not None:
             init_xavier(self.linear_out, dist='uniform')
 
-    @property
-    def nb_classes(self):
-        return len(self.tags_field.vocab.stoi)  # include pad index
-
     def build_loss(self, loss_weights=None):
         self._loss = self.crf
 
     def loss(self, emissions, gold):
         mask = gold != constants.TAGS_PAD_ID
-        return self._loss(emissions, gold, mask=mask.float())
+        crf_gold = gold.clone()
+        crf_gold[mask == 0] = 0
+        return self._loss(emissions, crf_gold, mask=mask.float())
 
     def predict_classes(self, batch):
         emissions = self.forward(batch)

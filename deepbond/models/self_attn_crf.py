@@ -4,6 +4,7 @@ import torch.nn as nn
 from deepbond import constants
 from deepbond.initialization import init_xavier
 from deepbond.models.model import Model
+from deepbond.models.utils import neighbours_mask
 from deepbond.modules.attention import Attention
 from deepbond.modules.crf import CRF
 from deepbond.modules.multi_headed_attention import MultiHeadedAttention
@@ -90,10 +91,9 @@ class SelfAttentionCRF(Model):
             self.nb_classes,
             bos_tag_id=self.tags_field.vocab.stoi['_'],  # hack
             eos_tag_id=self.tags_field.vocab.stoi['.'],  # hack
-            pad_tag_id=self.tags_field.vocab.stoi[constants.PAD],
+            pad_tag_id=None,
             batch_first=True,
         )
-        self.crf.apply_pad_constraints()
 
         self.init_weights()
         self.is_built = True
@@ -102,16 +102,14 @@ class SelfAttentionCRF(Model):
         if self.linear_out is not None:
             init_xavier(self.linear_out, dist='uniform')
 
-    @property
-    def nb_classes(self):
-        return len(self.tags_field.vocab.stoi)  # include pad index
-
     def build_loss(self, loss_weights=None):
         self._loss = self.crf
 
     def loss(self, emissions, gold):
         mask = gold != constants.TAGS_PAD_ID
-        return self._loss(emissions, gold, mask=mask.float())
+        crf_gold = gold.clone()
+        crf_gold[mask == 0] = 0
+        return self._loss(emissions, crf_gold, mask=mask.float())
 
     def predict_classes(self, batch):
         emissions = self.forward(batch)
@@ -134,6 +132,7 @@ class SelfAttentionCRF(Model):
         h = self.dropout_emb(h)
 
         # (bs, ts, emb_dim) -> (bs, ts, emb_dim)
+        # mask = mask.unsqueeze(-2) & neighbours_mask(h.shape[1], window_size=3).to(h.device).unsqueeze(0).bool()
         h, _ = self.attn(h, h, h, mask=mask)
 
         # (bs, ts, emb_dim) -> (bs, ts, nb_classes)
