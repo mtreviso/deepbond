@@ -37,9 +37,10 @@ class CNN(Model):
         self.max_pool = nn.MaxPool1d(options.pool_length,
                                      padding=options.pool_length // 2)
         self.dropout_cnn = nn.Dropout(options.cnn_dropout)
-        self.linear_out = nn.Linear(options.conv_size // options.pool_length +
-                                    options.pool_length // 2,
-                                    self.nb_classes)
+
+        nf = int((options.conv_size + 2 * (options.pool_length // 2) -
+                  (options.pool_length-1) - 1) / options.pool_length + 1)
+        self.linear_out = nn.Linear(nf, self.nb_classes)
         self.relu = torch.nn.ReLU()
 
         self.init_weights()
