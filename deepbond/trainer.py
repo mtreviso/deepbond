@@ -109,6 +109,12 @@ class Trainer:
                             self.restore_epoch(self.dev_stats.best_prec_rec_f1.epoch)  # NOQA
                     break
 
+            # Restore best model if early stopping didnt occur
+            elif epoch == self.epochs and self.dev_iter is not None:
+                if self.restore_best_model:
+                    if self.dev_stats.best_prec_rec_f1.epoch < epoch:
+                        self.restore_epoch(self.dev_stats.best_prec_rec_f1.epoch)  # NOQA
+
         elapsed = time.time() - start_time
         hms = time.strftime("%Hh:%Mm:%Ss", time.gmtime(elapsed))
         logger.info('Training ended after {}'.format(hms))
