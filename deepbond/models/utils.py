@@ -91,7 +91,7 @@ def neighbours_mask(size, window_size):
         window_size(int): how many elements to be considered as valid around
             the ith element (including ith).
     """
-    z = torch.ones(size, size, dtype=torch.int8)
+    z = torch.ones(size, size, dtype=torch.uint8)
     mask = (torch.triu(z, diagonal=1 + window_size // 2) +
             torch.tril(z, diagonal=- window_size // 2))
     return z - mask
