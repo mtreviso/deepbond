@@ -162,10 +162,6 @@ class CRF(nn.Module):
 
         # now lets do this for each remaining word
         for i in range(1, seq_length):
-            # print(i, tags[:, i])
-            # if i == 270:
-            #     import ipdb; ipdb.set_trace()
-
             # we could: iterate over batches, check if we reached a mask symbol
             # and stop the iteration, but vectorizing is faster due to gpu,
             # so instead we perform an element-wise multiplication
