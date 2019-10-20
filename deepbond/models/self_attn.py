@@ -4,6 +4,7 @@ import torch.nn as nn
 from deepbond import constants
 from deepbond.initialization import init_xavier
 from deepbond.models.model import Model
+from deepbond.models.utils import neighbours_mask
 from deepbond.modules.attention import Attention
 from deepbond.modules.multi_headed_attention import MultiHeadedAttention
 from deepbond.modules.scorer import (DotProductScorer, GeneralScorer,
@@ -104,6 +105,7 @@ class SelfAttention(Model):
         h = self.dropout_emb(h)
 
         # (bs, ts, emb_dim) -> (bs, ts, emb_dim)
+        # mask = mask.unsqueeze(-2) & neighbours_mask(h.shape[1], window_size=3).to(h.device).unsqueeze(0).bool()
         h, _ = self.attn(h, h, h, mask=mask)
 
         # (bs, ts, emb_dim) -> (bs, ts, nb_classes)

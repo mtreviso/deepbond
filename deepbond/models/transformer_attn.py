@@ -4,6 +4,7 @@ import torch.nn as nn
 from deepbond import constants
 from deepbond.initialization import init_xavier
 from deepbond.models.model import Model
+from deepbond.models.utils import neighbours_mask
 from deepbond.modules.attention import Attention
 from deepbond.modules.multi_headed_attention import MultiHeadedAttention
 from deepbond.modules.scorer import (DotProductScorer, GeneralScorer,
@@ -78,7 +79,13 @@ class TransformerAttention(Model):
         h = self.dropout_emb(h)
 
         # (bs, ts, emb_dim) -> (bs, ts, emb_dim)
-        h = self.attn(h, h, h, mask=mask)
+        # mask_key = neighbours_mask(h.shape[1], window_size=3)
+        # mask_key = mask_key.to(h.device).unsqueeze(0).bool()
+        # mask_key[mask_key == 1] = float("-inf")
+        mask[mask == 1] = float("-inf")
+        h = h.transpose(0, 1)
+        h = self.attn(h, mask=mask, src_key_padding_mask=None)
+        h = h.transpose(0, 1)
 
         # (bs, ts, emb_dim) -> (bs, ts, nb_classes)
         h = self.linear_out(h)

@@ -17,6 +17,7 @@ from deepbond.models.rnn_attn_crf import RNNAttentionCRF
 from deepbond.models.rnn_crf import RNNCRF
 from deepbond.models.self_attn import SelfAttention
 from deepbond.models.self_attn_crf import SelfAttentionCRF
+from deepbond.models.transformer_attn import TransformerAttention
 
 available_models = {
     'cnn': CNN,
@@ -33,6 +34,7 @@ available_models = {
     'rnn_crf': RNNCRF,
     'self_attn': SelfAttention,
     'self_attn_crf': SelfAttentionCRF,
+    'transformer_attn': TransformerAttention
 }
 
 
