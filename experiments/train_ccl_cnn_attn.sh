@@ -21,31 +21,25 @@ traindb(){
                             --keep-rare-with-vectors \
                             --add-embeddings-vocab \
                             \
-                            --emb-dropout 0.0 \
                             --embeddings-format "text" \
                             --embeddings-path "data/embs/word2vec/pt_word2vec_sg_600.small.pickle.emb" \
+                            --emb-dropout 0.0 \
                             --embeddings-binary \
                             --freeze-embeddings \
                             \
-                            --model rcnn \
+                            --model cnn_attn \
                             \
-                            --conv-size 200 \
+                            --conv-size 100 \
                             --kernel-size 7 \
                             --pool-length 3 \
-                            --cnn-dropout 0.25 \
-                            \
-                            --rnn-type rnn \
-                            --hidden-size 100 \
-                            --bidirectional \
-                            --sum-bidir \
-                            --rnn-dropout 0.5 \
+                            --cnn-dropout 0.0 \
                             \
                             --attn-type "regular" \
-                            --attn-scorer "add" \
-                            --attn-hidden-size 35 \
+                            --attn-scorer "general" \
+                            --attn-hidden-size 200 \
                             --attn-dropout 0.0 \
-                            --attn-nb-heads 2 \
-                            --attn-multihead-hidden-size 34 \
+                            --attn-nb-heads 4 \
+                            --attn-multihead-hidden-size 400 \
                             \
                             --loss-weights "balanced" \
                             --train-batch-size 1 \

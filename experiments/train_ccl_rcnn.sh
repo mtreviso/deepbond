@@ -34,8 +34,8 @@ traindb(){
                             --pool-length 3 \
                             --cnn-dropout 0.25 \
                             \
-                            --rnn-type rnn \
-                            --hidden-size 100 \
+                            --rnn-type lstm \
+                            --hidden-size 200 \
                             --bidirectional \
                             --sum-bidir \
                             --rnn-dropout 0.5 \

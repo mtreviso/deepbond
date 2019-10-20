@@ -27,25 +27,25 @@ traindb(){
                             --embeddings-binary \
                             --freeze-embeddings \
                             \
-                            --model rcnn \
+                            --model cnn_attn_crf \
                             \
-                            --conv-size 200 \
+                            --conv-size 100 \
                             --kernel-size 7 \
                             --pool-length 3 \
-                            --cnn-dropout 0.25 \
+                            --cnn-dropout 0.0 \
                             \
                             --rnn-type rnn \
-                            --hidden-size 100 \
+                            --hidden-size 200 \
                             --bidirectional \
                             --sum-bidir \
-                            --rnn-dropout 0.5 \
+                            --rnn-dropout 0.0 \
                             \
                             --attn-type "regular" \
-                            --attn-scorer "add" \
-                            --attn-hidden-size 35 \
+                            --attn-scorer "dot_product" \
+                            --attn-hidden-size 200 \
                             --attn-dropout 0.0 \
-                            --attn-nb-heads 2 \
-                            --attn-multihead-hidden-size 34 \
+                            --attn-nb-heads 4 \
+                            --attn-multihead-hidden-size 400 \
                             \
                             --loss-weights "balanced" \
                             --train-batch-size 1 \
@@ -67,7 +67,9 @@ predictdb(){
                         --prediction-type classes \
                         --load "saved-models/test-cinderela-togo/" \
                         --test-path "data/folds/CCL-A/${fold}/test/" \
-                        --output-dir "data/folds/CCL-A/${fold}/pred/"
+                        --output-dir "data/folds/CCL-A/${fold}/pred/" \
+                        --train-batch-size 1 \
+                        --dev-batch-size 1
 }
 
 

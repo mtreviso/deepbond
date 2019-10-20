@@ -5,7 +5,6 @@ python3 -m deepbond train \
                       --seed 42 \
 					            --output-dir "runs/test-cinderela/" \
                       --save "saved-models/test-cinderela/" \
-                      --tensorboard \
                       --print-parameters-per-layer \
                       --final-report \
                       \
