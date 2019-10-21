@@ -24,7 +24,7 @@ def main(data_dir, folds_dir):
     if not os.path.exists(folds_dir):
         os.mkdir(folds_dir)
 
-    n_folds = 5
+    n_folds = 10
     classes_list_dir = os.listdir(data_dir)
 
     for dir in classes_list_dir:
