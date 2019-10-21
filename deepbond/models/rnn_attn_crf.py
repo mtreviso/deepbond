@@ -57,7 +57,7 @@ class RNNAttentionCRF(Model):
         #
         # Attention
         #
-
+        features_size = hidden_size
         # they are equal for self-attention
         n = 1 if not self.is_bidir or self.sum_bidir else 2
         query_size = key_size = value_size = n * features_size
