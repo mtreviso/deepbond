@@ -55,13 +55,14 @@ class RNNAttention(Model):
         #
         # Attention
         #
-
+	features_size = hidden_size
         # they are equal for self-attention
         n = 1 if not self.is_bidir or self.sum_bidir else 2
         query_size = key_size = value_size = n * features_size
 
         if options.attn_scorer == 'dot_product':
             self.attn_scorer = DotProductScorer(scaled=True)
+	    
         elif options.attn_scorer == 'general':
             self.attn_scorer = GeneralScorer(query_size, key_size)
         elif options.attn_scorer == 'add':
@@ -81,6 +82,7 @@ class RNNAttention(Model):
         if options.attn_type == 'regular':
             self.attn = Attention(self.attn_scorer,
                                   dropout=options.attn_dropout)
+
         elif options.attn_type == 'multihead':
             self.attn = MultiHeadedAttention(
                 self.attn_scorer,
