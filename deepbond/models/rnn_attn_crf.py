@@ -121,8 +121,13 @@ class RNNAttentionCRF(Model):
     def init_weights(self):
         if self.rnn is not None:
             init_xavier(self.rnn, dist='uniform')
+        if self.attn is not None:
+            init_xavier(self.attn, dist='uniform')
+
         if self.linear_out is not None:
             init_xavier(self.linear_out, dist='uniform')
+	
+
 
     def build_loss(self, loss_weights=None):
         self._loss = self.crf
