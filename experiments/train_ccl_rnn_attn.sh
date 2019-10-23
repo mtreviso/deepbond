@@ -27,13 +27,20 @@ traindb(){
                             --embeddings-binary \
                             --freeze-embeddings \
                             \
-                            --model rnn \
+                            --model rnn_attn \
                             \
                             --rnn-type lstm \
                             --hidden-size 100 \
                             --bidirectional \
                             --sum-bidir \
-                            --rnn-dropout 0.05 \
+                            --rnn-dropout 0.5 \
+                            \
+                            --attn-type "regular" \
+                            --attn-scorer "general" \
+                            --attn-hidden-size 200 \
+                            --attn-dropout 0.0 \
+                            --attn-nb-heads 4 \
+                            --attn-multihead-hidden-size 200 \
                             \
                             --loss-weights "balanced" \
                             --train-batch-size 1 \

@@ -27,13 +27,20 @@ traindb(){
                             --embeddings-binary \
                             --freeze-embeddings \
                             \
-                            --model rnn \
+                            --model rnn_attn_crf \
                             \
                             --rnn-type lstm \
                             --hidden-size 100 \
                             --bidirectional \
                             --sum-bidir \
-                            --rnn-dropout 0.05 \
+                            --rnn-dropout 0.5 \
+                            \
+                            --attn-type "regular" \
+                            --attn-scorer "general" \
+                            --attn-hidden-size 67 \
+                            --attn-dropout 0.0 \
+                            --attn-nb-heads 4 \
+                            --attn-multihead-hidden-size 200 \
                             \
                             --loss-weights "balanced" \
                             --train-batch-size 1 \
@@ -55,7 +62,9 @@ predictdb(){
                         --prediction-type classes \
                         --load "saved-models/test-cinderela-togo/" \
                         --test-path "data/folds/CCL-A/${fold}/test/" \
-                        --output-dir "data/folds/CCL-A/${fold}/pred/"
+                        --output-dir "data/folds/CCL-A/${fold}/pred/" \
+                        --train-batch-size 1 \
+                        --dev-batch-size 1
 }
 
 

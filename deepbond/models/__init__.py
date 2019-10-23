@@ -13,8 +13,8 @@ from deepbond.models.rcnn_attn import RCNNAttention
 from deepbond.models.rcnn_attn_crf import RCNNAttentionCRF
 from deepbond.models.rcnn_crf import RCNNCRF
 from deepbond.models.rnn import RNN
-from deepbond.models.rnn_attn_crf import RNNAttentionCRF
 from deepbond.models.rnn_attn import RNNAttention
+from deepbond.models.rnn_attn_crf import RNNAttentionCRF
 from deepbond.models.rnn_crf import RNNCRF
 from deepbond.models.self_attn import SelfAttention
 from deepbond.models.self_attn_crf import SelfAttentionCRF
@@ -31,7 +31,7 @@ available_models = {
     'rcnn_attn_crf': RCNNAttentionCRF,
     'rcnn_crf': RCNNCRF,
     'rnn': RNN,
-    'rnn_attn':RNNAttention,
+    'rnn_attn': RNNAttention,
     'rnn_attn_crf': RNNAttentionCRF,
     'rnn_crf': RNNCRF,
     'self_attn': SelfAttention,
