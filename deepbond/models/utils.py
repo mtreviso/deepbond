@@ -6,29 +6,21 @@ from torch.nn.utils.rnn import pack_padded_sequence as pack
 from torch.nn.utils.rnn import pad_packed_sequence as unpack
 
 
-def indexes_to_words(indexes, itos):
-    """
-    Transofrm indexes to words using itos list
-    :param indexes: list of lists of ints
-    :param itos: list mapping integer to string
-    :return: list of lists of strs
-    """
-    words = []
-    for sample in indexes:
-        words.append([itos[i] for i in sample])
-    return words
-
-
 def unmask(tensor, mask, cut_length=0):
     """
     Unmask a tensor and convert it back to a list of lists.
 
-    :param tensor: a torch.tensor object
-    :param mask: a torch.tensor object with 1 indicating a valid position
-                 and 0 elsewhere
-    :param cut_length: subtract cut_length from lengths, the effect is that
-                       the last #cut_length positions are going to be discarded
-    :return: a list of lists with variable length
+    Args:
+        tensor (torch.Tensor): tensor with shape (bs, max_len, ...)
+        mask (torch.Tensor): tensor with shape (bs, max_len) where 1 (or True)
+            indicates a valid position, and 0 (or False) otherwise
+        cut_length (int): remove the last `cut_length` elements from the tensor.
+            In practice, the lengths calculated from the mask are going to be
+            subtracted by `cut_length`. This is useful when you have <bos> and
+            <eos> tokens in your words field and the mask was computed with
+            words != <pad>. Default is 0, i.e., no cut
+    Returns:
+         a list of lists with variable length
     """
     lengths = mask.int().sum(dim=-1)
     # if the mask was calculated using words, then we subtract cut_length
@@ -43,9 +35,13 @@ def unmask(tensor, mask, cut_length=0):
 
 def unroll(list_of_lists, rec=False):
     """
-    :param list_of_lists: a list that contains lists
-    :param rec: unroll recursively
-    :return: a flattened list
+    Unroll a list of lists.
+
+    Args:
+        list_of_lists (list): a list that contains lists
+        rec (bool): unroll recursively
+    Returns:
+        a single list
     """
     if not isinstance(list_of_lists[0], (np.ndarray, list)):
         return list_of_lists
@@ -134,9 +130,9 @@ def make_mergeable_tensors(t1, t2):
 
 def apply_packed_sequence(rnn, padded_sequences, lengths, hidden=None):
     """
-    Code adapted from Unbabel OpenKiwi
-
+    Code adapted from Unbabel OpenKiwi.
     Runs a forward pass of embeddings through an rnn using packed sequence.
+
     Args:
        rnn: The RNN that that we want to compute a forward pass with.
        padded_sequences (FloatTensor b x seq x dim): A batch of sequence seqs.
