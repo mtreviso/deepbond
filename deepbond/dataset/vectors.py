@@ -5,6 +5,7 @@ import torch
 from torchtext.vocab import Vectors
 
 from deepbond.constants import UNK, PAD, START, STOP
+
 logger = logging.getLogger(__name__)
 
 
@@ -60,20 +61,35 @@ class WordEmbeddings(Vectors):
             return self.unk_init(torch.Tensor(1, self.dim))
 
     def cache(self, name, cache, url=None, max_vectors=None):
-        if self.emb_format in ['polyglot', 'glove']:
+        if self.emb_format == 'polyglot':
             try:
                 from polyglot.mapping import Embedding
             except ImportError:
                 logger.error('Please install `polyglot` package first.')
                 return None
-            if self.emb_format == 'polyglot':
-                embeddings = Embedding.load(name)
-            else:
-                embeddings = Embedding.from_glove(name)
+            embeddings = Embedding.load(name)
             self.itos = embeddings.vocabulary.id_word
             self.stoi = embeddings.vocabulary.word_id
             self.dim = embeddings.shape[1]
             self.vectors = torch.tensor(embeddings.vectors).view(-1, self.dim)
+
+        elif self.emb_format == 'glove':
+            itos = []
+            vectors = []
+            with open(name, 'r', encoding='utf8') as f:
+                for line in f:
+                    try:
+                        values = line.rstrip().split()
+                        itos.append(values[0])
+                        vectors.append([float(x) for x in values[1:]])
+                    except ValueError:
+                        # ignore entries that look like:
+                        # by name@domain.com 0.6882 -0.36436 ...
+                        continue
+            self.itos = itos
+            self.stoi = dict(zip(self.itos, range(len(self.itos))))
+            self.dim = len(vectors[0])
+            self.vectors = torch.tensor(vectors).view(-1, self.dim)
 
         elif self.emb_format == 'fasttext':
             try:
@@ -171,3 +187,12 @@ FastText = partial(WordEmbeddings, emb_format='fasttext')
 Glove = partial(WordEmbeddings, emb_format='glove')
 Fonseca = partial(WordEmbeddings, emb_format='fonseca', map_fn=to_fonseca)
 TextVectors = partial(WordEmbeddings, emb_format='text')
+
+available_embeddings = {
+    'polyglot': Polyglot,
+    'word2vec': Word2Vec,
+    'fasttext': FastText,
+    'glove': Glove,
+    'fonseca': Fonseca,
+    'text': TextVectors
+}

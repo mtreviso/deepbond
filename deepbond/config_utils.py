@@ -40,6 +40,7 @@ def configure_logger(debug, output_dir):
     if output_dir is not None:
         fh = logging.FileHandler(os.path.join(output_dir, 'out.log'))
         fh.setLevel(log_level)
+        fh.setFormatter(logging.Formatter(log_format))
         logging.getLogger().addHandler(fh)
 
 

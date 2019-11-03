@@ -6,24 +6,10 @@ import torch
 from torchtext.data import Field
 
 from deepbond import constants
+from deepbond.dataset.vectors import available_embeddings
 from deepbond.dataset.vocabulary import Vocabulary
-from deepbond.dataset.vectors import (Polyglot,
-                                      Word2Vec,
-                                      FastText,
-                                      Glove,
-                                      Fonseca,
-                                      TextVectors)
 
 logger = logging.getLogger(__name__)
-
-available_embeddings = {
-    'polyglot': Polyglot,
-    'word2vec': Word2Vec,
-    'fasttext': FastText,
-    'glove': Glove,
-    'fonseca': Fonseca,
-    'text': TextVectors
-}
 
 
 def load_vectors(options):

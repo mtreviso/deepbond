@@ -35,7 +35,10 @@ def build(options, optim):
 
 def load_state(path, scheduler):
     scheduler_path = Path(path, constants.SCHEDULER)
-    scheduler.load_state_dict(torch.load(str(scheduler_path)))
+    scheduler.load_state_dict(
+        torch.load(str(scheduler_path),
+                   map_location=lambda storage, loc: storage)
+    )
 
 
 def load(path, optim):

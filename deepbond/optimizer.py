@@ -97,7 +97,10 @@ def build(options, model_parameters):
 
 def load_state(path, optim):
     optim_path = Path(path, constants.OPTIMIZER)
-    optim.load_state_dict(torch.load(str(optim_path)))
+    optim.load_state_dict(
+        torch.load(str(optim_path),
+                   map_location=lambda storage, loc: storage)
+    )
 
 
 def load(path, model_parameters):

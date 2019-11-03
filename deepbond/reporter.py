@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_line_bar(template_head):
-    line_head = list('-' * len(template_head))
+    line_head = list('-' * len(template_head.strip()))
     bar_indexes = [i for i, c in enumerate(template_head) if c == '|']
     for i in bar_indexes:
         line_head[i] = '+'
@@ -20,7 +20,7 @@ class Reporter:
 
     Args:
         output_dir (str): Path location to save tensorboard artifacts.
-        use_tensorboard (bool): Wheter to log stats on tensorboard server.
+        use_tensorboard (bool): Whether to log stats on tensorboard server.
     """
 
     def __init__(self, output_dir, use_tensorboard):

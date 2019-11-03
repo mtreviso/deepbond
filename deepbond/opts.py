@@ -401,7 +401,7 @@ def train_opts(parser):
 
 def predict_opts(parser):
     # Prediction options
-    group = parser.add_argument_group('training')
+    group = parser.add_argument_group('predicting')
     group.add_argument('--text', type=str, default=None,
                        help='A text to be predicted. '
                             'The text will be splited into sentences '

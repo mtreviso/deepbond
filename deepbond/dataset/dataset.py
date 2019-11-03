@@ -44,9 +44,6 @@ class SSDataset(LazyDataset):
 
     def get_loss_weights(self):
         tags_vocab = self.fields['tags'].vocab.stoi
-        y = []
-        for ex in self.examples:
-            ex_classes = [tags_vocab[t] for t in ex.tags]
-            y.extend(ex_classes)
+        y = [tags_vocab[t] for ex in self.examples for t in ex.tags]
         classes = list(set(y))
         return compute_class_weight('balanced', classes, y)

@@ -3,9 +3,9 @@ from torch import nn
 
 def init_xavier(module, constant=0., dist='uniform', **kwargs):
     for name, param in module.named_parameters():
-        if 'bias' in name:
+        if param.dim() == 1:
             nn.init.constant_(param, constant)
-        elif 'weight' in name:
+        else:
             if dist == 'uniform':
                 nn.init.xavier_uniform_(param)
             elif dist == 'normal':
@@ -18,9 +18,9 @@ def init_kaiming(
     module, constant=0., dist='uniform', **kwargs
 ):
     for name, param in module.named_parameters():
-        if 'bias' in name:
+        if param.dim() == 1:
             nn.init.constant_(param, constant)
-        elif 'weight' in name:
+        else:
             if dist == 'uniform':
                 nn.init.kaiming_uniform_(param)
             elif dist == 'normal':

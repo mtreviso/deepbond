@@ -95,7 +95,7 @@ class RNN(Model):
         h = self.word_emb(h)
         h = self.dropout_emb(h)
 
-        # (bs, ts, pool_size) -> (bs, ts, hidden_size)
+        # (bs, ts, emb_dim) -> (bs, ts, hidden_size)
         h = pack(h, lengths, batch_first=True, enforce_sorted=False)
         h, self.hidden = self.rnn(h, self.hidden)
         h, _ = unpack(h, batch_first=True)
