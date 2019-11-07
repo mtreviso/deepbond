@@ -8,3 +8,6 @@ pyyaml
 setuptools
 six
 typing
+cupy 
+pynvrtc 
+git+https://github.com/Edresson/pytorch-qrnn-bidirecional.git
