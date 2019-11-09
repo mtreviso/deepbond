@@ -1,6 +1,6 @@
 *.zip
 *.tar.gz
-*.o 
+*.o
 *.pyc
 __pycache__/
 data/*
@@ -32,3 +32,4 @@ env/
 
 saved-models/
 predictions/
+pytorch-qrnn-bidirecional/
