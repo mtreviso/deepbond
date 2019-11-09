@@ -124,9 +124,14 @@ class RCNN(Model):
         h = self.dropout_cnn(h)
 
         # (bs, ts, pool_size) -> (bs, ts, hidden_size)
-        h = pack(h, lengths, batch_first=True, enforce_sorted=False)
-        h, _ = self.rnn(h)
-        h, _ = unpack(h, batch_first=True)
+        if self.rnn_type == 'qrnn':
+            h, _ = self.rnn(h)
+        else:
+            h = pack(h, lengths, batch_first=True, enforce_sorted=False)
+            h, _ = self.rnn(h)
+            h, _ = unpack(h, batch_first=True)
+
+        
 
         # if you'd like to sum instead of concatenate:
         if self.sum_bidir:

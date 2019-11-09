@@ -176,9 +176,12 @@ class RNNAttentionCRF(Model):
         h = self.dropout_emb(h)
 
         # (bs, ts, pool_size) -> (bs, ts, hidden_size)
-        h = pack(h, lengths, batch_first=True, enforce_sorted=False)
-        h, self.hidden = self.rnn(h, self.hidden)
-        h, _ = unpack(h, batch_first=True)
+        if self.rnn_type == 'qrnn':
+            h, self.hidden = self.rnn(h, self.hidden)
+        else:
+            h = pack(h, lengths, batch_first=True, enforce_sorted=False)
+            h, self.hidden = self.rnn(h, self.hidden)
+            h, _ = unpack(h, batch_first=True)
 
         # if you'd like to sum instead of concatenate:
         if self.sum_bidir:
