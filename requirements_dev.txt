@@ -4,3 +4,6 @@ pytest
 pytest-xdist
 polyglot
 gensim
+cupy
+pynvrtc
+git+https://github.com/Edresson/pytorch-qrnn-bidirecional.git
