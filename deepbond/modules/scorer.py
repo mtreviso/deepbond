@@ -1,4 +1,4 @@
-from math import sqrt
+import math
 
 import torch
 from torch import nn
@@ -22,13 +22,13 @@ class Scorer(nn.Module):
         """Denominator for scaling the scores.
 
         Args:
-            hidden_size(int): max hidden size between query and keys.
+            hidden_size(int): size of input vector
 
         Returns:
             int: sqrt(hidden_size) if `scaled` is True, 1 otherwise
         """
         if self.scaled:
-            return sqrt(hidden_size)
+            return math.sqrt(hidden_size)
         return 1
 
     def forward(self, query, keys):
@@ -64,8 +64,8 @@ class DotProductScorer(Scorer):
         # b = batch size
         # t = target length
         # s = source length
-        # x = hidden size
-        score = torch.einsum('b...tx,b...sx->b...ts', [query, keys])
+        # h = hidden size
+        score = torch.einsum('b...th,b...sh->b...ts', [query, keys])
         return score / scale
 
 
@@ -74,37 +74,72 @@ class GeneralScorer(Scorer):
 
     def __init__(self, query_size, key_size, **kwargs):
         super().__init__(**kwargs)
-        self.W = nn.Parameter(torch.randn(query_size, key_size))
+        self.W = nn.Parameter(torch.Tensor(key_size, query_size))
+        self.init_weights()
+
+    def init_weights(self):
+        nn.init.kaiming_uniform_(self.W, a=math.sqrt(5))
 
     def forward(self, query, keys):
-        scale = self.scale(max(self.W.shape))
-        # score = torch.matmul(torch.matmul(query, self.W), keys.transpose(-1, -2))  # NOQA
-        score = torch.einsum('b...tm,mn,b...sn->b...ts', [query, self.W, keys])
+        scale = self.scale(keys.shape[-1])
+        # score = torch.matmul(torch.matmul(query, self.W.t()), keys.transpose(-1, -2))  # NOQA
+        score = torch.einsum('b...tm,nm,b...sn->b...ts', [query, self.W, keys])
+        return score / scale
+
+
+class SelfAdditiveScorer(Scorer):
+    """
+    This is a special case for AdditiveScorer when query=key (self attention).
+    Its implementation is based on related works in order to this work to be
+    comparable with them. Otherwise, you can use OperationScorer(op='add')
+    """
+    def __init__(self, vector_size, attn_hidden_size, **kwargs):
+        super().__init__(**kwargs)
+        self.W = nn.Parameter(torch.Tensor(attn_hidden_size, vector_size))
+        self.b = nn.Parameter(torch.Tensor(attn_hidden_size))
+        self.v = nn.Parameter(torch.Tensor(1, attn_hidden_size))
+        self.activation = nn.Tanh()
+        self.init_weights()
+
+    def init_weights(self):
+        nn.init.kaiming_uniform_(self.W, a=math.sqrt(5))
+        bound = 1 / math.sqrt(self.W.shape[1])
+        nn.init.uniform_(self.b, -bound, bound)
+        nn.init.kaiming_uniform_(self.v, a=math.sqrt(5))
+
+    def forward(self, query, keys):
+        # keys == query
+        scale = self.scale(keys.shape[-1])
+        # x = torch.matmul(query, self.W.t()) + self.b
+        x = torch.einsum('b...tm,hm->b...th', [query, self.W]) + self.b
+        x = self.activation(x)
+        # score = torch.matmul(x, self.v.t()).squeeze(-1)
+        score = torch.einsum('b...th,oh->b...to', [x, self.v]).squeeze(-1)
+        score = score.unsqueeze(1)
         return score / scale
 
 
 class OperationScorer(Scorer):
     """Base class for ConcatScorer and AdditiveScorer"""
 
-    def __init__(
-        self,
-        query_size,
-        key_size,
-        attn_hidden_size,
-        op='concat',
-        activation=nn.Tanh,
-        **kwargs
-    ):
+    def __init__(self, query_size, key_size, attn_hidden_size, op='concat',
+                 activation=nn.Tanh, **kwargs):
         super().__init__(**kwargs)
         assert op in ['concat', 'add', 'mul']
         self.op = op
         self.activation = activation()
-        self.W1 = nn.Parameter(torch.randn(key_size, attn_hidden_size))
-        self.W2 = nn.Parameter(torch.randn(query_size, attn_hidden_size))
+        self.W1 = nn.Parameter(torch.Tensor(attn_hidden_size, key_size))
+        self.W2 = nn.Parameter(torch.Tensor(attn_hidden_size, query_size))
         if self.op == 'concat':
-            self.v = nn.Parameter(torch.randn(2 * attn_hidden_size))
+            self.v = nn.Parameter(torch.Tensor(1, 2 * attn_hidden_size))
         else:
-            self.v = nn.Parameter(torch.randn(attn_hidden_size))
+            self.v = nn.Parameter(torch.Tensor(1, attn_hidden_size))
+        self.init_weights()
+
+    def init_weights(self):
+        nn.init.kaiming_uniform_(self.W1, a=math.sqrt(5))
+        nn.init.kaiming_uniform_(self.W2, a=math.sqrt(5))
+        nn.init.kaiming_uniform_(self.v, a=math.sqrt(5))
 
     def f(self, x1, x2):
         """Perform an operation on x1 and x2"""
@@ -117,14 +152,15 @@ class OperationScorer(Scorer):
         return self.activation(x)
 
     def forward(self, query, keys):
-        scale = self.scale(max(*self.W1.shape, *self.W2.shape))
-        # x1 = torch.matmul(keys, self.W1)
-        # x2 = torch.matmul(query, self.W2)
-        x1 = torch.einsum('b...tm,mh->b...th', [query, self.W2])
-        x2 = torch.einsum('b...sn,nh->b...sh', [keys, self.W1])
+        scale = self.scale(keys.shape[-1])
+        # x1 = torch.matmul(keys, self.W1.t())
+        # x2 = torch.matmul(query, self.W2.t())
+        x1 = torch.einsum('b...tm,hm->b...th', [query, self.W2])
+        x2 = torch.einsum('b...sn,hn->b...sh', [keys, self.W1])
         x1, x2 = make_mergeable_tensors(x1, x2)
-        # score = torch.matmul(self.f(x1, x2), self.v)
-        score = torch.einsum('b...tsh,h->b...ts', [self.f(x1, x2), self.v])
+        # score = torch.matmul(self.f(x1, x2), self.v.t())
+        score = torch.einsum('b...tsh,oh->b...tso', [self.f(x1, x2), self.v])
+        score = score.squeeze(-1)
         return score / scale
 
 

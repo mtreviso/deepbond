@@ -1,10 +1,16 @@
+import math
+
 from torch import nn
 
 
-def init_xavier(module, constant=0., dist='uniform', **kwargs):
+def init_xavier(module, constant=None, dist='uniform', **kwargs):
     for name, param in module.named_parameters():
         if param.dim() == 1:
-            nn.init.constant_(param, constant)
+            if constant is not None:
+                nn.init.constant_(param, constant)
+            else:
+                stdv = 1.0 / math.sqrt(param.numel())
+                nn.init.uniform_(param, -stdv, stdv)
         else:
             if dist == 'uniform':
                 nn.init.xavier_uniform_(param)
@@ -14,12 +20,14 @@ def init_xavier(module, constant=0., dist='uniform', **kwargs):
                 raise Exception('distribution {} not found'.format(dist))
 
 
-def init_kaiming(
-    module, constant=0., dist='uniform', **kwargs
-):
+def init_kaiming(module, constant=None, dist='uniform', **kwargs):
     for name, param in module.named_parameters():
         if param.dim() == 1:
-            nn.init.constant_(param, constant)
+            if constant is not None:
+                nn.init.constant_(param, constant)
+            else:
+                stdv = 1.0 / math.sqrt(param.numel())
+                nn.init.uniform_(param, -stdv, stdv)
         else:
             if dist == 'uniform':
                 nn.init.kaiming_uniform_(param)
