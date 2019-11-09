@@ -4,7 +4,6 @@ import torch.nn as nn
 from deepbond import constants
 from deepbond.initialization import init_xavier, init_kaiming
 from deepbond.models.model import Model
-from deepbond.models.utils import neighbours_mask
 from deepbond.modules.attention import Attention
 from deepbond.modules.crf import CRF
 from deepbond.modules.multi_headed_attention import MultiHeadedAttention
@@ -162,7 +161,8 @@ class CNNAttentionCRF(Model):
         h = self.dropout_cnn(h)
 
         # (bs, ts, pool_size) -> (bs, ts, pool_size)
-        # mask = mask.unsqueeze(-2) & neighbours_mask(h.shape[1], window_size=3).to(h.device).unsqueeze(0).bool()
+        # mask = mask.unsqueeze(-2) & neighbours_mask(h.shape[1], window_size=3)
+        # mask = mask.to(h.device).unsqueeze(0).bool()
         mask = mask.to(batch.words.device)
         h, _ = self.attn(h, h, h, mask=mask)
 

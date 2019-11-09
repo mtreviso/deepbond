@@ -4,11 +4,6 @@ import torch.nn as nn
 from deepbond import constants
 from deepbond.initialization import init_xavier
 from deepbond.models.model import Model
-from deepbond.models.utils import neighbours_mask
-from deepbond.modules.attention import Attention
-from deepbond.modules.multi_headed_attention import MultiHeadedAttention
-from deepbond.modules.scorer import (DotProductScorer, GeneralScorer,
-                                     OperationScorer, MLPScorer)
 
 
 class TransformerAttention(Model):

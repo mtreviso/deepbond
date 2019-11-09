@@ -91,7 +91,7 @@ class LinearCRF(Model):
         assert self._loss is not None
 
         h = batch.words
-        mask = h != constants.PAD_ID
+        # mask = h != constants.PAD_ID
 
         # (bs, ts) -> (bs, ts, emb_dim)
         h = self.word_emb(h)

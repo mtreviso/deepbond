@@ -186,8 +186,8 @@ def model_opts(parser):
     group.add_argument('--rnn-type',
                        type=str,
                        default='rnn',
-                       choices=['rnn', 'lstm', 'gru','qrnn'],
-                       help='RNN cell type: LSTM, GRU, a regular RNN, or a QRNN.')
+                       choices=['rnn', 'lstm', 'gru', 'qrnn'],
+                       help='RNN cell type: LSTM, GRU, QRNN, a regular RNN.')
     group.add_argument('--bidirectional',
                        action='store_true',
                        help='Set RNNs to be bidirectional.')

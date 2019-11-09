@@ -99,7 +99,6 @@ class RNNAttention(Model):
             raise Exception('Attention `{}` not available'.format(
                 options.attn_type))
 
-
         #
         # Linear
         #

@@ -39,7 +39,7 @@ class CNN(Model):
         self.dropout_cnn = nn.Dropout(options.cnn_dropout)
 
         nf = int((options.conv_size + 2 * (options.pool_length // 2) -
-                  (options.pool_length-1) - 1) / options.pool_length + 1)
+                  (options.pool_length - 1) - 1) / options.pool_length + 1)
         self.linear_out = nn.Linear(nf, self.nb_classes)
         self.relu = torch.nn.ReLU()
 

@@ -4,8 +4,6 @@ import torch.nn.functional as F
 from torch.nn.utils.rnn import pack_padded_sequence as pack
 from torch.nn.utils.rnn import pad_packed_sequence as unpack
 
-
-
 from deepbond import constants
 from deepbond.initialization import init_xavier, init_kaiming
 from deepbond.models.model import Model
@@ -61,7 +59,7 @@ class RCNN(Model):
         self.is_bidir = options.bidirectional
         self.sum_bidir = options.sum_bidir
         self.rnn_type = options.rnn_type
-        batch_first= True
+        batch_first = True
         if self.rnn_type == 'gru':
             rnn_class = nn.GRU
         elif self.rnn_type == 'lstm':

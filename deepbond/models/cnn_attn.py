@@ -117,7 +117,7 @@ class CNNAttention(Model):
 
         h = batch.words
         mask = h != constants.PAD_ID
-        lengths = mask.int().sum(dim=-1)
+        # lengths = mask.int().sum(dim=-1)
 
         # (bs, ts) -> (bs, ts, emb_dim)
         h = self.word_emb(h)
