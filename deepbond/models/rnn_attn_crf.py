@@ -42,17 +42,22 @@ class RNNAttentionCRF(Model):
         self.rnn_type = options.rnn_type
 
         rnn_class = nn.RNN
+        batch_first = True
         if self.rnn_type == 'gru':
             rnn_class = nn.GRU
         elif self.rnn_type == 'lstm':
             rnn_class = nn.LSTM
+        elif self.rnn_type == 'qrnn':
+            from torchqrnn import QRNN
+            rnn_class = QRNN
+            batch_first = False
 
         hidden_size = options.hidden_size[0]
         self.hidden = None
         self.rnn = rnn_class(features_size,
                              hidden_size,
                              bidirectional=self.is_bidir,
-                             batch_first=True)
+                             batch_first=batch_first)
         features_size = hidden_size
 
         #
@@ -104,7 +109,7 @@ class RNNAttentionCRF(Model):
             bos_tag_id=self.tags_field.vocab.stoi['_'],  # hack
             eos_tag_id=self.tags_field.vocab.stoi['.'],  # hack
             pad_tag_id=None,
-            batch_first=True,
+            batch_first=batch_first,
         )
 
         #
