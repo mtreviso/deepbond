@@ -103,13 +103,13 @@ class RNNAttentionCRF(Model):
         else:
             raise Exception('Attention `{}` not available'.format(
                 options.attn_type))
-        print('Batch first  :',batch_first)
+
         self.crf = CRF(
             self.nb_classes,
             bos_tag_id=self.tags_field.vocab.stoi['_'],  # hack
             eos_tag_id=self.tags_field.vocab.stoi['.'],  # hack
             pad_tag_id=None,
-            batch_first=batch_first,
+            batch_first=True,
         )
 
         #
@@ -182,7 +182,9 @@ class RNNAttentionCRF(Model):
 
         # (bs, ts, pool_size) -> (bs, ts, hidden_size)
         if self.rnn_type == 'qrnn':
+            h = h.transpose(0, 1)
             h, self.hidden = self.rnn(h, self.hidden)
+            h = h.transpose(0, 1)
         else:
             h = pack(h, lengths, batch_first=True, enforce_sorted=False)
             h, self.hidden = self.rnn(h, self.hidden)

@@ -125,13 +125,13 @@ class RCNN(Model):
 
         # (bs, ts, pool_size) -> (bs, ts, hidden_size)
         if self.rnn_type == 'qrnn':
+            h = h.transpose(0, 1)
             h, _ = self.rnn(h)
+            h = h.transpose(0, 1)
         else:
             h = pack(h, lengths, batch_first=True, enforce_sorted=False)
             h, _ = self.rnn(h)
             h, _ = unpack(h, batch_first=True)
-
-        
 
         # if you'd like to sum instead of concatenate:
         if self.sum_bidir:
