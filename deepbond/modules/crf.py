@@ -143,7 +143,10 @@ class CRF(nn.Module):
             torch.Tensor: Scores for each batch.
                 Shape of (batch_size,)
         """
-        
+        if not self.batch_first:
+            emissions = emissions.transpose(0, 1)
+            tags = tags.transpose(0, 1)
+            
         batch_size, seq_length = tags.shape
         scores = torch.zeros(batch_size)
         scores = scores.to(tags.device)
