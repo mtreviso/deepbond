@@ -103,7 +103,7 @@ class RNNAttentionCRF(Model):
         else:
             raise Exception('Attention `{}` not available'.format(
                 options.attn_type))
-
+        print('Batch first  :',batch_first)
         self.crf = CRF(
             self.nb_classes,
             bos_tag_id=self.tags_field.vocab.stoi['_'],  # hack
