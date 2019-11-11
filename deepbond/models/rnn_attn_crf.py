@@ -42,7 +42,7 @@ class RNNAttentionCRF(Model):
         self.rnn_type = options.rnn_type
 
         rnn_class = nn.RNN
-        batch_first = True
+        batch_first = False
         if self.rnn_type == 'gru':
             rnn_class = nn.GRU
         elif self.rnn_type == 'lstm':
