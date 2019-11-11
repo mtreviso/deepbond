@@ -71,7 +71,7 @@ if __name__ == '__main__':
             word_vectors[word] = embeddings[word]
         else:
             print('{} not found in model vocab. It will be replaced later '
-                  'by and unknown vector.'.format(word))
+                  'by an unknown vector.'.format(word))
 
     if args.binary:
         with open(args.output_path, 'wb') as handle:

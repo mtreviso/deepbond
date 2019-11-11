@@ -43,7 +43,8 @@ if __name__ == '__main__':
               'get ngrams vectors anymore! Be careful.')
         model = FastText.load_fasttext_format(input_file_path)
 
-    import ipdb; ipdb.set_trace()
+    print('Cinderela embedding with mean and std: ')
+    print(model['cinderela'].mean(), model['cinderela'].std())
 
     print('Saving embeddings as keyed vectors')
     model.wv.save_word2vec_format(output_file_path, binary=True)
@@ -55,5 +56,8 @@ if __name__ == '__main__':
     embeddings = KeyedVectors.load_word2vec_format(output_file_path,
                                                    unicode_errors='ignore',
                                                    binary=True)
+
+    print('Cinderela embedding with mean and std: ')
+    print(embeddings['cinderela'].mean(), embeddings['cinderela'].std())
 
     print('Everything is fine!')
