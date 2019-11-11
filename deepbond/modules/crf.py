@@ -120,6 +120,10 @@ class CRF(nn.Module):
                 Shape of (batch_size,)
             list of lists: the best viterbi sequence of labels for each batch.
         """
+        if not self.batch_first:
+            emissions = emissions.transpose(0, 1)
+            tags = tags.transpose(0, 1)
+
         if mask is None:
             mask = torch.ones(emissions.shape[:2], dtype=torch.float)
             mask = mask.to(emissions.device)
@@ -139,10 +143,7 @@ class CRF(nn.Module):
             torch.Tensor: Scores for each batch.
                 Shape of (batch_size,)
         """
-        if not self.batch_first:
-            emissions = emissions.transpose(0, 1)
-            tags = tags.transpose(0, 1)
-
+        
         batch_size, seq_length = tags.shape
         scores = torch.zeros(batch_size)
         scores = scores.to(tags.device)
