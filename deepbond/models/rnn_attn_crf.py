@@ -49,7 +49,7 @@ class RNNAttentionCRF(Model):
             rnn_class = nn.LSTM
         elif self.rnn_type == 'qrnn':
             from torchqrnn import QRNN
-            rnn_class = nn.LSTM#QRNN
+            rnn_class = QRNN
             batch_first = False
 
         hidden_size = options.hidden_size[0]
