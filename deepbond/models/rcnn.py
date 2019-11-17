@@ -123,12 +123,18 @@ class RCNN(Model):
         h = self.max_pool(h)
         h = self.dropout_cnn(h)
 
-        # (bs, ts, pool_size) -> (bs, ts, hidden_size)
         if self.rnn_type == 'qrnn':
+            # (bs, ts, pool_size) -> (ts, bs, pool_size)
             h = h.transpose(0, 1)
+            # (ts, bs, pool_size) -> (ts, bs, hidden_size)
+            # packed sequences is not supported by qrnn, so it might learn that
+            # pad vectors are important, though this is very unlikely since they
+            # are zero vectors
             h, _ = self.rnn(h)
+            # (ts, bs, hidden_size) -> (bs, ts, hidden_size)
             h = h.transpose(0, 1)
         else:
+            # (bs, ts, pool_size) -> (bs, ts, hidden_size)
             h = pack(h, lengths, batch_first=True, enforce_sorted=False)
             h, _ = self.rnn(h)
             h, _ = unpack(h, batch_first=True)
