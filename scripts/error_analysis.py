@@ -204,7 +204,7 @@ class ErrorAnalysisSS:
 
             logger.info('%32s | %32s |' % ('Gold', 'Pred'))
             logger.info('-' * 33 + '+-' + '-' * 33 + '+')
-            for i in range(len(vp)):
+            for i in range(min(len(vp), len(vg))):
                 wg = ' '.join(vg[i][0])
                 wp = ' '.join(vp[i][0])
                 logger.info('%32s | %32s |' % (wg, wp))
