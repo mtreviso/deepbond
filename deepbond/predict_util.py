@@ -29,8 +29,8 @@ class SentenceBoundaryDetector(object):
 		self.options.prediction_type = prediction_type
 		self.options.load = load 
 		self.options.test_path = test_path
-		
-    def detect(self):
+
+	def detect(self):
 		words_field = fields.WordsField()
 		tags_field = fields.TagsField()
 		fields_tuples = [('words', words_field), ('tags', tags_field)]
