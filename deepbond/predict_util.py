@@ -21,15 +21,16 @@ class SentenceBoundaryDetector(object):
 		opts.train_opts(parser)
 		opts.predict_opts(parser)
 
-		options = parser.parse_args()
+		self.options = parser.parse_args()
 
 		# set predict opts
-		options.text = text
-		options.gpu_id = gpu_id
-		options.prediction_type = prediction_type
-		options.load = load 
-		options.test_path = test_path
-
+		self.options.text = text
+		self.options.gpu_id = gpu_id
+		self.options.prediction_type = prediction_type
+		self.options.load = load 
+		self.options.test_path = test_path
+		
+    def detect(self):
 		words_field = fields.WordsField()
 		tags_field = fields.TagsField()
 		fields_tuples = [('words', words_field), ('tags', tags_field)]
@@ -37,46 +38,46 @@ class SentenceBoundaryDetector(object):
 		dataset_iter = None
 		save_dir_path = None
 
-		if options.test_path is None and options.text is None:
+		if self.options.test_path is None and self.options.text is None:
 			raise Exception('You should inform a path to test data or a text.')
 
-		if options.test_path is not None and options.text is not None:
+		if self.options.test_path is not None and self.options.text is not None:
 			raise Exception('You cant inform both a path to test data and a text.')
 
 
-		if options.test_path is not None and options.text is None:
-			logger.info('Building test dataset: {}'.format(options.test_path))
+		if self.options.test_path is not None and self.options.text is None:
+			logger.info('Building test dataset: {}'.format(self.options.test_path))
 			test_tuples = list(filter(lambda x: x[0] != 'tags', fields_tuples))
-			test_dataset = dataset.build(options.test_path, test_tuples, options)
+			test_dataset = dataset.build(self.options.test_path, test_tuples, self.options)
 
 			logger.info('Building test iterator...')
-			dataset_iter = iterator.build(test_dataset, options.gpu_id,
-										options.dev_batch_size, is_train=False)
-			save_dir_path = options.test_path
+			dataset_iter = iterator.build(test_dataset, self.options.gpu_id,
+										self.options.dev_batch_size, is_train=False)
+			save_dir_path = self.options.test_path
 
-		if options.text is not None and options.test_path is None:
+		if self.options.text is not None and self.options.test_path is None:
 			logger.info('Preparing text...')
 			test_tuples = list(filter(lambda x: x[0] != 'tags', fields_tuples))
-			test_dataset = dataset.build_texts(options.text, test_tuples, options)
+			test_dataset = dataset.build_texts(self.options.text, test_tuples, self.options)
 
 			logger.info('Building iterator...')
-			dataset_iter = iterator.build(test_dataset, options.gpu_id,options.dev_batch_size, is_train=False)
+			dataset_iter = iterator.build(test_dataset, self.options.gpu_id,self.options.dev_batch_size, is_train=False)
 			save_dir_path = None
 
 
 
 		logger.info('Loading vocabularies...')
-		fields.load_vocabs(options.load, fields_tuples)
+		fields.load_vocabs(self.options.load, fields_tuples)
 
 		logger.info('Loading model...')
-		model = models.load(options.load, fields_tuples, options.gpu_id)
+		model = models.load(self.options.load, fields_tuples, self.options.gpu_id)
 
 		logger.info('Predicting...')
 		predicter = Predicter(dataset_iter, model)
-		predictions = predicter.predict(options.prediction_type)
+		predictions = predicter.predict(self.options.prediction_type)
 
 		logger.info('Preparing to save...')
-		if options.prediction_type == 'classes':
+		if self.options.prediction_type == 'classes':
 			prediction_tags = transform_classes_to_tags(tags_field, predictions)
 			predictions_str = transform_predictions_to_text(prediction_tags)
 		else:
