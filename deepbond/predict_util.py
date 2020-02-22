@@ -28,7 +28,7 @@ class SentenceBoundaryDetector(object):
 		options.gpu_id = gpu_id
 		options.prediction_type = prediction_type
 		options.load = load 
-
+		options.test_path = test_path
 
 		words_field = fields.WordsField()
 		tags_field = fields.TagsField()
