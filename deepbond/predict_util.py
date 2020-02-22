@@ -37,7 +37,7 @@ class SentenceBoundaryDetector(object):
 		save_dir_path = None
 
 		if options.test_path is None and options.text is None:
-        	raise Exception('You should inform a path to test data or a text.')
+			raise Exception('You should inform a path to test data or a text.')
 
 		if options.test_path is not None and options.text is not None:
 			raise Exception('You cant inform both a path to test data and a text.')
