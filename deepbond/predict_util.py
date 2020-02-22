@@ -26,10 +26,10 @@ class SentenceBoundaryDetector(object):
 		# set predict opts
 		options.text = text
 		options.gpu_id = gpu_id
-		options.prediction_type = pred_type
+		options.prediction_type = prediction_type
 		options.load = load 
 
-		print(options)
+
 		words_field = fields.WordsField()
 		tags_field = fields.TagsField()
 		fields_tuples = [('words', words_field), ('tags', tags_field)]
