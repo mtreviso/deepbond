@@ -32,3 +32,4 @@ __copyright__ = 'Copyright 2019 Marcos Treviso'
 from .predicter import Predicter  # NOQA
 from .tagger import Tagger  # NOQA
 from .trainer import Trainer  # NOQA
+from .predict_util import SentenceBoundaryDetector

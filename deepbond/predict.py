@@ -9,7 +9,7 @@ from deepbond.predicter import Predicter
 
 logger = logging.getLogger(__name__)
 
-
+# ToDo: Adapt for use SentenceBoundaryDetector class ( predict_util )
 def run(options):
     words_field = fields.WordsField()
     tags_field = fields.TagsField()

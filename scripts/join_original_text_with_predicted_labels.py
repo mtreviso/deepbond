@@ -21,6 +21,7 @@ def read_original_dir(dir_path):
     texts = []
     for f_path in sorted(dir_path.iterdir()):
         texts.append(read_original_file(f_path))
+        
     return texts
 
 
