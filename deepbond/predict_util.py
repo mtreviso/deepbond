@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class SentenceBoundaryDetector(object):
 
-	def __init__(self,text=None,test_path = None, load='', gpu_id=0, pred_type = "classes"  **kwargs):
+	def __init__(self,text=None,test_path = None, load='', gpu_id=0, pred_type = "classes"):
 		# 
 		parser = argparse.ArgumentParser(description='DeepBond')
 		opts.general_opts(parser)
