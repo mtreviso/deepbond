@@ -59,9 +59,7 @@ class SentenceBoundaryDetector(object):
 			test_dataset = dataset.build_texts(options.text, test_tuples, options)
 
 			logger.info('Building iterator...')
-			dataset_iter = iterator.build(test_dataset, options.gpu_id,
-										options.dev_batch_size, is_train=False)
-
+			dataset_iter = iterator.build(test_dataset, options.gpu_id,options.dev_batch_size, is_train=False)
 			save_dir_path = None
 
 
