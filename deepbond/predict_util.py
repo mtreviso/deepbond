@@ -77,13 +77,17 @@ class SentenceBoundaryDetector(object):
 		predictions = predicter.predict(self.options.prediction_type)
 
 		logger.info('Preparing to save...')
-		if self.options.prediction_type == 'classes':
+		'''if self.options.prediction_type == 'classes':
 			prediction_tags = transform_classes_to_tags(tags_field, predictions)
 			predictions_str = transform_predictions_to_text(prediction_tags)
 		else:
-			predictions_str = transform_predictions_to_text(predictions)
-        
-		return predictions_str
+			predictions_str = transform_predictions_to_text(predictions)'''
+        if self.options.text is not None:
+			orig_words = options.text.split() 
+			labels = predictions.split()
+        	words_labels = join_words_and_labels(orig_words, labels)
+        	
+		return predictions,words_labels
 
 
 
