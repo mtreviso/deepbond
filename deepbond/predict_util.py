@@ -34,7 +34,7 @@ class SentenceBoundaryDetector(object):
 		fields_tuples = [('words', words_field), ('tags', tags_field)]
 
 		dataset_iter = None
-    	save_dir_path = None
+		save_dir_path = None
 
 		if options.test_path is None and options.text is None:
         	raise Exception('You should inform a path to test data or a text.')
