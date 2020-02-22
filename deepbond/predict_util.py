@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class SentenceBoundaryDetector(object):
 
-	def __init__(self,text=None,test_path = None, load='', gpu_id=0, pred_type = "classes"):
+	def __init__(self,text=None,test_path = None, load='', gpu_id=0, prediction_type= "classes"):
 		# 
 		parser = argparse.ArgumentParser(description='DeepBond')
 		opts.general_opts(parser)
@@ -29,6 +29,7 @@ class SentenceBoundaryDetector(object):
 		options.prediction_type = pred_type
 		options.load = load 
 
+		print(options)
 		words_field = fields.WordsField()
 		tags_field = fields.TagsField()
 		fields_tuples = [('words', words_field), ('tags', tags_field)]
