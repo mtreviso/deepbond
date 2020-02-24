@@ -28,5 +28,5 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ],
-    
+    py_modules=['deepbondnew']
 )
