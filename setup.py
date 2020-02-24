@@ -7,8 +7,8 @@ with open('LICENSE') as f:
     license = f.read()
 
 setup(
-    name='deepbond',
-    version='0.0.2',
+    name='deepbondnew',
+    version='0.0.3',
     description='Deep neural approach to Boundary and Disfluency Detection',
     long_description=readme,
     author='Marcos Treviso',
@@ -27,5 +27,6 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
-    ]
+    ],
+    
 )
