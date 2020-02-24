@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class SentenceBoundaryDetector(object):
 
-	def __init__(self, load='', gpu_id=0, prediction_type= "classes"):
+	def __init__(self, load='', gpu_id=None, prediction_type= "classes"):
 		# 
 		parser = argparse.ArgumentParser(description='DeepBond')
 		opts.general_opts(parser)
@@ -87,7 +87,7 @@ class SentenceBoundaryDetector(object):
 			predictions_str = transform_predictions_to_text(predictions)
 		words_labels = None	
 		if self.options.text is not None:
-			orig_words = self.options.text.split()
+			orig_words = self.options.text
 			labels = predictions_str.split()
 			words_labels = join_words_and_labels(orig_words, labels)
         	
