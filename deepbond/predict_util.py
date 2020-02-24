@@ -87,8 +87,9 @@ class SentenceBoundaryDetector(object):
 			predictions_str = transform_predictions_to_text(predictions)
 		words_labels = None	
 		if self.options.text is not None:
-			orig_words = self.options.text
+			orig_words = self.options.text.split()
 			labels = predictions_str.split()
+			print(orig_words , labels)
 			words_labels = join_words_and_labels(orig_words, labels)
         	
 		return predictions,predictions_str,words_labels
