@@ -10,8 +10,8 @@ This is part of my MSc project. More info:
 [STIL paper](http://aclweb.org/anthology/W17-6618)
  • 
 [PROPOR paper](https://www.researchgate.net/publication/327223308_Sentence_Segmentation_and_Disfluency_Detection_in_Narrative_Transcripts_from_Neuropsychological_Tests_13th_International_Conference_PROPOR_2018_Canela_Brazil_September_24-26_2018_Proceedings)
-
-If you want to use my data, please send me an e-mail. A step-by-step tutorial (in portuguese) can be [accessed here](https://mtreviso.github.io/deepbond/tutorial.html).
+ • 
+[LREC paper](https://www.aclweb.org/anthology/2020.lrec-1.317.pdf)
 
 
 # Installation 
@@ -41,12 +41,42 @@ python3 setup.py install
 ```
 
 Please note that since Python 3 is required, all the above commands (pip/python) 
-have to bounded to the Python 3 version.
+have to be bounded to the Python 3 version.
+
+
+
+# Data
+The data should be put in a folder called `data` in the root dir. Here is the basic ingredients that you might need:
+
+- Corpus (see license): https://github.com/Edresson/DNLT-BP
+- Word embeddings (word2vec skipgram): https://www.dropbox.com/s/rw3ti4ebctufp4j/embeddings.zip?dl=1
+- Prosodic information (only for Control and MCI): https://www.dropbox.com/s/0gmt2o2xeah13xk/prosodic.zip?dl=1  
+
+You can also send me an e-mail if you have any questions!
+
+
+
+
+# Usage
+You can use deepbond in two ways:
+* Via CLI interface ([example](https://github.com/mtreviso/deepbond/blob/master/experiments/train_ccl_rcnn_crf.sh))
+* Import as a library ([example](https://github.com/mtreviso/deepbond/blob/master/experiments/example_training_cinderela.py))
+
+The full list of arguments (CLI) and options (lib) can be seen via:
+```sh
+python3 -m deepbond --help
+```
+
+Take a look at the `experiments` folder for more examples.
+
+
+# License
+MIT.
 
 
 # Cite
 
-If you use DeepBonDD, please cite this paper:
+If you use deepbond, you can cite this paper:
 
 ```
 @inproceedings{treviso2018sentence,
@@ -59,7 +89,23 @@ If you use DeepBonDD, please cite this paper:
 }
 ```
 
-# License
-MIT. See the [LICENSE](LICENSE) file for more details.
+Or the more recent publication (results without prosodic information + CRF)
+```
+@inproceedings{casanova-etal-2020-evaluating,
+    title = "Evaluating Sentence Segmentation in Different Datasets of Neuropsychological Language Tests in {B}razilian {P}ortuguese",
+    author = {Casanova, Edresson  and
+      Treviso, Marcos  and
+      H{\"u}bner, Lilian  and
+      Alu{\'\i}sio, Sandra},
+    booktitle = "Proceedings of The 12th Language Resources and Evaluation Conference (LREC)",
+    year = "2020",
+    address = "Marseille, France",
+    publisher = "European Language Resources Association",
+    pages = "2605--2614",
+    ISBN = "979-10-95546-34-4",
+}
+```
+
+
 
 
