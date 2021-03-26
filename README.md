@@ -48,7 +48,7 @@ have to be bounded to the Python 3 version.
 # Data
 The data should be put in a folder called `data` in the root dir. Here is the basic ingredients that you might need:
 
-- Corpus (see license): https://github.com/Edresson/DNLT-BP
+- Corpus (see license): https://github.com/nilc-nlp/DNLT-BP
 - Word embeddings (word2vec skipgram): https://www.dropbox.com/s/rw3ti4ebctufp4j/embeddings.zip?dl=1
 - Prosodic information (only for Control and MCI): https://www.dropbox.com/s/0gmt2o2xeah13xk/prosodic.zip?dl=1  
 
