@@ -146,7 +146,7 @@ class WordEmbeddings(Vectors):
             import numpy as np
             import os
             embeddings = np.load(os.path.join(name, 'types-features.npy'))
-            texts = open(os.path.join(name, 'vocabulary.txt'), 'r').read()
+            texts = open(os.path.join(name, 'vocabulary.txt'), 'r', encoding='utf8').read()
             words = set([w.strip() for w in texts.split('\n')])
             self.itos = list(words)
             self.stoi = dict(zip(self.itos, range(len(self.itos))))
