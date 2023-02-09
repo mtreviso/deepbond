@@ -8,7 +8,12 @@ class Corpus:
 
     word_label = '_'
 
-    def __init__(self, fields_tuples, punctuations='!#$%&*+,-./:;<=>?@^|~'):
+    def __init__(
+        self, 
+        fields_tuples, 
+        punctuations='!#$%&*+,-./:;<=>?@^|~', 
+        binary_classification=False
+    ):
         """
         Base class for a SS/DD Corpus.
 
@@ -18,6 +23,8 @@ class Corpus:
                 a torchtext's Field object.
             punctuations (str): the tagset to be considered. e.g. for '.?!'
                 three punctuations are considered as tags: , ? and !
+            binary_classification (bool): whether to cast the problem as a 
+                binary classification task.
         """
         # assert we have some punctuations and they are non-alpha chars
         assert len(punctuations) > 0
@@ -28,8 +35,11 @@ class Corpus:
         self.fields_examples = []
         # list of name of attrs and their corresponding torchtext fields
         self.attr_fields = fields_tuples
-        # punctuation to be consi
+        # punctuation to be considered
         self.punctuations = punctuations
+        print('Symbols used to denote labels: ', punctuations)
+        # binary classification or not
+        self.binary_classification = binary_classification
         # mapping from attr name to their index in the list
         names, _ = zip(*self.attr_fields)
         self.fields_examples = {k: [] for k in names}
@@ -109,6 +119,8 @@ class Corpus:
         tags = []
         for token in text.split():
             if token in self.punctuations:
+                if self.binary_classification:
+                    token = '.'
                 if len(tags) == 0:
                     tags.append(token)
                 else:
@@ -128,13 +140,13 @@ class Corpus:
     @staticmethod
     def _normalize(text):
         """
-        Put a space between . , ? ! : ; * and words
+        Put a space between . , ? ! : ; * + $ and words
         Args:
             text (str): stream of words
         """
         t = text.strip()
-        t = re.sub(r'(\S+)([\.\,\?\!\:\;\*])', r'\1 \2', t.strip())
-        t = re.sub(r'([\.\,\?\!\:\;\*])(\S+)', r'\1 \2', t.strip())
+        t = re.sub(r'(\S+)([\.\,\?\!\:\;\*\+\$])', r'\1 \2', t.strip())
+        t = re.sub(r'([\.\,\?\!\:\;\*\+\$])(\S+)', r'\1 \2', t.strip())
         t = re.sub(r'\ +', ' ', t.strip())
         return t
 

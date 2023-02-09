@@ -95,6 +95,10 @@ def preprocess_opts(parser):
                        type=str,
                        default='.,?!:;*+$<=>|',
                        help='Punctuation symbols to be treated as labels.')
+    group.add_argument('--binary-classification',
+                       action='store_true',
+                       help='Transform the problem into a binary '
+                             'classification task.')
 
     # Truncation options
     group = parser.add_argument_group('data-pruning')

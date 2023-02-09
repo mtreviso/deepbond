@@ -7,7 +7,9 @@ from deepbond.dataset.modules.dataset import LazyDataset
 def build(path, fields_tuples, options):
     def filter_len(x):
         return options.min_length <= len(x.words) <= options.max_length
-    corpus = Corpus(fields_tuples, options.punctuations)
+    corpus = Corpus(
+        fields_tuples, options.punctuations, options.binary_classification
+    )
     corpus.read(path)
     return SSDataset(corpus, filter_pred=filter_len)
 
@@ -15,7 +17,9 @@ def build(path, fields_tuples, options):
 def build_texts(texts, fields_tuples, options):
     def filter_len(x):
         return options.min_length <= len(x.words) <= options.max_length
-    corpus = Corpus(fields_tuples, options.punctuations)
+    corpus = Corpus(
+        fields_tuples, options.punctuations, options.binary_classification
+    )
     corpus.add_texts(texts)
     return SSDataset(corpus, filter_pred=filter_len)
 
@@ -46,4 +50,8 @@ class SSDataset(LazyDataset):
         tags_vocab = self.fields['tags'].vocab.stoi
         y = [tags_vocab[t] for ex in self.examples for t in ex.tags]
         classes = list(set(y))
-        return compute_class_weight('balanced', classes, y)
+        return compute_class_weight(
+            class_weight='balanced', 
+            classes=classes, 
+            y=y
+        )
