@@ -16,7 +16,8 @@ logger = logging.getLogger(__name__)
 
 class ErrorAnalysisSS:
 
-    def __init__(self, gold_dir, pred_dir):
+    def __init__(self, gold_dir, pred_dir, gold_symbol='.'):
+        self.gold_symbol = gold_symbol
         self.golds, self.preds = [], []
         self.text_golds, self.text_preds = [], []
         self.tp, self.tn, self.fp, self.fn = 0, 0, 0, 0
@@ -44,6 +45,8 @@ class ErrorAnalysisSS:
         text_golds, text_preds = [], []
         for g_path, p_path in zip(gold_list, pred_list):
             gold_text = open(g_path, 'r', encoding='utf8').read().strip()
+            if self.gold_symbol == '*':
+                gold_text = gold_text.replace('+', '*').replace('$', '*')
 
             if 'constituicao' in g_path.lower():
                 gold_text = self._clean_const(gold_text)
@@ -78,7 +81,7 @@ class ErrorAnalysisSS:
     def _text_to_labels(self, text):
         labels = []
         for word in text.strip().split():
-            if word == '.':
+            if word == self.gold_symbol:
                 labels[-1] = 1
             else:
                 labels.append(0)
@@ -106,7 +109,7 @@ class ErrorAnalysisSS:
         self.nist_er = (self.fn + self.fp) / (self.fn + self.tp)  # SER
 
     def _calculate_most_frequent(self):
-        remove_period = lambda v: [x for x in v if x != '.']
+        remove_period = lambda v: [x for x in v if x != self.gold_symbol]
         text = remove_period(self.unrolled_text)
         self.most_tp_before = pd.Series(0, index=self.words + ['<PAD>'])
         self.most_fp_before = pd.Series(0, index=self.words + ['<PAD>'])
@@ -164,7 +167,7 @@ class ErrorAnalysisSS:
         tppb = list(tppb.nlargest(k).iteritems())
 
         logger.info(
-            'Top %d most frequents words after and before a period: ' % k)
+            'Top %d most frequents words after and before %s: ' % (k, self.gold_symbol))
         logger.info(
             '         Gold before |          Gold after |         Pred before |          Pred after |')
         logger.info('---------------------+' * 4)
@@ -181,7 +184,7 @@ class ErrorAnalysisSS:
         # p(w1 .. wn) = f(w1 .. wn) / t(w1 .. wn)
         # p(yn) = f(yn) / t(y)
         # p(w1..wn | yn=1) = f(w1 .. wn ^ yn=1) / f(yn=1)
-        remove_period = lambda v: [x for x in v if x != '.']
+        remove_period = lambda v: [x for x in v if x != self.gold_symbol]
         text = remove_period(self.unrolled_text)
 
         y = 1
@@ -195,7 +198,7 @@ class ErrorAnalysisSS:
             pwy_g = lambda w, y: fwy_g[(w, y)] / fy_g[y]
             pwy_p = lambda w, y: fwy_p[(w, y)] / fy_p[y]
 
-            logger.info('Top %d %d-gram before period: ' % (k, n_))
+            logger.info('Top %d %d-gram before %s: ' % (k, n_, self.gold_symbol))
             vg = [(w, pwy_g(w, y)) for w in set(grams) if pwy_g(w, y) > 0]
             vg = sorted(vg, reverse=True, key=lambda x: x[1])[:k]
 
@@ -311,9 +314,9 @@ class ErrorAnalysisSS:
             # bns
             input_dict = {}
             input_dict['0'] = [[w] for i, w in enumerate(tokens[:-1]) if
-                               tokens[i + 1] != '.']
+                               tokens[i + 1] != self.gold_symbol]
             input_dict['1'] = [[w] for i, w in enumerate(tokens[:-1]) if
-                               tokens[i + 1] == '.']
+                               tokens[i + 1] == self.gold_symbol]
 
             bns_scored_object = interface.run_feature_selection(
                 input_dict=input_dict, method=method, n_jobs=4)
@@ -344,12 +347,13 @@ if __name__ == '__main__':
     logger.debug = print
     gold_dir = sys.argv[1]
     # data/transcriptions/folds/CCL-A/[0-9]*/test/*
-    print( sys.argv)
+    print(sys.argv)
     pred_dir = sys.argv[2]
+    gold_symbol = sys.argv[3] if len(sys.argv) == 4 else '.'
     # data/transcriptions/folds/CCL-A/[0-9]*/pred/predictions/*
     logger.debug('Analyzing errors for gold data: {}'.format(gold_dir))
     logger.debug('Analyzing errors for pred data: {}'.format(pred_dir))
-    ea = ErrorAnalysisSS(gold_dir=gold_dir, pred_dir=pred_dir)
+    ea = ErrorAnalysisSS(gold_dir=gold_dir, pred_dir=pred_dir, gold_symbol=gold_symbol)
     ea.most_frequent(k=10)
     ea.ngram_importance(n=[1, 2, 3], k=10)
     ea.average_sentence_length()

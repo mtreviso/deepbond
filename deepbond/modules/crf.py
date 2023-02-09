@@ -329,6 +329,6 @@ class CRF(nn.Module):
             best_tag = backpointers_t[best_tag][sample_id].item()
 
             # append to the beginning of the list so we don't need to reverse it later
-            best_path.insert(0, best_tag)
+            best_path.append(best_tag)
 
-        return best_path
+        return best_path[::-1]
