@@ -80,7 +80,7 @@ class RCNNCRF(Model):
         self.crf = CRF(
             self.nb_classes,
             bos_tag_id=self.tags_field.vocab.stoi['_'],  # hack
-            eos_tag_id=self.tags_field.vocab.stoi['.'],  # hack
+            eos_tag_id=self.tags_field.vocab.stoi.get('.', '_'),  # hack
             pad_tag_id=None,
             batch_first=True,
         )
