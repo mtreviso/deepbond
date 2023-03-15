@@ -62,12 +62,14 @@ class Stats(object):
         return self.loss_accum / self.nb_batches
 
     def get_prec_rec_f1(self):
+        fscore_kwargs = dict(pos_label=None, average='macro')
+        if '.' in self.tags_vocab:
+            pos_label_kwargs = dict(pos_label=self.tags_vocab['.'], average='binary')
         prec, rec, f1, _ = precision_recall_fscore_support(
             self.gold_classes,
             self.pred_classes,
             beta=1.0,
-            pos_label=self.tags_vocab['.'],
-            average='binary'
+            **fscore_kwargs
         )
         return prec, rec, f1
 
