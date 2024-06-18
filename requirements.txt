@@ -4,7 +4,7 @@ numpy==1.24.2
 pandas==1.5.3
 pytest==7.2.1
 PyYAML==6.0
-scikit-learn==1.2.1
+scikit-learn==1.5.0
 scipy==1.10.0
 sentencepiece==0.1.97
 six==1.16.0
